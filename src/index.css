@@ -18,6 +18,8 @@
   --color-caramel: #b17543;
   --color-taupe: #99796a;
 
+  --color-envelope: #f4ede4;
+
   /* Functional colours */
   --color-background: #f5ebe1;
   --color-foreground: #442e21;
@@ -136,6 +138,12 @@ button {
   cursor: pointer;
 }
 
+button:focus-visible,
+a:focus-visible {
+  outline: 1px solid var(--color-caramel);
+  outline-offset: 6px;
+}
+
 img,
 picture,
 video {
@@ -150,6 +158,15 @@ img {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* =========================================================
+   INVITATION
+   ========================================================= */
+
+button:focus-visible {
+  outline: 1px solid var(--color-caramel);
+  outline-offset: 6px;
 }
 
 
