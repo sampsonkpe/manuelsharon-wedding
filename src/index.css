@@ -1,20 +1,96 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Mea+Culpa&family=Montserrat:wght@400;500;600&display=swap");
+
 @import "tailwindcss";
 
+/* =========================================================
+   DESIGN TOKENS
+   Manuel & Sharon — Wedding Invitation
+   ========================================================= */
+
 :root {
-  --color-background: #f7f3ec;
-  --color-foreground: #2b211c;
+  /* -------------------------------------------------------
+     Colour
+     ------------------------------------------------------- */
 
-  --color-primary: #6f4228;
-  --color-secondary: #a96636;
-  --color-accent: #c18a4a;
+  /* Selected wedding palette */
+  --color-deep-brown: #442e21;
+  --color-burnt-brown: #723a23;
+  --color-caramel: #b17543;
+  --color-taupe: #99796a;
 
-  --color-surface: #eee6da;
-  --color-border: rgba(43, 33, 28, 0.16);
-  --color-muted: #766b63;
+  /* Functional colours */
+  --color-background: #f5ebe1;
+  --color-foreground: #442e21;
+  --color-primary: #442e21;
+  --color-secondary: #723a23;
+  --color-accent: #b17543;
+  --color-muted: #99796a;
 
-  --font-display: serif;
-  --font-body: sans-serif;
+  --color-surface: #f9f3ed;
+  --color-surface-dark: #eee0d3;
+
+  --color-border: rgba(68, 46, 33, 0.16);
+  --color-border-strong: rgba(68, 46, 33, 0.28);
+
+  /* -------------------------------------------------------
+     Typography
+     ------------------------------------------------------- */
+
+  /*
+   * Display:
+   * Reserved primarily for the couple's names and
+   * occasional highly intentional emotional moments.
+   */
+  --font-display: "Mea Culpa", cursive;
+
+  /*
+   * Editorial:
+   * Headings, invitation copy, Scripture and
+   * other expressive written content.
+   */
+  --font-editorial: "Cormorant Garamond", serif;
+
+  /*
+   * Utility:
+   * Navigation, dates, venue, labels, buttons,
+   * metadata and functional interface text.
+   */
+  --font-body: "Montserrat", sans-serif;
+
+  /* -------------------------------------------------------
+     Motion
+     ------------------------------------------------------- */
+
+  --ease-luxury: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.25, 0.1, 0.25, 1);
+
+  --duration-fast: 240ms;
+  --duration-base: 500ms;
+  --duration-slow: 800ms;
+  --duration-reveal: 1000ms;
+
+  /* -------------------------------------------------------
+     Layout
+     ------------------------------------------------------- */
+
+  --content-width: 1200px;
+  --content-width-narrow: 760px;
+
+  --page-padding: clamp(1.25rem, 4vw, 4rem);
+
+  /* -------------------------------------------------------
+     Radius
+     ------------------------------------------------------- */
+
+  --radius-sm: 2px;
+  --radius-md: 6px;
+  --radius-lg: 12px;
 }
+
+
+/* =========================================================
+   BASE
+   ========================================================= */
 
 * {
   box-sizing: border-box;
@@ -28,11 +104,25 @@ html {
 body {
   margin: 0;
   min-width: 320px;
+
   background: var(--color-background);
   color: var(--color-foreground);
+
   font-family: var(--font-body);
+  font-weight: 400;
+
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
   text-rendering: optimizeLegibility;
+}
+
+body,
+button,
+input,
+textarea,
+select {
+  font-family: var(--font-body);
 }
 
 button,
@@ -57,10 +147,44 @@ img {
   height: auto;
 }
 
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+
+/* =========================================================
+   TYPOGRAPHY UTILITIES
+   ========================================================= */
+
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+}
+
+.font-editorial {
+  font-family: var(--font-editorial);
+  font-weight: 400;
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+
+/* =========================================================
+   SELECTION
+   ========================================================= */
+
 ::selection {
   background: var(--color-primary);
   color: var(--color-background);
 }
+
+
+/* =========================================================
+   ACCESSIBILITY / REDUCED MOTION
+   ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -71,5 +195,8 @@ img {
   *::before,
   *::after {
     scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

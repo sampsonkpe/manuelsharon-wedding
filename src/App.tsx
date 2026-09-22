@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
+import TypeSpecimenPage from "./pages/TypeSpecimenPage"
 
 function Splash() {
   return (
@@ -62,6 +63,8 @@ function App() {
           path="/appreciation"
           element={<Navigate to="/" replace />}
         />
+
+        <Route path="/type-test" element={<TypeSpecimenPage />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
