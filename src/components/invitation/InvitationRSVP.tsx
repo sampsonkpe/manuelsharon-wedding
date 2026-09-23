@@ -1,53 +1,77 @@
 import { AnimatePresence, motion } from "framer-motion"
-import { useState } from "react"
-import ScrollReveal from "../motion/ScrollReveal"
+import { useEffect, useState } from "react"
 import {
   recordRsvp,
   verifyGuest,
   type RsvpResponse,
 } from "../../lib/rsvp"
+import ScrollReveal from "../motion/ScrollReveal"
 
 type Step =
-  | "intro"
   | "form"
   | "attendance"
   | "success"
 
-const transition = {
-  duration: 0.75,
-  ease: [0.22, 1, 0.36, 1] as const,
-}
+const luxuryEase = [0.22, 1, 0.36, 1] as const
+
+const STORAGE_KEY = "themanforshay-rsvp"
 
 const contentVariants = {
   initial: {
     opacity: 0,
-    y: 20,
-    filter: "blur(5px)",
+    y: 14,
+    filter: "blur(3px)",
   },
 
   animate: {
     opacity: 1,
     y: 0,
     filter: "blur(0px)",
-    transition,
+    transition: {
+      duration: 0.55,
+      ease: luxuryEase,
+    },
   },
 
   exit: {
     opacity: 0,
-    y: -14,
-    filter: "blur(4px)",
+    y: -8,
+    filter: "blur(2px)",
     transition: {
-      duration: 0.45,
-      ease: [0.22, 1, 0.36, 1] as const,
+      duration: 0.25,
+      ease: luxuryEase,
     },
   },
 }
 
-export default function InvitationRsvp() {
-  const [step, setStep] = useState<Step>("intro")
+interface StoredFormData {
+  name: string
+  phone: string
+}
 
-  const [name, setName] = useState("")
-  const [phone, setPhone] = useState("")
+export default function InvitationRsvp() {
+  const [savedForm] = useState<StoredFormData | null>(() => {
+    try {
+      const stored = sessionStorage.getItem(STORAGE_KEY)
+
+      if (!stored) return null
+
+      return JSON.parse(stored) as StoredFormData
+    } catch {
+      sessionStorage.removeItem(STORAGE_KEY)
+      return null
+    }
+  })
+
+  const [step, setStep] = useState<Step>("form")
+
+  const [name, setName] = useState(
+    savedForm?.name ?? "",
+  )
+
+  const [phone, setPhone] = useState(
+    savedForm?.phone ?? "",
+  )
 
   const [guestName, setGuestName] = useState("")
   const [existingRsvp, setExistingRsvp] =
@@ -56,10 +80,22 @@ export default function InvitationRsvp() {
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
-  const startRsvp = () => {
-    setError("")
-    setStep("form")
-  }
+  /*
+   * Preserve only the form details across refreshes.
+   */
+  useEffect(() => {
+    if (!name && !phone) {
+      return
+    }
+
+    sessionStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        name,
+        phone,
+      }),
+    )
+  }, [name, phone])
 
   const verifyInvitation = async () => {
     const trimmedName = name.trim()
@@ -91,8 +127,28 @@ export default function InvitationRsvp() {
         return
       }
 
-      setGuestName(result.guest ?? trimmedName)
-      setExistingRsvp(result.rsvp ?? null)
+      const returnedGuest =
+        result.guest ?? trimmedName
+
+      const returnedRsvp =
+        result.rsvp ?? null
+
+      setGuestName(returnedGuest)
+      setExistingRsvp(returnedRsvp)
+
+      /*
+       * Existing RSVP:
+       * skip the attendance question completely.
+       */
+      if (returnedRsvp) {
+        setStep("success")
+        return
+      }
+
+      /*
+       * New verified guest:
+       * ask attendance.
+       */
       setStep("attendance")
     } catch {
       setError(
@@ -124,8 +180,21 @@ export default function InvitationRsvp() {
         return
       }
 
-      setGuestName(result.guest ?? guestName)
+      setGuestName(
+        result.guest ?? guestName,
+      )
+
       setExistingRsvp(response)
+
+      /*
+       * The RSVP has now been recorded,
+       * so clear the saved form details.
+       */
+      sessionStorage.removeItem(STORAGE_KEY)
+
+      /*
+       * Move immediately to confirmation.
+       */
       setStep("success")
     } catch {
       setError(
@@ -139,44 +208,24 @@ export default function InvitationRsvp() {
   return (
     <section
       id="rsvp"
-      className="px-[var(--page-padding)] py-[16vh] sm:py-[20vh]"
+      className="px-[var(--page-padding)]"
     >
       <div className="mx-auto max-w-[680px] text-center">
-        <ScrollReveal y={28}>
-          <p className="font-body text-[0.48rem] font-medium uppercase tracking-[0.38em] text-[var(--color-muted)] sm:text-[0.52rem]">
+
+        {/* SECTION LABEL */}
+        <ScrollReveal y={14}>
+          <p className="font-body text-[0.48rem] font-medium uppercase tracking-[0.38em] text-[var(--color-muted)] sm:text-[0.5rem]">
             RSVP
           </p>
         </ScrollReveal>
 
-        <div className="relative mt-10 min-h-[360px]">
+        <div className="mt-8 pb-[var(--space-divider)]">
           <AnimatePresence mode="wait">
 
-            {/* INTRO */}
-            {step === "intro" && (
-              <motion.div
-                key="intro"
-                variants={contentVariants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                className="flex flex-col items-center"
-              >
-                <p className="max-w-xl font-editorial text-[clamp(1.8rem,4vw,2.7rem)] leading-[1.2] text-[var(--color-deep-brown)]">
-                  We&apos;d love to know if you&apos;ll be
-                  joining us.
-                </p>
+            {/* =================================================
+                FORM
+               ================================================= */}
 
-                <button
-                  type="button"
-                  onClick={startRsvp}
-                  className="mt-10 border border-[var(--color-border-strong)] px-7 py-3 font-body text-[0.48rem] font-medium uppercase tracking-[0.28em] text-[var(--color-deep-brown)] transition-colors duration-300 hover:border-[var(--color-caramel)] hover:text-[var(--color-burnt-brown)]"
-                >
-                  RSVP
-                </button>
-              </motion.div>
-            )}
-
-            {/* FORM */}
             {step === "form" && (
               <motion.div
                 key="form"
@@ -185,17 +234,17 @@ export default function InvitationRsvp() {
                 animate="animate"
                 exit="exit"
               >
-                <p className="font-editorial text-[clamp(1.8rem,4vw,2.7rem)] leading-[1.15] text-[var(--color-deep-brown)]">
-                  We&apos;d love to have your response.
+                <p className="font-editorial text-[clamp(1.55rem,3.5vw,2.2rem)] leading-[1.25] text-[var(--color-deep-brown)]">
+                  We&apos;d love to have you with us.
                 </p>
 
-                <div className="mx-auto mt-10 max-w-[440px] space-y-7">
+                <div className="mx-auto mt-9 max-w-[440px] space-y-7">
 
-                  {/* FULL NAME */}
+                  {/* NAME */}
                   <div>
                     <label
                       htmlFor="rsvp-name"
-                      className="block text-left font-body text-[0.44rem] font-medium uppercase tracking-[0.28em] text-[var(--color-muted)]"
+                      className="block text-left font-body text-[0.42rem] font-medium uppercase tracking-[0.28em] text-[var(--color-muted)]"
                     >
                       Full name
                     </label>
@@ -217,15 +266,15 @@ export default function InvitationRsvp() {
                       }}
                       placeholder="Your full name"
                       autoComplete="name"
-                      className="mt-2 w-full border-b border-[var(--color-border-strong)] bg-transparent px-1 py-3 font-editorial text-[1.35rem] text-[var(--color-deep-brown)] outline-none placeholder:text-[var(--color-muted)] focus:border-[var(--color-caramel)]"
+                      className="mt-2 w-full border-b border-[var(--color-border-strong)] bg-transparent px-1 py-2.5 font-editorial text-[1.25rem] text-[var(--color-deep-brown)] outline-none placeholder:text-[var(--color-muted)] focus:border-[var(--color-caramel)]"
                     />
                   </div>
 
-                  {/* PHONE NUMBER */}
+                  {/* PHONE */}
                   <div>
                     <label
                       htmlFor="rsvp-phone"
-                      className="block text-left font-body text-[0.44rem] font-medium uppercase tracking-[0.28em] text-[var(--color-muted)]"
+                      className="block text-left font-body text-[0.42rem] font-medium uppercase tracking-[0.28em] text-[var(--color-muted)]"
                     >
                       Phone number
                     </label>
@@ -245,36 +294,60 @@ export default function InvitationRsvp() {
                       placeholder="024 000 0000"
                       autoComplete="tel"
                       inputMode="tel"
-                      className="mt-2 w-full border-b border-[var(--color-border-strong)] bg-transparent px-1 py-3 font-editorial text-[1.35rem] tracking-[0.04em] text-[var(--color-deep-brown)] outline-none placeholder:text-[var(--color-muted)] focus:border-[var(--color-caramel)]"
+                      className="mt-2 w-full border-b border-[var(--color-border-strong)] bg-transparent px-1 py-2.5 font-editorial text-[1.25rem] tracking-[0.04em] text-[var(--color-deep-brown)] outline-none placeholder:text-[var(--color-muted)] focus:border-[var(--color-caramel)]"
                     />
                   </div>
 
                   {/* ERROR */}
-                  {error && (
-                    <p
-                      role="alert"
-                      className="font-body text-[0.5rem] uppercase tracking-[0.16em] leading-[1.7] text-[var(--color-burnt-brown)]"
-                    >
-                      {error}
-                    </p>
-                  )}
+                  <AnimatePresence>
+                    {error && (
+                      <motion.p
+                        initial={{
+                          opacity: 0,
+                          y: 6,
+                        }}
+                        animate={{
+                          opacity: 1,
+                          y: 0,
+                        }}
+                        exit={{
+                          opacity: 0,
+                          y: -4,
+                        }}
+                        transition={{
+                          duration: 0.25,
+                          ease: luxuryEase,
+                        }}
+                        role="alert"
+                        className="font-body text-[0.46rem] uppercase leading-[1.7] tracking-[0.14em] text-[var(--color-burnt-brown)]"
+                      >
+                        {error}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
 
                   {/* CONTINUE */}
-                  <button
+                  <motion.button
                     type="button"
                     onClick={verifyInvitation}
                     disabled={isLoading}
-                    className="border border-[var(--color-border-strong)] px-7 py-3 font-body text-[0.48rem] font-medium uppercase tracking-[0.28em] text-[var(--color-deep-brown)] transition-colors duration-300 hover:border-[var(--color-caramel)] hover:text-[var(--color-burnt-brown)] disabled:cursor-wait disabled:opacity-50"
+                    whileTap={{
+                      scale: 0.98,
+                    }}
+                    className="invitation-button"
                   >
                     {isLoading
                       ? "Checking..."
                       : "Continue"}
-                  </button>
+                  </motion.button>
                 </div>
               </motion.div>
             )}
 
-            {/* ATTENDANCE */}
+            {/* =================================================
+                VERIFIED — NEW GUEST
+               ================================================= */}
+
             {step === "attendance" && (
               <motion.div
                 key="attendance"
@@ -283,76 +356,49 @@ export default function InvitationRsvp() {
                 animate="animate"
                 exit="exit"
               >
-                <p className="font-editorial text-[clamp(1.8rem,4vw,2.7rem)] leading-[1.15] text-[var(--color-deep-brown)]">
-                  {existingRsvp
-                    ? `Welcome back, ${guestName}.`
-                    : `Thank you, ${guestName}.`}
+                <p className="font-editorial text-[clamp(1.7rem,4vw,2.45rem)] leading-[1.2] text-[var(--color-deep-brown)]">
+                  Hi there, {guestName}.
                 </p>
 
-                {/* VERIFIED DETAILS */}
-                <div className="mx-auto mt-9 max-w-[440px] space-y-5 text-left">
-                  <div>
-                    <p className="font-body text-[0.42rem] font-medium uppercase tracking-[0.28em] text-[var(--color-muted)]">
-                      Full name
-                    </p>
-
-                    <p className="mt-1 border-b border-[var(--color-border)] pb-2 font-editorial text-[1.15rem] text-[var(--color-deep-brown)]">
-                      {name}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="font-body text-[0.42rem] font-medium uppercase tracking-[0.28em] text-[var(--color-muted)]">
-                      Phone number
-                    </p>
-
-                    <p className="mt-1 border-b border-[var(--color-border)] pb-2 font-editorial text-[1.15rem] tracking-[0.03em] text-[var(--color-deep-brown)]">
-                      {phone}
-                    </p>
-                  </div>
-                </div>
-
-                {existingRsvp && (
-                  <p className="mx-auto mt-7 max-w-md font-body text-[0.5rem] uppercase tracking-[0.18em] leading-[1.8] text-[var(--color-muted)]">
-                    Your current RSVP is{" "}
-                    {existingRsvp === "ATTENDING"
-                      ? "attending"
-                      : "unable to attend"}.
-                  </p>
-                )}
-
-                <p className="mt-9 font-editorial text-[clamp(1.4rem,3vw,2rem)] italic text-[var(--color-burnt-brown)]">
+                <p className="mt-7 font-editorial text-[clamp(1.35rem,3vw,1.9rem)] italic text-[var(--color-burnt-brown)]">
                   Will you be joining us?
                 </p>
 
-                <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-                  <button
+                <div className="mt-7 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+
+                  <motion.button
                     type="button"
                     onClick={() =>
                       submitRsvp("ATTENDING")
                     }
                     disabled={isLoading}
-                    className="w-full border border-[var(--color-border-strong)] px-7 py-3 font-body text-[0.48rem] font-medium uppercase tracking-[0.25em] text-[var(--color-deep-brown)] transition-colors duration-300 hover:border-[var(--color-caramel)] hover:text-[var(--color-burnt-brown)] disabled:cursor-wait disabled:opacity-50 sm:w-auto"
+                    whileTap={{
+                      scale: 0.98,
+                    }}
+                    className="invitation-button w-full sm:w-auto"
                   >
                     Yes, I&apos;ll be there
-                  </button>
+                  </motion.button>
 
-                  <button
+                  <motion.button
                     type="button"
                     onClick={() =>
                       submitRsvp("UNABLE TO ATTEND")
                     }
                     disabled={isLoading}
-                    className="w-full border border-[var(--color-border-strong)] px-7 py-3 font-body text-[0.48rem] font-medium uppercase tracking-[0.25em] text-[var(--color-deep-brown)] transition-colors duration-300 hover:border-[var(--color-caramel)] hover:text-[var(--color-burnt-brown)] disabled:cursor-wait disabled:opacity-50 sm:w-auto"
+                    whileTap={{
+                      scale: 0.98,
+                    }}
+                    className="invitation-button w-full sm:w-auto"
                   >
                     I&apos;m unable to attend
-                  </button>
+                  </motion.button>
                 </div>
 
                 {error && (
                   <p
                     role="alert"
-                    className="mt-5 font-body text-[0.5rem] uppercase tracking-[0.16em] text-[var(--color-burnt-brown)]"
+                    className="mt-5 font-body text-[0.46rem] uppercase tracking-[0.14em] text-[var(--color-burnt-brown)]"
                   >
                     {error}
                   </p>
@@ -360,7 +406,10 @@ export default function InvitationRsvp() {
               </motion.div>
             )}
 
-            {/* SUCCESS */}
+            {/* =================================================
+                CONFIRMATION
+               ================================================= */}
+
             {step === "success" && (
               <motion.div
                 key="success"
@@ -369,20 +418,14 @@ export default function InvitationRsvp() {
                 animate="animate"
                 exit="exit"
               >
-                <p className="font-editorial text-[clamp(1.8rem,4vw,2.7rem)] leading-[1.15] text-[var(--color-deep-brown)]">
+                <p className="font-editorial text-[clamp(1.7rem,4vw,2.45rem)] leading-[1.2] text-[var(--color-deep-brown)]">
                   Thank you, {guestName}.
                 </p>
 
-                <p className="mx-auto mt-6 max-w-md font-editorial text-[clamp(1.25rem,3vw,1.8rem)] italic leading-[1.45] text-[var(--color-burnt-brown)]">
+                <p className="mx-auto mt-5 max-w-md font-editorial text-[clamp(1.2rem,3vw,1.7rem)] italic leading-[1.45] text-[var(--color-burnt-brown)]">
                   {existingRsvp === "ATTENDING"
-                    ? "We look forward to celebrating with you."
-                    : "We’re sorry we won’t be celebrating together this time."}
-                </p>
-
-                <div className="mx-auto mt-9 h-px w-8 bg-[var(--color-caramel)]" />
-
-                <p className="mt-7 font-body text-[0.48rem] font-medium uppercase tracking-[0.32em] text-[var(--color-muted)]">
-                  #TheManforShay
+                    ? "Your RSVP is confirmed as attending."
+                    : "Your RSVP is recorded as unable to attend."}
                 </p>
               </motion.div>
             )}
