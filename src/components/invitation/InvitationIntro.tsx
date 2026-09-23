@@ -3,7 +3,13 @@ import { useEffect, useState } from "react"
 
 const luxuryEase = [0.22, 1, 0.36, 1] as const
 
-export default function InvitationIntro() {
+interface InvitationIntroProps {
+  onHeroReveal: () => void
+}
+
+export default function InvitationIntro({
+  onHeroReveal,
+}: InvitationIntroProps) {
   const [showNames, setShowNames] = useState(false)
   const [releaseIntro, setReleaseIntro] = useState(false)
 
@@ -22,9 +28,10 @@ export default function InvitationIntro() {
 
     const release = () => {
       setReleaseIntro(true)
+      onHeroReveal()
     }
 
-    const inactivityTimer = window.setTimeout(release, 10000)
+    const inactivityTimer = window.setTimeout(release, 5000)
 
     window.addEventListener("wheel", release, {
       once: true,
@@ -47,7 +54,7 @@ export default function InvitationIntro() {
       window.removeEventListener("touchstart", release)
       window.removeEventListener("scroll", release)
     }
-  }, [showNames])
+  }, [showNames, onHeroReveal])
 
   return (
     <motion.section
@@ -112,7 +119,6 @@ export default function InvitationIntro() {
 
           {/* COUPLE */}
           <motion.div
-            layout
             initial={{
               opacity: 0,
               y: 24,

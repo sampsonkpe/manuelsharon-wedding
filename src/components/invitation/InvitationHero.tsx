@@ -1,11 +1,51 @@
-import ScrollReveal from "../motion/ScrollReveal"
+import { motion } from "framer-motion"
 import coupleImage from "../../assets/couple/hero2.png"
 
-export default function InvitationHero() {
+const luxuryEase = [0.22, 1, 0.36, 1] as const
+
+interface InvitationHeroProps {
+  showHero: boolean
+}
+
+export default function InvitationHero({
+  showHero,
+}: InvitationHeroProps) {
   return (
-    <section className="px-[var(--page-padding)]">
+    <motion.section
+      layout
+      className="px-[var(--page-padding)]"
+      transition={{
+        layout: {
+          duration: 1.2,
+          ease: luxuryEase,
+        },
+      }}
+    >
       <div className="mx-auto max-w-[1100px]">
-        <ScrollReveal y={24}>
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 14,
+            filter: "blur(3px)",
+          }}
+          animate={
+            showHero
+              ? {
+                  opacity: 1,
+                  y: 0,
+                  filter: "blur(0px)",
+                }
+              : {
+                  opacity: 0,
+                  y: 14,
+                  filter: "blur(3px)",
+                }
+          }
+          transition={{
+            duration: 1,
+            ease: luxuryEase,
+          }}
+        >
           <div className="relative overflow-hidden rounded-[var(--radius-lg)]">
             <div className="flex justify-center bg-[var(--color-envelope)]">
               <img
@@ -23,8 +63,8 @@ export default function InvitationHero() {
               </p>
             </div>
           </div>
-        </ScrollReveal>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   )
 }
