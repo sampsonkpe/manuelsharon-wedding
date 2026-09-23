@@ -58,7 +58,7 @@ export default function InvitationHero() {
                     }}
                 >
                     <p className="font-body text-[0.38rem] font-medium uppercase tracking-[0.38em] text-white/80 sm:text-[0.44rem]">
-                    24 October 2026
+                    October 24, 2026
                     </p>
 
                     <h2 className="mt-1 font-display text-[clamp(2.45rem,7vw,4.6rem)] leading-[0.82] text-white">
