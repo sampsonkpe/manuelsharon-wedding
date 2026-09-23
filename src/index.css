@@ -63,12 +63,12 @@
 
   /*
    * Deliberately restrained vertical rhythm.
-   * Sections should breathe without feeling disconnected.
    */
   --space-section: clamp(4rem, 7vw, 6rem);
   --space-section-large: clamp(5rem, 10vw, 8rem);
   --space-content: clamp(2rem, 5vw, 4rem);
   --space-small: clamp(1rem, 2vw, 1.5rem);
+  --space-divider: clamp(1.75rem, 4vw, 3rem);
 
   /* -------------------------------------------------------
      Radius
