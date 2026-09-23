@@ -12,7 +12,6 @@
      Colour
      ------------------------------------------------------- */
 
-  /* Selected wedding palette */
   --color-deep-brown: #442e21;
   --color-burnt-brown: #723a23;
   --color-caramel: #b17543;
@@ -20,7 +19,6 @@
 
   --color-envelope: #f4ede4;
 
-  /* Functional colours */
   --color-background: #f5ebe1;
   --color-foreground: #442e21;
   --color-primary: #442e21;
@@ -31,32 +29,15 @@
   --color-surface: #f9f3ed;
   --color-surface-dark: #eee0d3;
 
-  --color-border: rgba(68, 46, 33, 0.16);
-  --color-border-strong: rgba(68, 46, 33, 0.28);
+  --color-border: rgba(68, 46, 33, 0.14);
+  --color-border-strong: rgba(68, 46, 33, 0.24);
 
   /* -------------------------------------------------------
      Typography
      ------------------------------------------------------- */
 
-  /*
-   * Display:
-   * Reserved primarily for the couple's names and
-   * occasional highly intentional emotional moments.
-   */
   --font-display: "Mea Culpa", cursive;
-
-  /*
-   * Editorial:
-   * Headings, invitation copy, Scripture and
-   * other expressive written content.
-   */
   --font-editorial: "Cormorant Garamond", serif;
-
-  /*
-   * Utility:
-   * Navigation, dates, venue, labels, buttons,
-   * metadata and functional interface text.
-   */
   --font-body: "Montserrat", sans-serif;
 
   /* -------------------------------------------------------
@@ -76,9 +57,18 @@
      ------------------------------------------------------- */
 
   --content-width: 1200px;
-  --content-width-narrow: 760px;
+  --content-width-narrow: 720px;
 
   --page-padding: clamp(1.25rem, 4vw, 4rem);
+
+  /*
+   * Deliberately restrained vertical rhythm.
+   * Sections should breathe without feeling disconnected.
+   */
+  --space-section: clamp(4rem, 7vw, 6rem);
+  --space-section-large: clamp(5rem, 10vw, 8rem);
+  --space-content: clamp(2rem, 5vw, 4rem);
+  --space-small: clamp(1rem, 2vw, 1.5rem);
 
   /* -------------------------------------------------------
      Radius
@@ -87,6 +77,7 @@
   --radius-sm: 2px;
   --radius-md: 6px;
   --radius-lg: 12px;
+  --radius-pill: 999px;
 }
 
 
@@ -138,12 +129,6 @@ button {
   cursor: pointer;
 }
 
-button:focus-visible,
-a:focus-visible {
-  outline: 1px solid var(--color-caramel);
-  outline-offset: 6px;
-}
-
 img,
 picture,
 video {
@@ -160,11 +145,14 @@ a {
   text-decoration: none;
 }
 
+
 /* =========================================================
-   INVITATION
+   FOCUS
    ========================================================= */
 
-button:focus-visible {
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
   outline: 1px solid var(--color-caramel);
   outline-offset: 6px;
 }
@@ -186,6 +174,50 @@ button:focus-visible {
 
 .font-body {
   font-family: var(--font-body);
+}
+
+
+/* =========================================================
+   INVITATION BUTTON
+   ========================================================= */
+
+.invitation-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 2.75rem;
+  padding: 0.7rem 1.35rem;
+
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+
+  background: transparent;
+  color: var(--color-deep-brown);
+
+  font-family: var(--font-body);
+  font-size: 0.48rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+
+  transition:
+    border-color var(--duration-fast) var(--ease-soft),
+    background-color var(--duration-fast) var(--ease-soft),
+    color var(--duration-fast) var(--ease-soft),
+    transform var(--duration-fast) var(--ease-luxury);
+}
+
+.invitation-button:hover {
+  border-color: var(--color-caramel);
+  background: var(--color-caramel);
+  color: #fffaf5;
+  transform: translateY(-1px);
+}
+
+.invitation-button:active {
+  transform: translateY(0);
 }
 
 

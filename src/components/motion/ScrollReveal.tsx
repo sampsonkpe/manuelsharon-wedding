@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { motion, type Variants } from "framer-motion"
+import { motion } from "framer-motion"
 
 interface ScrollRevealProps {
   children: ReactNode
@@ -9,53 +9,34 @@ interface ScrollRevealProps {
   once?: boolean
 }
 
-const variants: Variants = {
-  hidden: {
-    opacity: 0,
-    y: 32,
-    filter: "blur(4px)",
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    filter: "blur(0px)",
-    transition: {
-      duration: 1,
-      ease: [0.22, 1, 0.36, 1],
-    },
-  },
-}
-
 export default function ScrollReveal({
   children,
   className,
   delay = 0,
-  y = 32,
+  y = 24,
   once = true,
 }: ScrollRevealProps) {
   return (
     <motion.div
       className={className}
-      variants={{
-        ...variants,
-        hidden: {
-          ...variants.hidden,
-          y,
-        },
-        visible: {
-          ...variants.visible,
-          transition: {
-            duration: 1,
-            delay,
-            ease: [0.22, 1, 0.36, 1],
-          },
-        },
+      initial={{
+        opacity: 0,
+        y,
+        filter: "blur(3px)",
       }}
-      initial="hidden"
-      whileInView="visible"
+      whileInView={{
+        opacity: 1,
+        y: 0,
+        filter: "blur(0px)",
+      }}
       viewport={{
         once,
         amount: 0.2,
+      }}
+      transition={{
+        duration: 1,
+        delay,
+        ease: [0.22, 1, 0.36, 1],
       }}
     >
       {children}
