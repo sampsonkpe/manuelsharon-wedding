@@ -10,21 +10,23 @@ export default function HomePage() {
     <main className="min-h-screen bg-[var(--color-background)]">
       <InvitationIntro />
 
-      <SectionDivider />
+      <div className="flex flex-col">
+        <SectionDivider />
 
-      <InvitationHero />
+        <InvitationHero />
 
-      <SectionDivider />
+        <SectionDivider />
 
-      <InvitationMessage />
+        <InvitationMessage />
 
-      <SectionDivider />
+        <SectionDivider />
 
-      <InvitationDetails />
+        <InvitationDetails />
 
-      <SectionDivider />
+        <SectionDivider />
 
-      <InvitationRsvp />
+        <InvitationRsvp />
+      </div>
     </main>
   )
 }

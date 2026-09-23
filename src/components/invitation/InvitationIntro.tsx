@@ -5,7 +5,7 @@ const luxuryEase = [0.22, 1, 0.36, 1] as const
 
 export default function InvitationIntro() {
   const [showNames, setShowNames] = useState(false)
-  const [release, setRelease] = useState(false)
+  const [releaseIntro, setReleaseIntro] = useState(false)
 
   useEffect(() => {
     const namesTimer = window.setTimeout(() => {
@@ -20,49 +20,74 @@ export default function InvitationIntro() {
   useEffect(() => {
     if (!showNames) return
 
-    const releaseIntro = () => {
-      setRelease(true)
+    const release = () => {
+      setReleaseIntro(true)
     }
 
-    const releaseTimer = window.setTimeout(releaseIntro, 5000)
+    const inactivityTimer = window.setTimeout(release, 10000)
 
-    window.addEventListener("wheel", releaseIntro, {
+    window.addEventListener("wheel", release, {
       once: true,
       passive: true,
     })
 
-    window.addEventListener("touchstart", releaseIntro, {
+    window.addEventListener("touchstart", release, {
       once: true,
       passive: true,
     })
 
-    window.addEventListener("scroll", releaseIntro, {
+    window.addEventListener("scroll", release, {
       once: true,
       passive: true,
     })
 
     return () => {
-      window.clearTimeout(releaseTimer)
-      window.removeEventListener("wheel", releaseIntro)
-      window.removeEventListener("touchstart", releaseIntro)
-      window.removeEventListener("scroll", releaseIntro)
+      window.clearTimeout(inactivityTimer)
+      window.removeEventListener("wheel", release)
+      window.removeEventListener("touchstart", release)
+      window.removeEventListener("scroll", release)
     }
   }, [showNames])
 
   return (
-    <section className="relative px-[var(--page-padding)]">
-      <motion.div
-        className="flex min-h-[100svh] items-center justify-center"
-        animate={{
-          y: release ? "-28svh" : 0,
-        }}
-        transition={{
-          duration: 1.6,
+    <motion.section
+      layout
+      className={
+        releaseIntro
+          ? "px-[var(--page-padding)] pt-[4vh] pb-[2vh]"
+          : "min-h-[100svh] px-[var(--page-padding)]"
+      }
+      transition={{
+        layout: {
+          duration: 1.2,
           ease: luxuryEase,
+        },
+      }}
+    >
+      <motion.div
+        layout
+        className={
+          releaseIntro
+            ? "flex items-center justify-center"
+            : "flex min-h-[100svh] items-center justify-center"
+        }
+        transition={{
+          layout: {
+            duration: 1.2,
+            ease: luxuryEase,
+          },
         }}
       >
-        <div className="flex w-full max-w-[1100px] flex-col items-center text-center">
-
+        <motion.div
+          layout
+          className="flex w-full max-w-[1100px] flex-col items-center text-center"
+          transition={{
+            layout: {
+              duration: 1.2,
+              ease: luxuryEase,
+            },
+          }}
+        >
           {/* WELCOME */}
           <motion.p
             className="font-body text-[0.46rem] font-medium uppercase leading-[1.9] tracking-[0.34em] text-[var(--color-muted)] sm:text-[0.5rem]"
@@ -85,8 +110,9 @@ export default function InvitationIntro() {
             <span className="block">the Wedding of</span>
           </motion.p>
 
-          {/* NAMES */}
+          {/* COUPLE */}
           <motion.div
+            layout
             initial={{
               opacity: 0,
               y: 24,
@@ -126,9 +152,8 @@ export default function InvitationIntro() {
               </span>
             </h1>
           </motion.div>
-
-        </div>
+        </motion.div>
       </motion.div>
-    </section>
+    </motion.section>
   )
 }
