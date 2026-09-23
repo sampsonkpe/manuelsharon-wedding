@@ -9,8 +9,7 @@ import {
 
 type Step =
   | "intro"
-  | "name"
-  | "phone"
+  | "form"
   | "attendance"
   | "success"
 
@@ -59,19 +58,7 @@ export default function InvitationRsvp() {
 
   const startRsvp = () => {
     setError("")
-    setStep("name")
-  }
-
-  const continueFromName = () => {
-    const trimmedName = name.trim()
-
-    if (!trimmedName) {
-      setError("Please enter your name.")
-      return
-    }
-
-    setError("")
-    setStep("phone")
+    setStep("form")
   }
 
   const verifyInvitation = async () => {
@@ -79,7 +66,7 @@ export default function InvitationRsvp() {
     const trimmedPhone = phone.trim()
 
     if (!trimmedName) {
-      setError("Please enter your name.")
+      setError("Please enter your full name.")
       return
     }
 
@@ -163,6 +150,7 @@ export default function InvitationRsvp() {
 
         <div className="relative mt-10 min-h-[360px]">
           <AnimatePresence mode="wait">
+
             {/* INTRO */}
             {step === "intro" && (
               <motion.div
@@ -188,72 +176,22 @@ export default function InvitationRsvp() {
               </motion.div>
             )}
 
-            {/* NAME */}
-            {step === "name" && (
+            {/* FORM */}
+            {step === "form" && (
               <motion.div
-                key="name"
+                key="form"
                 variants={contentVariants}
                 initial="initial"
                 animate="animate"
                 exit="exit"
               >
                 <p className="font-editorial text-[clamp(1.8rem,4vw,2.7rem)] leading-[1.15] text-[var(--color-deep-brown)]">
-                  What&apos;s your name?
-                </p>
-
-                <div className="mx-auto mt-10 max-w-[440px]">
-                  <input
-                    autoFocus
-                    type="text"
-                    value={name}
-                    onChange={(event) =>
-                      setName(event.target.value)
-                    }
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter") {
-                        continueFromName()
-                      }
-                    }}
-                    placeholder="Your full name"
-                    autoComplete="name"
-                    className="w-full border-b border-[var(--color-border-strong)] bg-transparent px-1 py-3 text-center font-editorial text-[1.4rem] text-[var(--color-deep-brown)] outline-none placeholder:text-[var(--color-muted)] focus:border-[var(--color-caramel)]"
-                  />
-
-                  {error && (
-                    <p
-                      role="alert"
-                      className="mt-5 font-body text-[0.5rem] uppercase tracking-[0.16em] text-[var(--color-burnt-brown)]"
-                    >
-                      {error}
-                    </p>
-                  )}
-
-                  <button
-                    type="button"
-                    onClick={continueFromName}
-                    className="mt-9 border border-[var(--color-border-strong)] px-7 py-3 font-body text-[0.48rem] font-medium uppercase tracking-[0.28em] text-[var(--color-deep-brown)] transition-colors duration-300 hover:border-[var(--color-caramel)] hover:text-[var(--color-burnt-brown)]"
-                  >
-                    Continue
-                  </button>
-                </div>
-              </motion.div>
-            )}
-
-            {/* PHONE + NAME */}
-            {step === "phone" && (
-              <motion.div
-                key="phone"
-                variants={contentVariants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-              >
-                <p className="font-editorial text-[clamp(1.8rem,4vw,2.7rem)] leading-[1.15] text-[var(--color-deep-brown)]">
-                  And your phone number?
+                  We&apos;d love to have your response.
                 </p>
 
                 <div className="mx-auto mt-10 max-w-[440px] space-y-7">
-                  {/* NAME */}
+
+                  {/* FULL NAME */}
                   <div>
                     <label
                       htmlFor="rsvp-name"
@@ -264,17 +202,26 @@ export default function InvitationRsvp() {
 
                     <input
                       id="rsvp-name"
+                      autoFocus
                       type="text"
                       value={name}
                       onChange={(event) =>
                         setName(event.target.value)
                       }
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter") {
+                          document
+                            .getElementById("rsvp-phone")
+                            ?.focus()
+                        }
+                      }}
+                      placeholder="Your full name"
                       autoComplete="name"
                       className="mt-2 w-full border-b border-[var(--color-border-strong)] bg-transparent px-1 py-3 font-editorial text-[1.35rem] text-[var(--color-deep-brown)] outline-none placeholder:text-[var(--color-muted)] focus:border-[var(--color-caramel)]"
                     />
                   </div>
 
-                  {/* PHONE */}
+                  {/* PHONE NUMBER */}
                   <div>
                     <label
                       htmlFor="rsvp-phone"
@@ -285,7 +232,6 @@ export default function InvitationRsvp() {
 
                     <input
                       id="rsvp-phone"
-                      autoFocus
                       type="tel"
                       value={phone}
                       onChange={(event) =>
@@ -303,6 +249,7 @@ export default function InvitationRsvp() {
                     />
                   </div>
 
+                  {/* ERROR */}
                   {error && (
                     <p
                       role="alert"
@@ -312,6 +259,7 @@ export default function InvitationRsvp() {
                     </p>
                   )}
 
+                  {/* CONTINUE */}
                   <button
                     type="button"
                     onClick={verifyInvitation}
@@ -438,6 +386,7 @@ export default function InvitationRsvp() {
                 </p>
               </motion.div>
             )}
+
           </AnimatePresence>
         </div>
       </div>
