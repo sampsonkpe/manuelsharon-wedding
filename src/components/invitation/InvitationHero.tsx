@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"
-import coupleImage from "../../assets/couple/hero2.png"
+import coupleImage from "../../assets/couple/hero.png"
 
 const luxuryEase = [0.22, 1, 0.36, 1] as const
 

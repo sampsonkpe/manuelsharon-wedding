@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import SplashPage from "./pages/SplashPage"
 import HomePage from "./pages/HomePage"
+import ClosingPage from "./pages/ClosingPage"
 
 function EventHome() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/" element={<SplashPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/event" element={<EventHome />} />
+        <Route path="/closing" element={<ClosingPage />} />
 
         <Route path="/programme" element={<Navigate to="/" replace />} />
         <Route path="/moments" element={<Navigate to="/" replace />} />

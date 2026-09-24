@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import {
   recordRsvp,
   verifyGuest,
@@ -15,6 +16,7 @@ type Step =
 const luxuryEase = [0.22, 1, 0.36, 1] as const
 
 const STORAGE_KEY = "themanforshay-rsvp"
+const ATTENDING_KEY = "themanforshay-attending"
 
 const contentVariants = {
   initial: {
@@ -50,6 +52,8 @@ interface StoredFormData {
 }
 
 export default function InvitationRsvp() {
+  const navigate = useNavigate()
+
   const [savedForm] = useState<StoredFormData | null>(() => {
     try {
       const stored = sessionStorage.getItem(STORAGE_KEY)
@@ -143,6 +147,15 @@ export default function InvitationRsvp() {
        * skip the attendance question completely.
        */
       if (returnedRsvp) {
+        if (returnedRsvp === "ATTENDING") {
+          sessionStorage.setItem(
+            ATTENDING_KEY,
+            "true",
+          )
+        } else {
+          sessionStorage.removeItem(ATTENDING_KEY)
+        }
+
         setStep("success")
         return
       }
@@ -189,15 +202,17 @@ export default function InvitationRsvp() {
 
       setExistingRsvp(response)
 
-      /*
-       * The RSVP has now been recorded,
-       * so clear the saved form details.
-       */
       sessionStorage.removeItem(STORAGE_KEY)
 
-      /*
-       * Move immediately to confirmation.
-       */
+      if (response === "ATTENDING") {
+        sessionStorage.setItem(
+          ATTENDING_KEY,
+          "true",
+        )
+      } else {
+        sessionStorage.removeItem(ATTENDING_KEY)
+      }
+
       setStep("success")
     } catch {
       setError(
@@ -208,6 +223,29 @@ export default function InvitationRsvp() {
       setSubmittingResponse(null)
     }
   }
+
+  useEffect(() => {
+    if (
+      step !== "success" ||
+      existingRsvp !== "ATTENDING"
+    ) {
+      return
+    }
+
+    const timer = window.setTimeout(() => {
+      navigate("/closing", {
+        replace: true,
+      })
+    }, 2200)
+
+    return () => {
+      window.clearTimeout(timer)
+    }
+  }, [
+    step,
+    existingRsvp,
+    navigate,
+  ])
 
   return (
     <section
