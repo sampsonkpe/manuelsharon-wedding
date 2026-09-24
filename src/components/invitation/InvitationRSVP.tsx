@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion"
-import { useEffect, useState } from "react"
+import { useEffect, useState, } from "react"
+import type { ReactNode} from "react"
 import { useNavigate } from "react-router-dom"
 import {
   recordRsvp,
@@ -145,7 +146,7 @@ export default function InvitationRsvp() {
   const [existingRsvp, setExistingRsvp] =
     useState<RsvpResponse | null>(null)
 
-  const [error, setError] = useState("")
+  const [error, setError] = useState<ReactNode>("")
   const [isLoading, setIsLoading] = useState(false)
   const [submittingResponse, setSubmittingResponse] =
     useState<RsvpResponse | null>(null)
@@ -217,7 +218,12 @@ export default function InvitationRsvp() {
 
       if (!result.verified) {
         setError(
-          "We couldn't find a matching invitation. Please check your name and phone number.",
+          <>
+            <strong className="font-[500]">
+              We couldn&apos;t find a matching invitation.
+            </strong>{" "}
+            Please check your name and phone number.
+          </>,
         )
         return
       }
@@ -355,7 +361,7 @@ export default function InvitationRsvp() {
       navigate("/closing", {
         replace: true,
       })
-    }, 3000)
+    }, 1500)
 
     return () => {
       window.clearTimeout(timer)
