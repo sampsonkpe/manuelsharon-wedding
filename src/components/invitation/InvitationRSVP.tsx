@@ -6,14 +6,13 @@ import {
   verifyGuest,
   type RsvpResponse,
 } from "../../lib/rsvp"
+import { luxuryEase } from "../motion/motion"
 import ScrollReveal from "../motion/ScrollReveal"
 
 type Step =
   | "form"
   | "attendance"
   | "success"
-
-const luxuryEase = [0.22, 1, 0.36, 1] as const
 
 const STORAGE_KEY = "themanforshay-rsvp"
 const ATTENDING_KEY = "themanforshay-attending"
@@ -153,7 +152,9 @@ export default function InvitationRsvp() {
             "true",
           )
         } else {
-          sessionStorage.removeItem(ATTENDING_KEY)
+          sessionStorage.removeItem(
+            ATTENDING_KEY,
+          )
         }
 
         setStep("success")
@@ -210,7 +211,9 @@ export default function InvitationRsvp() {
           "true",
         )
       } else {
-        sessionStorage.removeItem(ATTENDING_KEY)
+        sessionStorage.removeItem(
+          ATTENDING_KEY,
+        )
       }
 
       setStep("success")
@@ -224,6 +227,14 @@ export default function InvitationRsvp() {
     }
   }
 
+  /*
+   * After a successful attending RSVP,
+   * allow the confirmation to breathe before
+   * navigating to the closing page.
+   *
+   * The actual page transition is handled
+   * globally by App.tsx / PageTransition.
+   */
   useEffect(() => {
     if (
       step !== "success" ||
@@ -236,7 +247,7 @@ export default function InvitationRsvp() {
       navigate("/closing", {
         replace: true,
       })
-    }, 2200)
+    }, 3000)
 
     return () => {
       window.clearTimeout(timer)
@@ -255,7 +266,7 @@ export default function InvitationRsvp() {
       <div className="mx-auto max-w-[820px] rounded-[20px] border border-[var(--color-border)] bg-[var(--color-surface)] px-6 py-10 sm:px-10 sm:py-12">
         <div className="mx-auto max-w-[680px] text-center">
           {/* SECTION LABEL */}
-          <ScrollReveal y={14}>
+          <ScrollReveal>
             <p className="font-body text-[0.48rem] font-medium uppercase tracking-[0.38em] text-[var(--color-muted)] sm:text-[0.5rem]">
               RSVP
             </p>
@@ -281,7 +292,6 @@ export default function InvitationRsvp() {
                   </p>
 
                   <div className="mx-auto mt-9 max-w-[440px] space-y-7">
-
                     {/* NAME */}
                     <div>
                       <label
@@ -302,7 +312,9 @@ export default function InvitationRsvp() {
                         onKeyDown={(event) => {
                           if (event.key === "Enter") {
                             document
-                              .getElementById("rsvp-phone")
+                              .getElementById(
+                                "rsvp-phone",
+                              )
                               ?.focus()
                           }
                         }}
@@ -407,7 +419,6 @@ export default function InvitationRsvp() {
                   </p>
 
                   <div className="mt-7 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-
                     <motion.button
                       type="button"
                       onClick={() =>
@@ -419,7 +430,8 @@ export default function InvitationRsvp() {
                       }}
                       className="invitation-button w-full sm:w-auto"
                     >
-                      {submittingResponse === "ATTENDING"
+                      {submittingResponse ===
+                      "ATTENDING"
                         ? "Confirming..."
                         : "Yes, I'll be there"}
                     </motion.button>
@@ -427,7 +439,9 @@ export default function InvitationRsvp() {
                     <motion.button
                       type="button"
                       onClick={() =>
-                        submitRsvp("UNABLE TO ATTEND")
+                        submitRsvp(
+                          "UNABLE TO ATTEND",
+                        )
                       }
                       disabled={isLoading}
                       whileTap={{

@@ -1,40 +1,129 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
+import { AnimatePresence } from "framer-motion"
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom"
+
 import SplashPage from "./pages/SplashPage"
 import HomePage from "./pages/HomePage"
 import ClosingPage from "./pages/ClosingPage"
-import ScrollToTop from "./components/navigation/ScrollToTop"
+import PageTransition from "./components/motion/PageTransition"
 
 function EventHome() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[var(--color-background)]">
-      <h1 className="font-editorial text-5xl">
+    <main className="min-h-screen bg-[var(--color-background)]">
+      <h1 className="font-editorial text-[var(--color-espresso)]">
         Wedding Day
       </h1>
     </main>
   )
 }
 
-function App() {
+function AnimatedRoutes() {
+  const location = useLocation()
+
   return (
-    <BrowserRouter>
-      <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<SplashPage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/event" element={<EventHome />} />
-        <Route path="/closing" element={<ClosingPage />} />
+    <AnimatePresence mode="sync">
+      <Routes
+        location={location}
+        key={location.pathname}
+      >
+        <Route
+          path="/"
+          element={
+            <PageTransition>
+              <SplashPage />
+            </PageTransition>
+          }
+        />
 
-        <Route path="/programme" element={<Navigate to="/" replace />} />
-        <Route path="/moments" element={<Navigate to="/" replace />} />
-        <Route path="/menu" element={<Navigate to="/" replace />} />
-        <Route path="/gifts" element={<Navigate to="/" replace />} />
-        <Route path="/seating" element={<Navigate to="/" replace />} />
-        <Route path="/appreciation" element={<Navigate to="/" replace />} />
+        <Route
+          path="/home"
+          element={
+            <PageTransition>
+              <HomePage />
+            </PageTransition>
+          }
+        />
 
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route
+          path="/event"
+          element={
+            <PageTransition>
+              <EventHome />
+            </PageTransition>
+          }
+        />
+
+        <Route
+          path="/closing"
+          element={
+            <PageTransition>
+              <ClosingPage />
+            </PageTransition>
+          }
+        />
+
+        <Route
+          path="/programme"
+          element={
+            <Navigate to="/" replace />
+          }
+        />
+
+        <Route
+          path="/moments"
+          element={
+            <Navigate to="/" replace />
+          }
+        />
+
+        <Route
+          path="/menu"
+          element={
+            <Navigate to="/" replace />
+          }
+        />
+
+        <Route
+          path="/gifts"
+          element={
+            <Navigate to="/" replace />
+          }
+        />
+
+        <Route
+          path="/seating"
+          element={
+            <Navigate to="/" replace />
+          }
+        />
+
+        <Route
+          path="/appreciation"
+          element={
+            <Navigate to="/" replace />
+          }
+        />
+
+        <Route
+          path="*"
+          element={
+            <Navigate to="/" replace />
+          }
+        />
       </Routes>
-    </BrowserRouter>
+    </AnimatePresence>
   )
 }
 
-export default App
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AnimatedRoutes />
+    </BrowserRouter>
+  )
+}

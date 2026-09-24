@@ -2,7 +2,15 @@ import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import closingImage from "../assets/couple/closing.png"
-import { luxuryEase } from "../components/motion/motion"
+import {
+  luxuryEase,
+  revealInitial,
+  revealAnimate,
+  revealTransition,
+  imageRevealInitial,
+  imageRevealAnimate,
+  imageRevealTransition,
+} from "../components/motion/motion"
 
 const ATTENDING_KEY = "themanforshay-attending"
 
@@ -87,40 +95,20 @@ export default function ClosingPage() {
   return (
     <main className="min-h-[100svh] overflow-hidden bg-[var(--color-background)]">
       <div className="relative flex min-h-[100svh] w-full items-center justify-center px-[var(--page-padding)]">
-
-        {/* =================================================
-            CLOSING COMPOSITION
-            ================================================= */}
-
+        {/* CLOSING COMPOSITION */}
         <div className="relative w-full max-w-[760px] pb-12">
-
-          {/* =================================================
-              INITIAL SEE YOU AT THE WEDDING
-              ================================================= */}
-
+          {/* INITIAL SEE YOU AT THE WEDDING */}
           <AnimatePresence mode="wait">
             {!showImage && (
               <motion.p
                 key="opening-message"
-                initial={{
-                  opacity: 0,
-                  y: 14,
-                  filter: "blur(3px)",
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                  filter: "blur(0px)",
-                }}
+                initial={revealInitial}
+                animate={revealAnimate}
                 exit={{
                   opacity: 0,
-                  y: -14,
                   filter: "blur(3px)",
                 }}
-                transition={{
-                  duration: 1,
-                  ease: luxuryEase,
-                }}
+                transition={revealTransition}
                 className="fixed left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-center font-body text-[0.48rem] font-medium uppercase tracking-[0.38em] text-[var(--color-muted)] sm:text-[0.5rem]"
               >
                 See you at the wedding
@@ -128,36 +116,11 @@ export default function ClosingPage() {
             )}
           </AnimatePresence>
 
-          {/* =================================================
-              CLOSING IMAGE
-              ================================================= */}
-
+          {/* CLOSING IMAGE */}
           <motion.div
-            initial={{
-              opacity: 0,
-              y: 50,
-              scale: 0.98,
-              filter: "blur(4px)",
-            }}
-            animate={
-              showImage
-                ? {
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                    filter: "blur(0px)",
-                  }
-                : {
-                    opacity: 0,
-                    y: 50,
-                    scale: 0.98,
-                    filter: "blur(4px)",
-                  }
-            }
-            transition={{
-              duration: 2,
-              ease: luxuryEase,
-            }}
+            initial={imageRevealInitial}
+            animate={showImage ? imageRevealAnimate : imageRevealInitial}
+            transition={imageRevealTransition}
             className="relative overflow-hidden rounded-[var(--radius-lg)]"
           >
             <img
@@ -167,75 +130,35 @@ export default function ClosingPage() {
               className="block h-auto w-full"
             />
 
-            {/* =================================================
-                TOP TEXT CONTRAST OVERLAY
-                ================================================= */}
-
+            {/* TOP TEXT CONTRAST OVERLAY */}
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-x-0 top-0 h-[38%] bg-gradient-to-b from-black/80 via-black/50 to-transparent"
             />
 
-            {/* =================================================
-                COUPLE NAMES
-                ================================================= */}
-
+            {/* COUPLE NAMES */}
             <motion.h1
-              initial={{
-                opacity: 0,
-                y: 22,
-                filter: "blur(4px)",
-              }}
-              animate={
-                showNames
-                  ? {
-                      opacity: 1,
-                      y: 0,
-                      filter: "blur(0px)",
-                    }
-                  : {
-                      opacity: 0,
-                      y: 22,
-                      filter: "blur(4px)",
-                    }
-              }
-              transition={{
-                duration: 1.2,
-                ease: luxuryEase,
-              }}
+              initial={revealInitial}
+              animate={showNames ? revealAnimate : revealInitial}
+              transition={revealTransition}
               className="pointer-events-none absolute inset-x-0 top-[7%] px-5 text-center font-display text-[clamp(3.5rem,8vw,6.5rem)] leading-[0.95] text-[var(--color-background)]"
             >
               Manuel &amp; Sharon
             </motion.h1>
           </motion.div>
 
-          {/* =================================================
-              FINAL SEE YOU AT THE WEDDING
-              ================================================= */}
-
+          {/* FINAL SEE YOU AT THE WEDDING */}
           <AnimatePresence>
             {showFinalText && (
               <motion.p
                 key="final-message"
-                initial={{
-                  opacity: 0,
-                  y: 14,
-                  filter: "blur(3px)",
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                  filter: "blur(0px)",
-                }}
+                initial={revealInitial}
+                animate={revealAnimate}
                 exit={{
                   opacity: 0,
-                  y: -8,
                   filter: "blur(2px)",
                 }}
-                transition={{
-                  duration: 1,
-                  ease: luxuryEase,
-                }}
+                transition={revealTransition}
                 className="absolute inset-x-0 bottom-0 text-center font-body text-[0.48rem] font-medium uppercase tracking-[0.38em] text-[var(--color-muted)] sm:text-[0.5rem]"
               >
                 See you at the wedding
@@ -243,10 +166,7 @@ export default function ClosingPage() {
             )}
           </AnimatePresence>
 
-          {/* =================================================
-              BACK TO INVITATION
-              ================================================= */}
-
+          {/* BACK TO INVITATION */}
           <AnimatePresence>
             {showBackButton && (
               <motion.button
