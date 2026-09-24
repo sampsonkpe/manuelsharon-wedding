@@ -21,14 +21,20 @@ export default function SplashPage() {
 
   const [isLeaving, setIsLeaving] = useState(false)
   const [isFinalZoom, setIsFinalZoom] = useState(false)
+  const [showWelcome, setShowWelcome] = useState(false)
   const [showNames, setShowNames] = useState(false)
 
   useEffect(() => {
+    const welcomeTimer = window.setTimeout(() => {
+      setShowWelcome(true)
+    }, 6000)
+
     const namesTimer = window.setTimeout(() => {
       setShowNames(true)
-    }, 3000)
+    }, 6600)
 
     return () => {
+      window.clearTimeout(welcomeTimer)
       window.clearTimeout(namesTimer)
     }
   }, [])
@@ -102,11 +108,19 @@ export default function SplashPage() {
               y: 14,
               filter: "blur(3px)",
             }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              filter: "blur(0px)",
-            }}
+            animate={
+              showWelcome
+                ? {
+                    opacity: 1,
+                    y: 0,
+                    filter: "blur(0px)",
+                  }
+                : {
+                    opacity: 0,
+                    y: 14,
+                    filter: "blur(3px)",
+                  }
+            }
             transition={{
               duration: 1.2,
               ease: luxuryEase,
