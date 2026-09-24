@@ -4,13 +4,13 @@ import {
   luxuryEase,
   revealInitial,
   revealAnimate,
+  revealExit,
 } from "./motion"
 
 interface ScrollRevealProps {
   children: ReactNode
   className?: string
   delay?: number
-  y?: number
   once?: boolean
 }
 
@@ -18,17 +18,14 @@ export default function ScrollReveal({
   children,
   className,
   delay = 0,
-  y = 14,
-  once = true,
+  once = false,
 }: ScrollRevealProps) {
   return (
     <motion.div
       className={className}
-      initial={{
-        ...revealInitial,
-        y,
-      }}
+      initial={revealInitial}
       whileInView={revealAnimate}
+      exit={revealExit}
       viewport={{
         once,
         amount: 0.2,
