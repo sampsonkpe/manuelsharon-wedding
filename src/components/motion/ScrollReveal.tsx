@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 import { motion } from "framer-motion"
 import {
+  durationBase,
   luxuryEase,
   revealInitial,
   revealAnimate,
@@ -31,7 +32,7 @@ export default function ScrollReveal({
         amount: 0.2,
       }}
       transition={{
-        duration: 1,
+        duration: durationBase,
         delay,
         ease: luxuryEase,
       }}
