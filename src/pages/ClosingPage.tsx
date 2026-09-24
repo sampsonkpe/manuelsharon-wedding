@@ -2,8 +2,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import closingImage from "../assets/couple/closing.png"
-
-const luxuryEase = [0.22, 1, 0.36, 1] as const
+import { luxuryEase } from "../components/motion/motion"
 
 const ATTENDING_KEY = "themanforshay-attending"
 

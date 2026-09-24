@@ -1,5 +1,10 @@
 import type { ReactNode } from "react"
 import { motion } from "framer-motion"
+import {
+  luxuryEase,
+  revealInitial,
+  revealAnimate,
+} from "./motion"
 
 interface ScrollRevealProps {
   children: ReactNode
@@ -13,22 +18,17 @@ export default function ScrollReveal({
   children,
   className,
   delay = 0,
-  y = 24,
+  y = 14,
   once = true,
 }: ScrollRevealProps) {
   return (
     <motion.div
       className={className}
       initial={{
-        opacity: 0,
+        ...revealInitial,
         y,
-        filter: "blur(3px)",
       }}
-      whileInView={{
-        opacity: 1,
-        y: 0,
-        filter: "blur(0px)",
-      }}
+      whileInView={revealAnimate}
       viewport={{
         once,
         amount: 0.2,
@@ -36,7 +36,7 @@ export default function ScrollReveal({
       transition={{
         duration: 1,
         delay,
-        ease: [0.22, 1, 0.36, 1],
+        ease: luxuryEase,
       }}
     >
       {children}
