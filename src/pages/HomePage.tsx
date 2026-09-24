@@ -11,7 +11,7 @@ export default function HomePage() {
       <div className="flex flex-col">
         <SectionDivider />
 
-        <InvitationHero showHero={true} />
+        <InvitationHero />
 
         <SectionDivider />
 

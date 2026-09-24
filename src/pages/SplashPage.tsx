@@ -2,8 +2,12 @@ import { motion } from "framer-motion"
 import { useNavigate } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 import envelopeVideo from "../assets/invitation/envelope.mp4"
-
-const luxuryEase = [0.22, 1, 0.36, 1] as const
+import {
+  luxuryEase,
+  revealInitial,
+  revealAnimate,
+  revealTransition,
+} from "../components/motion/motion"
 
 const pageTransition = {
   duration: 1,
@@ -14,6 +18,8 @@ const finalZoomTransition = {
   duration: 4.5,
   ease: luxuryEase,
 }
+
+const nameStagger = 0.18
 
 export default function SplashPage() {
   const navigate = useNavigate()
@@ -27,11 +33,11 @@ export default function SplashPage() {
   useEffect(() => {
     const welcomeTimer = window.setTimeout(() => {
       setShowWelcome(true)
-    }, 6000)
+    }, 4000)
 
     const namesTimer = window.setTimeout(() => {
       setShowNames(true)
-    }, 6600)
+    }, 5800)
 
     return () => {
       window.clearTimeout(welcomeTimer)
@@ -39,15 +45,23 @@ export default function SplashPage() {
     }
   }, [])
 
-  const enterInvitation = () => {
-    if (isLeaving) return
+  useEffect(() => {
+    if (!showNames) return
 
-    setIsLeaving(true)
+    // Wait for the names to fully reveal,
+    // then hold the complete composition for 3 seconds.
+    const leaveTimer = window.setTimeout(() => {
+      setIsLeaving(true)
 
-    window.setTimeout(() => {
-      navigate("/home", { replace: true })
-    }, 800)
-  }
+      window.setTimeout(() => {
+        navigate("/home", { replace: true })
+      }, 800)
+    }, 4800)
+
+    return () => {
+      window.clearTimeout(leaveTimer)
+    }
+  }, [showNames, navigate])
 
   const handleTimeUpdate = () => {
     const video = videoRef.current
@@ -88,7 +102,6 @@ export default function SplashPage() {
         playsInline
         preload="auto"
         onTimeUpdate={handleTimeUpdate}
-        onEnded={enterInvitation}
         animate={{
           scale: isFinalZoom ? 1.26 : 1,
         }}
@@ -103,28 +116,9 @@ export default function SplashPage() {
         <div className="flex w-full max-w-[1100px] flex-col items-center text-center">
           {/* WELCOME */}
           <motion.p
-            initial={{
-              opacity: 0,
-              y: 14,
-              filter: "blur(3px)",
-            }}
-            animate={
-              showWelcome
-                ? {
-                    opacity: 1,
-                    y: 0,
-                    filter: "blur(0px)",
-                  }
-                : {
-                    opacity: 0,
-                    y: 14,
-                    filter: "blur(3px)",
-                  }
-            }
-            transition={{
-              duration: 1.2,
-              ease: luxuryEase,
-            }}
+            initial={revealInitial}
+            animate={showWelcome ? revealAnimate : revealInitial}
+            transition={revealTransition}
             className="font-body text-[0.46rem] font-medium uppercase leading-[1.9] tracking-[0.34em] text-[var(--color-muted)] sm:text-[0.5rem]"
           >
             <span className="block">Welcome to</span>
@@ -132,36 +126,39 @@ export default function SplashPage() {
           </motion.p>
 
           {/* COUPLE */}
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 24,
-              filter: "blur(4px)",
-            }}
-            animate={
-              showNames
-                ? {
-                    opacity: 1,
-                    y: 0,
-                    filter: "blur(0px)",
-                  }
-                : {
-                    opacity: 0,
-                    y: 24,
-                    filter: "blur(4px)",
-                  }
-            }
+          <h1 className="mt-6 flex flex-wrap justify-center gap-x-[0.3em] font-display text-[clamp(3.5rem,8vw,6.5rem)] leading-[1.18] text-[var(--color-espresso)]">
+            <motion.span
+              initial={revealInitial}
+              animate={showNames ? revealAnimate : revealInitial}
+              transition={revealTransition}
+            >
+              Manuel &amp;
+            </motion.span>
+
+            <motion.span
+              initial={revealInitial}
+              animate={showNames ? revealAnimate : revealInitial}
+              transition={{
+                ...revealTransition,
+                delay: nameStagger,
+              }}
+            >
+              Sharon
+            </motion.span>
+          </h1>
+
+          {/* HASHTAG */}
+          <motion.p
+            initial={revealInitial}
+            animate={showNames ? revealAnimate : revealInitial}
             transition={{
-              duration: 1.2,
-              ease: luxuryEase,
+              ...revealTransition,
+              delay: 0.35,
             }}
-            className="mt-6 w-full"
+            className="mt-5 font-body text-[0.42rem] font-medium uppercase tracking-[0.32em] text-[var(--color-muted)] sm:text-[0.46rem]"
           >
-            <h1 className="font-display text-[clamp(3.5rem,8vw,6.5rem)] leading-[1.18] text-[var(--color-espresso)]">
-              <span className="block sm:inline">Manuel &amp;</span>{" "}
-              <span className="block sm:inline">Sharon</span>
-            </h1>
-          </motion.div>
+            #THEMANFORSHAY
+          </motion.p>
         </div>
       </div>
     </motion.main>
