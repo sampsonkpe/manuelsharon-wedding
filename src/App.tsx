@@ -11,6 +11,7 @@ import SplashPage from "./pages/SplashPage"
 import HomePage from "./pages/HomePage"
 import ClosingPage from "./pages/ClosingPage"
 import PageTransition from "./components/motion/PageTransition"
+import ScrollToTop from "./components/navigation/ScrollToTop"
 
 function EventHome() {
   return (
@@ -26,97 +27,101 @@ function AnimatedRoutes() {
   const location = useLocation()
 
   return (
-    <AnimatePresence mode="sync">
-      <Routes
-        location={location}
-        key={location.pathname}
-      >
-        <Route
-          path="/"
-          element={
-            <PageTransition>
-              <SplashPage />
-            </PageTransition>
-          }
-        />
+    <>
+      <ScrollToTop />
 
-        <Route
-          path="/home"
-          element={
-            <PageTransition>
-              <HomePage />
-            </PageTransition>
-          }
-        />
+      <AnimatePresence mode="sync">
+        <Routes
+          location={location}
+          key={location.pathname}
+        >
+          <Route
+            path="/"
+            element={
+              <PageTransition>
+                <SplashPage />
+              </PageTransition>
+            }
+          />
 
-        <Route
-          path="/event"
-          element={
-            <PageTransition>
-              <EventHome />
-            </PageTransition>
-          }
-        />
+          <Route
+            path="/home"
+            element={
+              <PageTransition>
+                <HomePage />
+              </PageTransition>
+            }
+          />
 
-        <Route
-          path="/closing"
-          element={
-            <PageTransition>
-              <ClosingPage />
-            </PageTransition>
-          }
-        />
+          <Route
+            path="/event"
+            element={
+              <PageTransition>
+                <EventHome />
+              </PageTransition>
+            }
+          />
 
-        <Route
-          path="/programme"
-          element={
-            <Navigate to="/" replace />
-          }
-        />
+          <Route
+            path="/closing"
+            element={
+              <PageTransition>
+                <ClosingPage />
+              </PageTransition>
+            }
+          />
 
-        <Route
-          path="/moments"
-          element={
-            <Navigate to="/" replace />
-          }
-        />
+          <Route
+            path="/programme"
+            element={
+              <Navigate to="/" replace />
+            }
+          />
 
-        <Route
-          path="/menu"
-          element={
-            <Navigate to="/" replace />
-          }
-        />
+          <Route
+            path="/moments"
+            element={
+              <Navigate to="/" replace />
+            }
+          />
 
-        <Route
-          path="/gifts"
-          element={
-            <Navigate to="/" replace />
-          }
-        />
+          <Route
+            path="/menu"
+            element={
+              <Navigate to="/" replace />
+            }
+          />
 
-        <Route
-          path="/seating"
-          element={
-            <Navigate to="/" replace />
-          }
-        />
+          <Route
+            path="/gifts"
+            element={
+              <Navigate to="/" replace />
+            }
+          />
 
-        <Route
-          path="/appreciation"
-          element={
-            <Navigate to="/" replace />
-          }
-        />
+          <Route
+            path="/seating"
+            element={
+              <Navigate to="/" replace />
+            }
+          />
 
-        <Route
-          path="*"
-          element={
-            <Navigate to="/" replace />
-          }
-        />
-      </Routes>
-    </AnimatePresence>
+          <Route
+            path="/appreciation"
+            element={
+              <Navigate to="/" replace />
+            }
+          />
+
+          <Route
+            path="*"
+            element={
+              <Navigate to="/" replace />
+            }
+          />
+        </Routes>
+      </AnimatePresence>
+    </>
   )
 }
 

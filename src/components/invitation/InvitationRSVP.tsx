@@ -6,7 +6,11 @@ import {
   verifyGuest,
   type RsvpResponse,
 } from "../../lib/rsvp"
-import { luxuryEase } from "../motion/motion"
+import {
+  durationBase,
+  durationMicro,
+  luxuryEase,
+} from "../motion/motion"
 import ScrollReveal from "../motion/ScrollReveal"
 
 type Step =
@@ -14,8 +18,81 @@ type Step =
   | "attendance"
   | "success"
 
-const STORAGE_KEY = "themanforshay-rsvp"
 const ATTENDING_KEY = "themanforshay-attending"
+const RSVP_DRAFT_KEY = "themanforshay-rsvp-draft"
+
+type RsvpDraft = {
+  name: string
+  phone: string
+}
+
+/*
+ * Read the existing RSVP draft from sessionStorage.
+ *
+ * This runs before the initial render, so the form can
+ * be populated immediately without setting React state
+ * synchronously inside an effect.
+ */
+function getRsvpDraft(): RsvpDraft {
+  try {
+    const storedDraft =
+      sessionStorage.getItem(RSVP_DRAFT_KEY)
+
+    if (!storedDraft) {
+      return {
+        name: "",
+        phone: "",
+      }
+    }
+
+    const draft = JSON.parse(
+      storedDraft,
+    ) as Partial<RsvpDraft>
+
+    const name =
+      typeof draft.name === "string"
+        ? draft.name
+        : ""
+
+    const phone =
+      typeof draft.phone === "string"
+        ? draft.phone
+        : ""
+
+    /*
+     * If both fields are empty, there is no meaningful
+     * draft to restore.
+     */
+    if (!name.trim() && !phone.trim()) {
+      sessionStorage.removeItem(
+        RSVP_DRAFT_KEY,
+      )
+
+      return {
+        name: "",
+        phone: "",
+      }
+    }
+
+    return {
+      name,
+      phone,
+    }
+  } catch {
+    /*
+     * Invalid stored data should never prevent
+     * the RSVP form from loading.
+     */
+    sessionStorage.removeItem(
+      RSVP_DRAFT_KEY,
+    )
+
+    return {
+      name: "",
+      phone: "",
+    }
+  }
+}
 
 const contentVariants = {
   initial: {
@@ -29,7 +106,7 @@ const contentVariants = {
     y: 0,
     filter: "blur(0px)",
     transition: {
-      duration: 0.55,
+      duration: durationBase,
       ease: luxuryEase,
     },
   },
@@ -39,41 +116,29 @@ const contentVariants = {
     y: -8,
     filter: "blur(2px)",
     transition: {
-      duration: 0.25,
+      duration: durationBase,
       ease: luxuryEase,
     },
   },
 }
 
-interface StoredFormData {
-  name: string
-  phone: string
-}
-
 export default function InvitationRsvp() {
   const navigate = useNavigate()
 
-  const [savedForm] = useState<StoredFormData | null>(() => {
-    try {
-      const stored = sessionStorage.getItem(STORAGE_KEY)
-
-      if (!stored) return null
-
-      return JSON.parse(stored) as StoredFormData
-    } catch {
-      sessionStorage.removeItem(STORAGE_KEY)
-      return null
-    }
-  })
+  /*
+   * Restore any meaningful draft during initial state
+   * creation rather than inside an effect.
+   */
+  const initialDraft = getRsvpDraft()
 
   const [step, setStep] = useState<Step>("form")
 
   const [name, setName] = useState(
-    savedForm?.name ?? "",
+    initialDraft.name,
   )
 
   const [phone, setPhone] = useState(
-    savedForm?.phone ?? "",
+    initialDraft.phone,
   )
 
   const [guestName, setGuestName] = useState("")
@@ -86,22 +151,47 @@ export default function InvitationRsvp() {
     useState<RsvpResponse | null>(null)
 
   /*
-   * Preserve only the form details across refreshes.
+   * Persist the RSVP draft whenever the user changes
+   * either field.
+   *
+   * The draft only exists while at least one field
+   * contains meaningful input.
+   *
+   * Therefore:
+   *
+   * "Sampson" + "" → draft exists
+   * "" + "024..." → draft exists
+   * "Sampson" + "024..." → draft exists
+   * "" + "" → draft removed
+   *
+   * This means clearing everything before refreshing
+   * will return the user to the top of the page.
    */
   useEffect(() => {
-    if (!name && !phone) {
+    const trimmedName = name.trim()
+    const trimmedPhone = phone.trim()
+
+    if (!trimmedName && !trimmedPhone) {
+      sessionStorage.removeItem(
+        RSVP_DRAFT_KEY,
+      )
       return
     }
 
+    const draft: RsvpDraft = {
+      name,
+      phone,
+    }
+
     sessionStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({
-        name,
-        phone,
-      }),
+      RSVP_DRAFT_KEY,
+      JSON.stringify(draft),
     )
   }, [name, phone])
 
+  /*
+   * Verify the guest against the invitation list.
+   */
   const verifyInvitation = async () => {
     const trimmedName = name.trim()
     const trimmedPhone = phone.trim()
@@ -142,6 +232,15 @@ export default function InvitationRsvp() {
       setExistingRsvp(returnedRsvp)
 
       /*
+       * The guest has successfully passed the
+       * verification stage, so the temporary form
+       * draft is no longer needed.
+       */
+      sessionStorage.removeItem(
+        RSVP_DRAFT_KEY,
+      )
+
+      /*
        * Existing RSVP:
        * skip the attendance question completely.
        */
@@ -175,6 +274,9 @@ export default function InvitationRsvp() {
     }
   }
 
+  /*
+   * Record the guest's RSVP response.
+   */
   const submitRsvp = async (
     response: RsvpResponse,
   ) => {
@@ -203,7 +305,13 @@ export default function InvitationRsvp() {
 
       setExistingRsvp(response)
 
-      sessionStorage.removeItem(STORAGE_KEY)
+      /*
+       * The RSVP has now been submitted, so the
+       * temporary form draft must be removed.
+       */
+      sessionStorage.removeItem(
+        RSVP_DRAFT_KEY,
+      )
 
       if (response === "ATTENDING") {
         sessionStorage.setItem(
@@ -303,7 +411,6 @@ export default function InvitationRsvp() {
 
                       <input
                         id="rsvp-name"
-                        autoFocus
                         type="text"
                         value={name}
                         onChange={(event) =>
@@ -359,17 +466,20 @@ export default function InvitationRsvp() {
                           initial={{
                             opacity: 0,
                             y: 6,
+                            filter: "blur(2px)",
                           }}
                           animate={{
                             opacity: 1,
                             y: 0,
+                            filter: "blur(0px)",
                           }}
                           exit={{
                             opacity: 0,
                             y: -4,
+                            filter: "blur(2px)",
                           }}
                           transition={{
-                            duration: 0.25,
+                            duration: durationMicro,
                             ease: luxuryEase,
                           }}
                           role="alert"
