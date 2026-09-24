@@ -1,6 +1,9 @@
 import { motion } from "framer-motion"
-
-const luxuryEase = [0.22, 1, 0.36, 1] as const
+import {
+  revealInitial,
+  revealAnimate,
+  revealTransition,
+} from "../motion/motion"
 
 const palette = [
   {
@@ -25,25 +28,15 @@ export default function InvitationPalette() {
   return (
     <section className="px-[var(--page-padding)]">
       <div className="mx-auto max-w-[720px] text-center">
+        {/* INTRODUCTION */}
         <motion.div
-          initial={{
-            opacity: 0,
-            y: 20,
-            filter: "blur(3px)",
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-          }}
+          initial={revealInitial}
+          whileInView={revealAnimate}
           viewport={{
             once: true,
             amount: 0.25,
           }}
-          transition={{
-            duration: 1,
-            ease: luxuryEase,
-          }}
+          transition={revealTransition}
         >
           <p className="font-body text-[0.48rem] font-medium uppercase tracking-[0.38em] text-[var(--color-muted)] sm:text-[0.5rem]">
             Our Palette
@@ -54,28 +47,20 @@ export default function InvitationPalette() {
           </p>
         </motion.div>
 
+        {/* COLOURS */}
         <div className="mt-9 flex items-start justify-center gap-2 sm:gap-8">
           {palette.map((colour, index) => (
             <motion.div
               key={colour.hex}
-              initial={{
-                opacity: 0,
-                scale: 0.85,
-                filter: "blur(3px)",
-              }}
-              whileInView={{
-                opacity: 1,
-                scale: 1,
-                filter: "blur(0px)",
-              }}
+              initial={revealInitial}
+              whileInView={revealAnimate}
               viewport={{
                 once: true,
                 amount: 0.25,
               }}
               transition={{
-                duration: 0.8,
+                ...revealTransition,
                 delay: index * 0.08,
-                ease: luxuryEase,
               }}
               className="flex flex-col items-center"
             >
