@@ -1,7 +1,10 @@
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
-
-const luxuryEase = [0.22, 1, 0.36, 1] as const
+import {
+  luxuryEase,
+  revealAnimate,
+  revealInitial,
+} from "../motion/motion"
 
 interface InvitationIntroProps {
   onHeroReveal: () => void
@@ -57,61 +60,30 @@ export default function InvitationIntro({
   }, [showNames, onHeroReveal])
 
   return (
-    <motion.section
-      layout
+    <section
       className={
         releaseIntro
           ? "px-[var(--page-padding)] pt-[4vh] pb-[2vh]"
           : "min-h-[100svh] px-[var(--page-padding)]"
       }
-      transition={{
-        layout: {
-          duration: 1.2,
-          ease: luxuryEase,
-        },
-      }}
     >
-      <motion.div
-        layout
+      <div
         className={
           releaseIntro
             ? "flex items-center justify-center"
             : "flex min-h-[100svh] items-center justify-center"
         }
-        transition={{
-          layout: {
-            duration: 1.2,
-            ease: luxuryEase,
-          },
-        }}
       >
-        <motion.div
-          layout
-          className="flex w-full max-w-[1100px] flex-col items-center text-center"
-          transition={{
-            layout: {
-              duration: 1.2,
-              ease: luxuryEase,
-            },
-          }}
-        >
+        <div className="flex w-full max-w-[1100px] flex-col items-center text-center">
           {/* WELCOME */}
           <motion.p
-            className="font-body text-[0.46rem] font-medium uppercase leading-[1.9] tracking-[0.34em] text-[var(--color-muted)] sm:text-[0.5rem]"
-            initial={{
-              opacity: 0,
-              y: 14,
-              filter: "blur(3px)",
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              filter: "blur(0px)",
-            }}
+            initial={revealInitial}
+            animate={revealAnimate}
             transition={{
               duration: 1,
               ease: luxuryEase,
             }}
+            className="font-body text-[0.46rem] font-medium uppercase leading-[1.9] tracking-[0.34em] text-[var(--color-muted)] sm:text-[0.5rem]"
           >
             <span className="block">Welcome to</span>
             <span className="block">the Wedding of</span>
@@ -123,8 +95,6 @@ export default function InvitationIntro({
               opacity: 0,
               y: 24,
               filter: "blur(4px)",
-              height: 0,
-              marginTop: 0,
             }}
             animate={
               showNames
@@ -132,34 +102,26 @@ export default function InvitationIntro({
                     opacity: 1,
                     y: 0,
                     filter: "blur(0px)",
-                    height: "auto",
-                    marginTop: "1.5rem",
                   }
                 : {
                     opacity: 0,
                     y: 24,
                     filter: "blur(4px)",
-                    height: 0,
-                    marginTop: 0,
                   }
             }
             transition={{
-              duration: 1,
+              duration: 1.2,
               ease: luxuryEase,
             }}
-            className="w-full overflow-hidden"
+            className="mt-6 w-full"
           >
             <h1 className="font-display text-[clamp(3.5rem,8vw,6.5rem)] leading-[1.18] text-[var(--color-espresso)]">
-              <span className="block sm:inline">
-                Manuel &amp;
-              </span>{" "}
-              <span className="block sm:inline">
-                Sharon
-              </span>
+              <span className="block sm:inline">Manuel &amp;</span>{" "}
+              <span className="block sm:inline">Sharon</span>
             </h1>
           </motion.div>
-        </motion.div>
-      </motion.div>
-    </motion.section>
+        </div>
+      </div>
+    </section>
   )
 }
