@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import SplashPage from "./pages/SplashPage"
 import HomePage from "./pages/HomePage"
 import ClosingPage from "./pages/ClosingPage"
+import ScrollToTop from "./components/navigation/ScrollToTop"
 
 function EventHome() {
   return (
@@ -16,6 +17,7 @@ function EventHome() {
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<SplashPage />} />
         <Route path="/home" element={<HomePage />} />

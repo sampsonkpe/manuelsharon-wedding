@@ -276,7 +276,7 @@ export default function InvitationRsvp() {
                   animate="animate"
                   exit="exit"
                 >
-                  <p className="font-editorial text-[clamp(1.55rem,3.5vw,2.2rem)] leading-[1.25] text-[var(--color-deep-brown)]">
+                  <p className="font-editorial text-[clamp(1.55rem,3.5vw,2.2rem)] leading-[1.25] text-[var(--color-espresso)]">
                     We&apos;d love to have you with us.
                   </p>
 
@@ -308,7 +308,7 @@ export default function InvitationRsvp() {
                         }}
                         placeholder="Your full name"
                         autoComplete="name"
-                        className="mt-2 w-full border-b border-[var(--color-border-strong)] bg-transparent px-1 py-2.5 font-editorial text-[1.25rem] text-[var(--color-deep-brown)] outline-none placeholder:text-[var(--color-muted)] focus:border-[var(--color-caramel)]"
+                        className="mt-2 w-full border-b border-[var(--color-border-strong)] bg-transparent px-1 py-2.5 font-editorial text-[1.25rem] text-[var(--color-espresso)] outline-none placeholder:text-[var(--color-muted)] focus:border-[var(--color-caramel)]"
                       />
                     </div>
 
@@ -336,7 +336,7 @@ export default function InvitationRsvp() {
                         placeholder="024 000 0000"
                         autoComplete="tel"
                         inputMode="tel"
-                        className="mt-2 w-full border-b border-[var(--color-border-strong)] bg-transparent px-1 py-2.5 font-editorial text-[1.25rem] tracking-[0.04em] text-[var(--color-deep-brown)] outline-none placeholder:text-[var(--color-muted)] focus:border-[var(--color-caramel)]"
+                        className="mt-2 w-full border-b border-[var(--color-border-strong)] bg-transparent px-1 py-2.5 font-editorial text-[1.25rem] tracking-[0.04em] text-[var(--color-espresso)] outline-none placeholder:text-[var(--color-muted)] focus:border-[var(--color-caramel)]"
                       />
                     </div>
 
@@ -361,7 +361,7 @@ export default function InvitationRsvp() {
                             ease: luxuryEase,
                           }}
                           role="alert"
-                          className="font-body text-[0.46rem] uppercase leading-[1.7] tracking-[0.14em] text-[var(--color-burnt-brown)]"
+                          className="font-body text-[0.46rem] uppercase leading-[1.7] tracking-[0.14em] text-[var(--color-cinnamon)]"
                         >
                           {error}
                         </motion.p>
@@ -398,11 +398,11 @@ export default function InvitationRsvp() {
                   animate="animate"
                   exit="exit"
                 >
-                  <p className="font-editorial text-[clamp(1.7rem,4vw,2.45rem)] leading-[1.2] text-[var(--color-deep-brown)]">
+                  <p className="font-editorial text-[clamp(1.7rem,4vw,2.45rem)] leading-[1.2] text-[var(--color-espresso)]">
                     Hi there, {guestName}.
                   </p>
 
-                  <p className="mt-7 font-editorial text-[clamp(1.35rem,3vw,1.9rem)] italic text-[var(--color-burnt-brown)]">
+                  <p className="mt-7 font-editorial text-[clamp(1.35rem,3vw,1.9rem)] italic text-[var(--color-cinnamon)]">
                     Will you be joining us?
                   </p>
 
@@ -445,7 +445,7 @@ export default function InvitationRsvp() {
                   {error && (
                     <p
                       role="alert"
-                      className="mt-5 font-body text-[0.46rem] uppercase tracking-[0.14em] text-[var(--color-burnt-brown)]"
+                      className="mt-5 font-body text-[0.46rem] uppercase tracking-[0.14em] text-[var(--color-cinnamon)]"
                     >
                       {error}
                     </p>
@@ -465,11 +465,11 @@ export default function InvitationRsvp() {
                   animate="animate"
                   exit="exit"
                 >
-                  <p className="font-editorial text-[clamp(1.7rem,4vw,2.45rem)] leading-[1.2] text-[var(--color-deep-brown)]">
+                  <p className="font-editorial text-[clamp(1.7rem,4vw,2.45rem)] leading-[1.2] text-[var(--color-espresso)]">
                     Thank you, {guestName}.
                   </p>
 
-                  <p className="mx-auto mt-5 max-w-md font-editorial text-[clamp(1.2rem,3vw,1.7rem)] italic leading-[1.45] text-[var(--color-burnt-brown)]">
+                  <p className="mx-auto mt-5 max-w-md font-editorial text-[clamp(1.2rem,3vw,1.7rem)] italic leading-[1.45] text-[var(--color-cinnamon)]">
                     {existingRsvp === "ATTENDING" ? (
                       <>
                         Your RSVP has been confirmed as{" "}

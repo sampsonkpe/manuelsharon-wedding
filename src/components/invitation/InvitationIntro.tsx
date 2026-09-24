@@ -149,7 +149,7 @@ export default function InvitationIntro({
             }}
             className="w-full overflow-hidden"
           >
-            <h1 className="font-display text-[clamp(3.5rem,8vw,6.5rem)] leading-[1.18] text-[var(--color-deep-brown)]">
+            <h1 className="font-display text-[clamp(3.5rem,8vw,6.5rem)] leading-[1.18] text-[var(--color-espresso)]">
               <span className="block sm:inline">
                 Manuel &amp;
               </span>{" "}

@@ -39,7 +39,7 @@ export default function InvitationDetails() {
             amount: 0.2,
           }}
           transition={revealTransition()}
-          className="font-editorial text-[clamp(2.1rem,5vw,3.5rem)] leading-[1.05] text-[var(--color-deep-brown)]"
+          className="font-editorial text-[clamp(2.1rem,5vw,3.5rem)] leading-[1.05] text-[var(--color-espresso)]"
         >
           Saturday, October 24, 2026
         </motion.p>
@@ -89,7 +89,7 @@ export default function InvitationDetails() {
           transition={revealTransition(0.3)}
           className="mt-16"
         >
-          <p className="font-editorial text-[clamp(1.8rem,4vw,2.6rem)] leading-none text-[var(--color-deep-brown)]">
+          <p className="font-editorial text-[clamp(1.8rem,4vw,2.6rem)] leading-none text-[var(--color-espresso)]">
             Lotus Garden
           </p>
 

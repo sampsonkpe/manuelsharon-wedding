@@ -89,7 +89,7 @@ export default function InvitationClosing() {
             delay: 0.28,
             ease: luxuryEase,
           }}
-          className="mt-10 font-display text-[clamp(3.5rem,8vw,6rem)] leading-[1.1] text-[var(--color-deep-brown)]"
+          className="mt-10 font-display text-[clamp(3.5rem,8vw,6rem)] leading-[1.1] text-[var(--color-espresso)]"
         >
           Manuel &amp; Sharon
         </motion.h2>

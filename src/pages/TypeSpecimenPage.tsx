@@ -25,7 +25,7 @@ function TypeSpecimenPage() {
           </p>
 
           <div className="text-center">
-            <p className="font-display-mea text-[clamp(5rem,16vw,10rem)] leading-[0.7] text-[var(--color-deep-brown)]">
+            <p className="font-display-mea text-[clamp(5rem,16vw,10rem)] leading-[0.7] text-[var(--color-espresso)]">
               Manuel
             </p>
 
@@ -33,7 +33,7 @@ function TypeSpecimenPage() {
               &amp;
             </p>
 
-            <p className="font-display-mea text-[clamp(5rem,16vw,10rem)] leading-[0.7] text-[var(--color-deep-brown)]">
+            <p className="font-display-mea text-[clamp(5rem,16vw,10rem)] leading-[0.7] text-[var(--color-espresso)]">
               Sharon
             </p>
           </div>
@@ -63,7 +63,7 @@ function TypeSpecimenPage() {
           </p>
 
           <div className="text-center">
-            <p className="font-display-rouge text-[clamp(5rem,16vw,10rem)] leading-[0.7] text-[var(--color-deep-brown)]">
+            <p className="font-display-rouge text-[clamp(5rem,16vw,10rem)] leading-[0.7] text-[var(--color-espresso)]">
               Manuel
             </p>
 
@@ -71,7 +71,7 @@ function TypeSpecimenPage() {
               &amp;
             </p>
 
-            <p className="font-display-rouge text-[clamp(5rem,16vw,10rem)] leading-[0.7] text-[var(--color-deep-brown)]">
+            <p className="font-display-rouge text-[clamp(5rem,16vw,10rem)] leading-[0.7] text-[var(--color-espresso)]">
               Sharon
             </p>
           </div>

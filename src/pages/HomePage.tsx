@@ -3,6 +3,7 @@ import InvitationHero from "../components/invitation/InvitationHero"
 import InvitationIntro from "../components/invitation/InvitationIntro"
 import InvitationMessage from "../components/invitation/InvitationMessage"
 import InvitationDetails from "../components/invitation/InvitationDetails"
+import InvitationPalette from "../components/invitation/InvitationPalette"
 import InvitationRsvp from "../components/invitation/InvitationRSVP"
 import SectionDivider from "../components/ui/SectionDivider"
 
@@ -19,19 +20,18 @@ export default function HomePage() {
 
       <div className="flex flex-col">
         <SectionDivider />
-
         <InvitationHero showHero={showHero} />
 
         <SectionDivider />
-
         <InvitationMessage />
 
         <SectionDivider />
-
         <InvitationDetails />
 
         <SectionDivider />
+        <InvitationPalette />
 
+        <SectionDivider />
         <InvitationRsvp />
       </div>
     </main>

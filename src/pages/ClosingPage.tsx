@@ -13,6 +13,7 @@ export default function ClosingPage() {
   const [showImage, setShowImage] = useState(false)
   const [showNames, setShowNames] = useState(false)
   const [showFinalText, setShowFinalText] = useState(false)
+  const [showBackButton, setShowBackButton] = useState(false)
 
   useEffect(() => {
     const isAttending =
@@ -67,6 +68,22 @@ export default function ClosingPage() {
       window.clearTimeout(finalTextTimer)
     }
   }, [showNames])
+
+  useEffect(() => {
+    if (!showFinalText) return
+
+    /*
+     * Let the final message breathe
+     * before revealing the return action.
+     */
+    const backButtonTimer = window.setTimeout(() => {
+      setShowBackButton(true)
+    }, 800)
+
+    return () => {
+      window.clearTimeout(backButtonTimer)
+    }
+  }, [showFinalText])
 
   return (
     <main className="min-h-[100svh] overflow-hidden bg-[var(--color-background)]">
@@ -224,6 +241,42 @@ export default function ClosingPage() {
               >
                 See you at the wedding
               </motion.p>
+            )}
+          </AnimatePresence>
+
+          {/* =================================================
+              BACK TO INVITATION
+              ================================================= */}
+
+          <AnimatePresence>
+            {showBackButton && (
+              <motion.button
+                key="back-to-invitation"
+                type="button"
+                initial={{
+                  opacity: 0,
+                  y: 10,
+                  filter: "blur(3px)",
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  filter: "blur(0px)",
+                }}
+                exit={{
+                  opacity: 0,
+                  y: -6,
+                  filter: "blur(2px)",
+                }}
+                transition={{
+                  duration: 0.9,
+                  ease: luxuryEase,
+                }}
+                onClick={() => navigate("/home")}
+                className="invitation-button absolute left-1/2 top-full mt-5 -translate-x-1/2 whitespace-nowrap"
+              >
+                Back to Invitation
+              </motion.button>
             )}
           </AnimatePresence>
         </div>

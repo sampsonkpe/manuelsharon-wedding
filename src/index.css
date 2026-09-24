@@ -12,8 +12,8 @@
      Colour
      ------------------------------------------------------- */
 
-  --color-deep-brown: #442e21;
-  --color-burnt-brown: #723a23;
+  --color-espresso: #442e21;
+  --color-cinnamon: #723a23;
   --color-caramel: #b17543;
   --color-taupe: #99796a;
 
@@ -193,7 +193,7 @@ input:focus-visible {
   border-radius: var(--radius-pill);
 
   background: transparent;
-  color: var(--color-deep-brown);
+  color: var(--color-espresso);
 
   font-family: var(--font-body);
   font-size: 0.48rem;
