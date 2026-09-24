@@ -1,7 +1,15 @@
 const RSVP_API_URL =
-  "https://script.google.com/macros/s/AKfycbx_V6zE20qbYcbAJpyCfF3LzlaY2z90LTdCUJm-QiC6FmpHl-aSx3RNHPKOZWUy5DrH/exec"
+  "https://script.google.com/macros/s/AKfycbykGmNzHEH63CA3Jp4WutQrU4dcIIlz5oKR8_RJhnDx8Vd1wn8i-Jw14YcGMKtLR1dF/exec"
 
 const REQUEST_TIMEOUT = 10000
+const MAX_ATTEMPTS = 5
+
+const RETRY_DELAYS = [
+  500,
+  1000,
+  2000,
+  4000,
+]
 
 export type RsvpResponse =
   | "ATTENDING"
@@ -23,6 +31,18 @@ export interface RecordRsvpResult {
   message?: string
 }
 
+/**
+ * Wait before the next retry.
+ */
+function wait(ms: number) {
+  return new Promise<void>((resolve) => {
+    window.setTimeout(resolve, ms)
+  })
+}
+
+/**
+ * Fetch with a timeout.
+ */
 async function fetchWithTimeout(
   input: RequestInfo | URL,
   init?: RequestInit,
@@ -44,6 +64,56 @@ async function fetchWithTimeout(
   }
 }
 
+/**
+ * Perform a request with automatic retry.
+ *
+ * Retries only when the request fails at the
+ * network/transport level or returns a non-OK response.
+ */
+async function fetchWithRetry(
+  input: RequestInfo | URL,
+  init?: RequestInit,
+) {
+  let lastError: unknown
+
+  for (
+    let attempt = 0;
+    attempt < MAX_ATTEMPTS;
+    attempt++
+  ) {
+    try {
+      const response = await fetchWithTimeout(
+        input,
+        init,
+      )
+
+      if (response.ok) {
+        return response
+      }
+
+      lastError = new Error(
+        `RSVP service returned HTTP ${response.status}.`,
+      )
+    } catch (error) {
+      lastError = error
+    }
+
+    /*
+     * Don't wait after the final attempt.
+     */
+    if (attempt < MAX_ATTEMPTS - 1) {
+      await wait(RETRY_DELAYS[attempt])
+    }
+  }
+
+  throw (
+    lastError ??
+    new Error(
+      "Unable to connect to the RSVP service.",
+    )
+  )
+}
+
 export async function verifyGuest(
   name: string,
   phone: string,
@@ -55,35 +125,17 @@ export async function verifyGuest(
     _: Date.now().toString(),
   })
 
-  let response: Response
-
-  try {
-    response = await fetchWithTimeout(
-      `${RSVP_API_URL}?${params.toString()}`,
-    )
-  } catch {
-    /*
-     * Google Apps Script can occasionally have a transient
-     * connection/redirect delay. Retry the verification once.
-     */
-    response = await fetchWithTimeout(
-      `${RSVP_API_URL}?${params.toString()}`,
-    )
-  }
-
-  if (!response.ok) {
-    throw new Error(
-      "Unable to connect to the RSVP service.",
-    )
-  }
+  const response = await fetchWithRetry(
+    `${RSVP_API_URL}?${params.toString()}`,
+  )
 
   const result =
     (await response.json()) as VerifyGuestResult
 
-  if (!result.success && result.message) {
-    throw new Error(result.message)
-  }
-
+  /*
+   * A valid response from Google Sheets is not
+   * a transport failure and must not be retried.
+   */
   return result
 }
 
@@ -92,54 +144,21 @@ export async function recordRsvp(
   phone: string,
   rsvp: RsvpResponse,
 ): Promise<RecordRsvpResult> {
-  let response: Response
-
-  try {
-    response = await fetchWithTimeout(
-      RSVP_API_URL,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type":
-            "text/plain;charset=utf-8",
-        },
-        body: JSON.stringify({
-          name,
-          phone,
-          rsvp,
-        }),
+  const response = await fetchWithRetry(
+    RSVP_API_URL,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type":
+          "text/plain;charset=utf-8",
       },
-    )
-  } catch {
-    /*
-     * The operation is idempotent for the same guest:
-     * it updates their existing RSVP row rather than
-     * creating a duplicate row.
-     *
-     * Therefore a single retry is safe here.
-     */
-    response = await fetchWithTimeout(
-      RSVP_API_URL,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type":
-            "text/plain;charset=utf-8",
-        },
-        body: JSON.stringify({
-          name,
-          phone,
-          rsvp,
-        }),
-      },
-    )
-  }
-
-  if (!response.ok) {
-    throw new Error(
-      "Unable to submit your RSVP.",
-    )
-  }
+      body: JSON.stringify({
+        name,
+        phone,
+        rsvp,
+      }),
+    },
+  )
 
   return response.json()
 }
