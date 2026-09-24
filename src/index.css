@@ -68,7 +68,7 @@
   --space-section-large: clamp(5rem, 10vw, 8rem);
   --space-content: clamp(2rem, 5vw, 4rem);
   --space-small: clamp(1rem, 2vw, 1.5rem);
-  --space-divider: clamp(1.75rem, 4vw, 3rem);
+  --space-divider: clamp(4rem, 8vw, 7rem);
 
   /* -------------------------------------------------------
      Radius

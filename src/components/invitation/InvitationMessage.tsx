@@ -29,7 +29,7 @@ export default function InvitationMessage() {
           }}
           className="font-editorial text-[clamp(1.7rem,4vw,2.55rem)] leading-[1.25] text-[var(--color-deep-brown)]"
         >
-          Together with our families, we kindly request your presence at our
+          We, together with our families, kindly request your presence at our
           wedding.
         </motion.blockquote>
 
@@ -58,7 +58,11 @@ export default function InvitationMessage() {
         >
           <p className="font-editorial text-[clamp(1.35rem,3vw,1.85rem)] italic leading-[1.45] text-[var(--color-deep-brown)]">
             “Though one may be overpowered by another, two can withstand
-            him. And a threefold cord is not quickly broken.”
+            him.{" "}
+            <strong className="font-[550] text-[var(--color-deep-brown)]">
+              And a threefold cord is not quickly broken.
+            </strong>
+            ”
           </p>
 
           <p className="mt-5 font-body text-[0.48rem] font-medium uppercase tracking-[0.34em] text-[var(--color-muted)] sm:text-[0.52rem]">
