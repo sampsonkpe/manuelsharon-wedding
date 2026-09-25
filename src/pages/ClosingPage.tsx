@@ -2,7 +2,6 @@ import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import closingImage from "../assets/couple/closing.png"
-import backgroundImage from "../assets/couple/background.png"
 import {
   luxuryEase,
   revealInitial,
@@ -19,11 +18,16 @@ export default function ClosingPage() {
   const navigate = useNavigate()
 
   const [showImage, setShowImage] = useState(false)
-  const [showFinalText, setShowFinalText] =
-    useState(false)
-  const [showBackButton, setShowBackButton] =
-    useState(false)
+  const [showFinalText, setShowFinalText] = useState(false)
+  const [showBackButton, setShowBackButton] = useState(false)
 
+  /*
+   * Verify that the guest is allowed to access
+   * the closing experience.
+   *
+   * The scripture remains on screen for 5 seconds
+   * before the closing composition begins.
+   */
   useEffect(() => {
     const isAttending =
       sessionStorage.getItem(ATTENDING_KEY) === "true"
@@ -33,10 +37,6 @@ export default function ClosingPage() {
       return
     }
 
-    /*
-     * Hold the scripture transition on screen
-     * before revealing the closing composition.
-     */
     const imageTimer = window.setTimeout(() => {
       setShowImage(true)
     }, 5000)
@@ -46,13 +46,14 @@ export default function ClosingPage() {
     }
   }, [navigate])
 
+  /*
+   * Once the photograph has appeared,
+   * allow it to breathe before revealing
+   * the closing message.
+   */
   useEffect(() => {
     if (!showImage) return
 
-    /*
-     * Allow the photograph to settle before
-     * revealing the final closing message.
-     */
     const finalTextTimer = window.setTimeout(() => {
       setShowFinalText(true)
     }, 1500)
@@ -62,16 +63,17 @@ export default function ClosingPage() {
     }
   }, [showImage])
 
+  /*
+   * Once the closing message has appeared,
+   * give it room to breathe before introducing
+   * the return button.
+   */
   useEffect(() => {
     if (!showFinalText) return
 
-    /*
-     * Let the final message breathe before
-     * revealing the return action.
-     */
     const backButtonTimer = window.setTimeout(() => {
       setShowBackButton(true)
-    }, 1000)
+    }, 1200)
 
     return () => {
       window.clearTimeout(backButtonTimer)
@@ -79,12 +81,14 @@ export default function ClosingPage() {
   }, [showFinalText])
 
   return (
-    <main className="min-h-[100svh] overflow-hidden bg-[var(--color-background)]">
-      <div className="relative flex min-h-[100svh] w-full items-center justify-center px-[var(--page-padding)]">
-        {/* CLOSING COMPOSITION */}
-        <div className="relative w-full max-w-[760px] pb-12">
+    <main className="relative min-h-[100svh] overflow-hidden bg-transparent">
+      <div className="flex min-h-[100svh] w-full items-center justify-center px-[var(--page-padding)] py-16 sm:py-20">
+        <div className="w-full max-w-[760px]">
 
-          {/* SCRIPTURE TRANSITION */}
+          {/* =================================================
+              SCRIPTURE TRANSITION
+              ================================================= */}
+
           <AnimatePresence mode="wait">
             {!showImage && (
               <motion.div
@@ -100,8 +104,8 @@ export default function ClosingPage() {
               >
                 <p className="font-editorial text-[clamp(1.7rem,4vw,2.7rem)] italic leading-[1.25] text-[var(--color-espresso)]">
                   <strong className="font-[550]">
-                    "...And a threefold cord is not
-                    quickly broken."
+                    &quot;...And a threefold cord is not
+                    quickly broken.&quot;
                   </strong>
                 </p>
 
@@ -112,33 +116,10 @@ export default function ClosingPage() {
             )}
           </AnimatePresence>
 
-          {/* BACKGROUND MONOGRAM */}
-          <motion.div
-            initial={{
-              opacity: 0,
-              scale: 0.96,
-              filter: "blur(6px)",
-            }}
-            animate={{
-              opacity: showImage ? 0.2 : 0,
-              scale: showImage ? 1 : 0.96,
-              filter: "blur(0px)",
-            }}
-            transition={{
-              duration: 1.5,
-              ease: luxuryEase,
-            }}
-            className="pointer-events-none absolute left-1/2 top-1/2 z-0 w-[85%] -translate-x-1/2 -translate-y-1/2"
-            aria-hidden="true"
-          >
-            <img
-              src={backgroundImage}
-              alt=""
-              className="block h-auto w-full object-contain"
-            />
-          </motion.div>
+          {/* =================================================
+              CLOSING IMAGE
+              ================================================= */}
 
-          {/* CLOSING IMAGE */}
           <motion.div
             initial={imageRevealInitial}
             animate={
@@ -147,7 +128,7 @@ export default function ClosingPage() {
                 : imageRevealInitial
             }
             transition={imageRevealTransition}
-            className="relative z-10 overflow-hidden rounded-[var(--radius-lg)]"
+            className="relative overflow-hidden rounded-[var(--radius-lg)]"
           >
             <img
               src={closingImage}
@@ -157,7 +138,10 @@ export default function ClosingPage() {
             />
           </motion.div>
 
-          {/* FINAL MESSAGE */}
+          {/* =================================================
+              FINAL MESSAGE
+              ================================================= */}
+
           <AnimatePresence>
             {showFinalText && (
               <motion.p
@@ -169,7 +153,7 @@ export default function ClosingPage() {
                   filter: "blur(2px)",
                 }}
                 transition={revealTransition}
-                className="absolute inset-x-0 bottom-0 text-center font-editorial text-[clamp(1.35rem,3vw,1.9rem)] italic leading-[1.35] text-[var(--color-espresso)]"
+                className="mx-auto mt-9 max-w-[620px] px-4 text-center font-editorial text-[clamp(1.35rem,3vw,1.9rem)] italic leading-[1.4] text-[var(--color-espresso)] sm:mt-14"
               >
                 We can&apos;t wait to have you
                 witness the beginning of our
@@ -178,12 +162,14 @@ export default function ClosingPage() {
             )}
           </AnimatePresence>
 
-          {/* BACK TO INVITATION */}
+          {/* =================================================
+              BACK TO INVITATION
+              ================================================= */}
+
           <AnimatePresence>
             {showBackButton && (
-              <motion.button
+              <motion.div
                 key="back-to-invitation"
-                type="button"
                 initial={{
                   opacity: 0,
                   y: 10,
@@ -203,13 +189,19 @@ export default function ClosingPage() {
                   duration: 0.9,
                   ease: luxuryEase,
                 }}
-                onClick={() => navigate("/home")}
-                className="invitation-button absolute left-1/2 top-full mt-5 -translate-x-1/2 whitespace-nowrap"
+                className="mt-10 flex justify-center sm:mt-14"
               >
-                Back to Invitation
-              </motion.button>
+                <button
+                  type="button"
+                  onClick={() => navigate("/home")}
+                  className="invitation-button whitespace-nowrap"
+                >
+                  Back to Invitation
+                </button>
+              </motion.div>
             )}
           </AnimatePresence>
+
         </div>
       </div>
     </main>

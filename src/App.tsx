@@ -12,10 +12,11 @@ import HomePage from "./pages/HomePage"
 import ClosingPage from "./pages/ClosingPage"
 import PageTransition from "./components/motion/PageTransition"
 import ScrollToTop from "./components/navigation/ScrollToTop"
+import BackgroundMonogram from "./components/layout/BackgroundMonogram"
 
 function EventHome() {
   return (
-    <main className="min-h-screen bg-[var(--color-background)]">
+    <main className="min-h-screen bg-transparent">
       <h1 className="font-editorial text-[var(--color-espresso)]">
         Wedding Day
       </h1>
@@ -128,7 +129,15 @@ function AnimatedRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AnimatedRoutes />
+      <div className="relative min-h-screen bg-[var(--color-background)]">
+        {/* GLOBAL BACKGROUND MONOGRAM */}
+        <BackgroundMonogram />
+
+        {/* PAGE CONTENT */}
+        <div className="relative z-10">
+          <AnimatedRoutes />
+        </div>
+      </div>
     </BrowserRouter>
   )
 }
