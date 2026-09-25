@@ -361,7 +361,7 @@ export default function InvitationRsvp() {
       navigate("/closing", {
         replace: true,
       })
-    }, 1500)
+    }, 2000)
 
     return () => {
       window.clearTimeout(timer)
@@ -402,7 +402,7 @@ export default function InvitationRsvp() {
                   exit="exit"
                 >
                   <p className="font-editorial text-[clamp(1.55rem,3.5vw,2.2rem)] leading-[1.25] text-[var(--color-espresso)]">
-                    We&apos;d love to have you with us.
+                    We have a seat specially saved for you.
                   </p>
 
                   <div className="mx-auto mt-9 max-w-[440px] space-y-7">

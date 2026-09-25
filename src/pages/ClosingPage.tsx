@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import closingImage from "../assets/couple/closing.png"
+import backgroundImage from "../assets/couple/background.png"
 import {
   luxuryEase,
   revealInitial,
@@ -18,9 +19,10 @@ export default function ClosingPage() {
   const navigate = useNavigate()
 
   const [showImage, setShowImage] = useState(false)
-  const [showNames, setShowNames] = useState(false)
-  const [showFinalText, setShowFinalText] = useState(false)
-  const [showBackButton, setShowBackButton] = useState(false)
+  const [showFinalText, setShowFinalText] =
+    useState(false)
+  const [showBackButton, setShowBackButton] =
+    useState(false)
 
   useEffect(() => {
     const isAttending =
@@ -32,12 +34,12 @@ export default function ClosingPage() {
     }
 
     /*
-     * Let the opening message breathe
-     * before introducing the photograph.
+     * Hold the scripture transition on screen
+     * before revealing the closing composition.
      */
     const imageTimer = window.setTimeout(() => {
       setShowImage(true)
-    }, 2500)
+    }, 5000)
 
     return () => {
       window.clearTimeout(imageTimer)
@@ -48,44 +50,28 @@ export default function ClosingPage() {
     if (!showImage) return
 
     /*
-     * Allow the photograph to fully settle
-     * before revealing the couple's names.
-     */
-    const namesTimer = window.setTimeout(() => {
-      setShowNames(true)
-    }, 1500)
-
-    return () => {
-      window.clearTimeout(namesTimer)
-    }
-  }, [showImage])
-
-  useEffect(() => {
-    if (!showNames) return
-
-    /*
-     * Allow the names to reveal completely
-     * before introducing the final closing message.
+     * Allow the photograph to settle before
+     * revealing the final closing message.
      */
     const finalTextTimer = window.setTimeout(() => {
       setShowFinalText(true)
-    }, 1200)
+    }, 1500)
 
     return () => {
       window.clearTimeout(finalTextTimer)
     }
-  }, [showNames])
+  }, [showImage])
 
   useEffect(() => {
     if (!showFinalText) return
 
     /*
-     * Let the final message breathe
-     * before revealing the return action.
+     * Let the final message breathe before
+     * revealing the return action.
      */
     const backButtonTimer = window.setTimeout(() => {
       setShowBackButton(true)
-    }, 800)
+    }, 1000)
 
     return () => {
       window.clearTimeout(backButtonTimer)
@@ -97,10 +83,11 @@ export default function ClosingPage() {
       <div className="relative flex min-h-[100svh] w-full items-center justify-center px-[var(--page-padding)]">
         {/* CLOSING COMPOSITION */}
         <div className="relative w-full max-w-[760px] pb-12">
-          {/* INITIAL SEE YOU AT THE WEDDING */}
+
+          {/* SCRIPTURE TRANSITION */}
           <AnimatePresence mode="wait">
             {!showImage && (
-              <motion.p
+              <motion.div
                 key="opening-message"
                 initial={revealInitial}
                 animate={revealAnimate}
@@ -109,19 +96,58 @@ export default function ClosingPage() {
                   filter: "blur(3px)",
                 }}
                 transition={revealTransition}
-                className="fixed left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-center font-body text-[0.48rem] font-medium uppercase tracking-[0.38em] text-[var(--color-muted)] sm:text-[0.5rem]"
+                className="fixed left-1/2 top-1/2 z-20 w-[min(90vw,620px)] -translate-x-1/2 -translate-y-1/2 text-center"
               >
-                See you at the wedding
-              </motion.p>
+                <p className="font-editorial text-[clamp(1.7rem,4vw,2.7rem)] italic leading-[1.25] text-[var(--color-espresso)]">
+                  <strong className="font-[550]">
+                    "...And a threefold cord is not
+                    quickly broken."
+                  </strong>
+                </p>
+
+                <p className="mt-5 font-body text-[0.46rem] font-medium uppercase tracking-[0.34em] text-[var(--color-muted)] sm:text-[0.5rem]">
+                  Ecclesiastes 4:12 • NKJV
+                </p>
+              </motion.div>
             )}
           </AnimatePresence>
+
+          {/* BACKGROUND MONOGRAM */}
+          <motion.div
+            initial={{
+              opacity: 0,
+              scale: 0.96,
+              filter: "blur(6px)",
+            }}
+            animate={{
+              opacity: showImage ? 0.2 : 0,
+              scale: showImage ? 1 : 0.96,
+              filter: "blur(0px)",
+            }}
+            transition={{
+              duration: 1.5,
+              ease: luxuryEase,
+            }}
+            className="pointer-events-none absolute left-1/2 top-1/2 z-0 w-[85%] -translate-x-1/2 -translate-y-1/2"
+            aria-hidden="true"
+          >
+            <img
+              src={backgroundImage}
+              alt=""
+              className="block h-auto w-full object-contain"
+            />
+          </motion.div>
 
           {/* CLOSING IMAGE */}
           <motion.div
             initial={imageRevealInitial}
-            animate={showImage ? imageRevealAnimate : imageRevealInitial}
+            animate={
+              showImage
+                ? imageRevealAnimate
+                : imageRevealInitial
+            }
             transition={imageRevealTransition}
-            className="relative overflow-hidden rounded-[var(--radius-lg)]"
+            className="relative z-10 overflow-hidden rounded-[var(--radius-lg)]"
           >
             <img
               src={closingImage}
@@ -129,25 +155,9 @@ export default function ClosingPage() {
               loading="eager"
               className="block h-auto w-full"
             />
-
-            {/* TOP TEXT CONTRAST OVERLAY */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-[38%] bg-gradient-to-b from-black/80 via-black/50 to-transparent"
-            />
-
-            {/* COUPLE NAMES */}
-            <motion.h1
-              initial={revealInitial}
-              animate={showNames ? revealAnimate : revealInitial}
-              transition={revealTransition}
-              className="pointer-events-none absolute inset-x-0 top-[7%] px-5 text-center font-display text-[clamp(3.5rem,8vw,6.5rem)] leading-[0.95] text-[var(--color-background)]"
-            >
-              Manuel &amp; Sharon
-            </motion.h1>
           </motion.div>
 
-          {/* FINAL SEE YOU AT THE WEDDING */}
+          {/* FINAL MESSAGE */}
           <AnimatePresence>
             {showFinalText && (
               <motion.p
@@ -159,9 +169,11 @@ export default function ClosingPage() {
                   filter: "blur(2px)",
                 }}
                 transition={revealTransition}
-                className="absolute inset-x-0 bottom-0 text-center font-body text-[0.48rem] font-medium uppercase tracking-[0.38em] text-[var(--color-muted)] sm:text-[0.5rem]"
+                className="absolute inset-x-0 bottom-0 text-center font-editorial text-[clamp(1.35rem,3vw,1.9rem)] italic leading-[1.35] text-[var(--color-espresso)]"
               >
-                See you at the wedding
+                We can&apos;t wait to have you
+                witness the beginning of our
+                forever.
               </motion.p>
             )}
           </AnimatePresence>
