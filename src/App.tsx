@@ -1,4 +1,3 @@
-import { AnimatePresence } from "framer-motion"
 import {
   BrowserRouter,
   Navigate,
@@ -6,6 +5,7 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom"
+import { AnimatePresence } from "framer-motion"
 
 import SplashPage from "./pages/SplashPage"
 import HomePage from "./pages/HomePage"
@@ -16,7 +16,7 @@ import BackgroundMonogram from "./components/layout/BackgroundMonogram"
 
 function EventHome() {
   return (
-    <main className="min-h-screen bg-transparent">
+    <main className="min-h-screen bg-[var(--color-background)]">
       <h1 className="font-editorial text-[var(--color-espresso)]">
         Wedding Day
       </h1>
@@ -130,11 +130,11 @@ export default function App() {
   return (
     <BrowserRouter>
       <div className="relative min-h-screen bg-[var(--color-background)]">
-        {/* GLOBAL BACKGROUND MONOGRAM */}
+        {/* FIXED BACKGROUND MONOGRAM */}
         <BackgroundMonogram />
 
-        {/* PAGE CONTENT */}
-        <div className="relative z-10">
+        {/* SCROLLING PAGE CONTENT */}
+        <div className="relative z-20">
           <AnimatedRoutes />
         </div>
       </div>
