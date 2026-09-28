@@ -1,11 +1,4 @@
-const RSVP_API_URL =
-  "https://script.google.com/macros/s/AKfycbzSce4vAj23v7s1681lCg0lBr5X7cXzZSS0r1aCFMt9P-d5ocIGu-KqIq8rTCtESTS8/exec"
-
-const REQUEST_TIMEOUT = 8000
-
-const VERIFY_MAX_ATTEMPTS = 2
-
-const VERIFY_RETRY_DELAY = 300
+import { supabase } from "./supabase"
 
 export type RsvpResponse =
   | "ATTENDING"
@@ -14,6 +7,7 @@ export type RsvpResponse =
 export interface VerifyGuestResult {
   success: boolean
   verified: boolean
+  guestCode?: string
   guest?: string
   rsvp?: RsvpResponse | null
   message?: string
@@ -28,152 +22,126 @@ export interface RecordRsvpResult {
 }
 
 /**
- * Wait before retrying verification.
- */
-function wait(ms: number) {
-  return new Promise<void>((resolve) => {
-    window.setTimeout(resolve, ms)
-  })
-}
-
-/**
- * Fetch with a timeout.
- */
-async function fetchWithTimeout(
-  input: RequestInfo | URL,
-  init?: RequestInit,
-) {
-  const controller = new AbortController()
-
-  const timeout = window.setTimeout(() => {
-    controller.abort()
-  }, REQUEST_TIMEOUT)
-
-  try {
-    return await fetch(input, {
-      ...init,
-      signal: controller.signal,
-      cache: "no-store",
-    })
-  } finally {
-    window.clearTimeout(timeout)
-  }
-}
-
-/**
- * Verify a guest with a very small retry window.
- *
- * Verification is a GET request, so retrying is safe.
- *
- * We deliberately keep this fast:
- *
- * Attempt 1
- *    ↓
- * 300ms
- *    ↓
- * Attempt 2
- *    ↓
- * stop
- */
-async function verifyWithRetry(
-  input: RequestInfo | URL,
-) {
-  let lastError: unknown
-
-  for (
-    let attempt = 0;
-    attempt < VERIFY_MAX_ATTEMPTS;
-    attempt++
-  ) {
-    try {
-      const response =
-        await fetchWithTimeout(input)
-
-      if (response.ok) {
-        return response
-      }
-
-      lastError = new Error(
-        `RSVP service returned HTTP ${response.status}.`,
-      )
-    } catch (error) {
-      lastError = error
-    }
-
-    if (
-      attempt <
-      VERIFY_MAX_ATTEMPTS - 1
-    ) {
-      await wait(VERIFY_RETRY_DELAY)
-    }
-  }
-
-  throw (
-    lastError ??
-    new Error(
-      "Unable to connect to the RSVP service.",
-    )
-  )
-}
-
-/**
  * Verify a guest against the invitation list.
+ *
+ * The actual guest lookup happens inside the
+ * Supabase SECURITY DEFINER function:
+ *
+ * public.verify_guest(text, text)
  */
 export async function verifyGuest(
   name: string,
   phone: string,
 ): Promise<VerifyGuestResult> {
-  const params = new URLSearchParams({
-    action: "verify",
-    name,
-    phone,
-    _: Date.now().toString(),
-  })
-
-  const response = await verifyWithRetry(
-    `${RSVP_API_URL}?${params.toString()}`,
+  const {
+    data,
+    error,
+  } = await supabase.rpc(
+    "verify_guest",
+    {
+      input_name: name,
+      input_phone: phone,
+    },
   )
 
-  const result =
-    (await response.json()) as VerifyGuestResult
+  if (error) {
+    console.error(
+      "verify_guest error:",
+      error,
+    )
+
+    return {
+      success: false,
+      verified: false,
+      message:
+        "We couldn't connect to the RSVP service. Please try again.",
+    }
+  }
 
   /*
-   * A valid response from Google Sheets is not
-   * a transport failure and must not be retried.
+   * verify_guest() returns a table.
+   *
+   * Therefore Supabase returns an array.
    */
-  return result
+  const guest = data?.[0]
+
+  if (!guest) {
+    return {
+      success: true,
+      verified: false,
+      message:
+        "We couldn't find a matching invitation.",
+    }
+  }
+
+  return {
+    success: true,
+    verified: true,
+    guestCode: guest.guest_code,
+    guest: guest.guest,
+    rsvp:
+      guest.rsvp === "ATTENDING" ||
+      guest.rsvp === "UNABLE TO ATTEND"
+        ? guest.rsvp
+        : null,
+  }
 }
 
 /**
- * Record an RSVP.
+ * Record the guest's RSVP response.
  *
- * This intentionally uses ONE request.
+ * The actual write happens inside the
+ * Supabase SECURITY DEFINER function:
  *
- * A POST should not automatically be retried because
- * the server may have successfully recorded the RSVP
- * even if the browser did not receive the response.
+ * public.record_rsvp(text, text)
  */
 export async function recordRsvp(
-  name: string,
-  phone: string,
+  guestCode: string,
   rsvp: RsvpResponse,
 ): Promise<RecordRsvpResult> {
-  const response =
-    await fetchWithTimeout(
-      RSVP_API_URL,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type":
-            "text/plain;charset=utf-8",
-        },
-        body: JSON.stringify({
-          name,
-          phone,
-          rsvp,
-        }),
-      },
+  const {
+    data,
+    error,
+  } = await supabase.rpc(
+    "record_rsvp",
+    {
+      input_guest_code: guestCode,
+      input_response: rsvp,
+    },
+  )
+
+  if (error) {
+    console.error(
+      "record_rsvp error:",
+      error,
     )
 
-  return (await response.json()) as RecordRsvpResult
+    return {
+      success: false,
+      recorded: false,
+      message:
+        error.message ||
+        "We couldn't record your RSVP. Please try again.",
+    }
+  }
+
+  const result = data?.[0]
+
+  if (!result) {
+    return {
+      success: false,
+      recorded: false,
+      message:
+        "We couldn't confirm your RSVP. Please try again.",
+    }
+  }
+
+  return {
+    success: true,
+    recorded: true,
+    guest: result.guest,
+    rsvp: result.rsvp,
+    message:
+      "Your RSVP has been recorded.",
+  }
 }

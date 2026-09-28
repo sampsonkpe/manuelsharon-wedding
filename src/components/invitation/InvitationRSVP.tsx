@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion"
-import { useEffect, useState, } from "react"
-import type { ReactNode} from "react"
+import { useEffect, useState } from "react"
+import type { ReactNode } from "react"
 import { useNavigate } from "react-router-dom"
 import {
   recordRsvp,
@@ -142,6 +142,11 @@ export default function InvitationRsvp() {
     initialDraft.phone,
   )
 
+  /*
+   * Guest information returned by Supabase
+   * after successful verification.
+   */
+  const [guestCode, setGuestCode] = useState("")
   const [guestName, setGuestName] = useState("")
   const [existingRsvp, setExistingRsvp] =
     useState<RsvpResponse | null>(null)
@@ -231,9 +236,27 @@ export default function InvitationRsvp() {
       const returnedGuest =
         result.guest ?? trimmedName
 
+      const returnedGuestCode =
+        result.guestCode ?? ""
+
       const returnedRsvp =
         result.rsvp ?? null
 
+      /*
+       * A verified guest must have a guest code.
+       *
+       * The guest code is what allows the next
+       * step to record the RSVP without sending
+       * the guest's name or phone number again.
+       */
+      if (!returnedGuestCode) {
+        setError(
+          "We couldn't complete your verification. Please try again.",
+        )
+        return
+      }
+
+      setGuestCode(returnedGuestCode)
       setGuestName(returnedGuest)
       setExistingRsvp(returnedRsvp)
 
@@ -282,18 +305,28 @@ export default function InvitationRsvp() {
 
   /*
    * Record the guest's RSVP response.
+   *
+   * IMPORTANT:
+   * record_rsvp() accepts the verified guest code,
+   * not the guest's name and phone number.
    */
   const submitRsvp = async (
     response: RsvpResponse,
   ) => {
+    if (!guestCode) {
+      setError(
+        "We couldn't identify your invitation. Please verify again.",
+      )
+      return
+    }
+
     setError("")
     setSubmittingResponse(response)
     setIsLoading(true)
 
     try {
       const result = await recordRsvp(
-        name.trim(),
-        phone.trim(),
+        guestCode,
         response,
       )
 
