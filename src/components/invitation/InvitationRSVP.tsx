@@ -2,11 +2,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import type { ReactNode } from "react"
 import { useNavigate } from "react-router-dom"
-import {
-  recordRsvp,
-  verifyGuest,
-  type RsvpResponse,
-} from "../../lib/rsvp"
+import { submitRsvp } from "../../lib/rsvp"
 import {
   durationBase,
   durationMicro,
@@ -14,35 +10,31 @@ import {
 } from "../motion/motion"
 import ScrollReveal from "../motion/ScrollReveal"
 
-type Step =
-  | "form"
-  | "attendance"
-  | "success"
-
-const ATTENDING_KEY = "themanforshay-attending"
-const RSVP_DRAFT_KEY = "themanforshay-rsvp-draft"
+const RSVP_DRAFT_KEY =
+  "themanforshay-rsvp-draft"
 
 type RsvpDraft = {
   name: string
   phone: string
+  message: string
 }
 
-/*
- * Read the existing RSVP draft from sessionStorage.
- *
- * This runs before the initial render, so the form can
- * be populated immediately without setting React state
- * synchronously inside an effect.
- */
+type Step =
+  | "form"
+  | "success"
+
 function getRsvpDraft(): RsvpDraft {
   try {
     const storedDraft =
-      sessionStorage.getItem(RSVP_DRAFT_KEY)
+      sessionStorage.getItem(
+        RSVP_DRAFT_KEY,
+      )
 
     if (!storedDraft) {
       return {
         name: "",
         phone: "",
+        message: "",
       }
     }
 
@@ -50,40 +42,21 @@ function getRsvpDraft(): RsvpDraft {
       storedDraft,
     ) as Partial<RsvpDraft>
 
-    const name =
-      typeof draft.name === "string"
-        ? draft.name
-        : ""
-
-    const phone =
-      typeof draft.phone === "string"
-        ? draft.phone
-        : ""
-
-    /*
-     * If both fields are empty, there is no meaningful
-     * draft to restore.
-     */
-    if (!name.trim() && !phone.trim()) {
-      sessionStorage.removeItem(
-        RSVP_DRAFT_KEY,
-      )
-
-      return {
-        name: "",
-        phone: "",
-      }
-    }
-
     return {
-      name,
-      phone,
+      name:
+        typeof draft.name === "string"
+          ? draft.name
+          : "",
+      phone:
+        typeof draft.phone === "string"
+          ? draft.phone
+          : "",
+      message:
+        typeof draft.message === "string"
+          ? draft.message
+          : "",
     }
   } catch {
-    /*
-     * Invalid stored data should never prevent
-     * the RSVP form from loading.
-     */
     sessionStorage.removeItem(
       RSVP_DRAFT_KEY,
     )
@@ -91,6 +64,7 @@ function getRsvpDraft(): RsvpDraft {
     return {
       name: "",
       phone: "",
+      message: "",
     }
   }
 }
@@ -126,13 +100,10 @@ const contentVariants = {
 export default function InvitationRsvp() {
   const navigate = useNavigate()
 
-  /*
-   * Restore any meaningful draft during initial state
-   * creation rather than inside an effect.
-   */
   const initialDraft = getRsvpDraft()
 
-  const [step, setStep] = useState<Step>("form")
+  const [step, setStep] =
+    useState<Step>("form")
 
   const [name, setName] = useState(
     initialDraft.name,
@@ -142,42 +113,25 @@ export default function InvitationRsvp() {
     initialDraft.phone,
   )
 
-  /*
-   * Guest information returned by Supabase
-   * after successful verification.
-   */
-  const [guestCode, setGuestCode] = useState("")
-  const [guestName, setGuestName] = useState("")
-  const [existingRsvp, setExistingRsvp] =
-    useState<RsvpResponse | null>(null)
+  const [message, setMessage] =
+    useState(initialDraft.message)
 
-  const [error, setError] = useState<ReactNode>("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [submittingResponse, setSubmittingResponse] =
-    useState<RsvpResponse | null>(null)
+  const [error, setError] =
+    useState<ReactNode>("")
+
+  const [isLoading, setIsLoading] =
+    useState(false)
 
   /*
-   * Persist the RSVP draft whenever the user changes
-   * either field.
-   *
-   * The draft only exists while at least one field
-   * contains meaningful input.
-   *
-   * Therefore:
-   *
-   * "Sampson" + "" → draft exists
-   * "" + "024..." → draft exists
-   * "Sampson" + "024..." → draft exists
-   * "" + "" → draft removed
-   *
-   * This means clearing everything before refreshing
-   * will return the user to the top of the page.
+   * Save the unfinished RSVP locally so
+   * refreshing the page does not erase it.
    */
   useEffect(() => {
-    const trimmedName = name.trim()
-    const trimmedPhone = phone.trim()
-
-    if (!trimmedName && !trimmedPhone) {
+    if (
+      !name.trim() &&
+      !phone.trim() &&
+      !message.trim()
+    ) {
       sessionStorage.removeItem(
         RSVP_DRAFT_KEY,
       )
@@ -187,28 +141,49 @@ export default function InvitationRsvp() {
     const draft: RsvpDraft = {
       name,
       phone,
+      message,
     }
 
     sessionStorage.setItem(
       RSVP_DRAFT_KEY,
       JSON.stringify(draft),
     )
-  }, [name, phone])
+  }, [name, phone, message])
 
   /*
-   * Verify the guest against the invitation list.
+   * Submit the RSVP through the secure
+   * Supabase RPC function.
    */
-  const verifyInvitation = async () => {
+  const handleSubmit = async () => {
     const trimmedName = name.trim()
     const trimmedPhone = phone.trim()
+    const trimmedMessage = message.trim()
 
     if (!trimmedName) {
-      setError("Please enter your full name.")
+      setError(
+        "Please enter your full name.",
+      )
       return
     }
 
     if (!trimmedPhone) {
-      setError("Please enter your phone number.")
+      setError(
+        "Please enter your phone number.",
+      )
+      return
+    }
+
+    if (trimmedName.length > 100) {
+      setError(
+        "Your name is too long.",
+      )
+      return
+    }
+
+    if (trimmedMessage.length > 500) {
+      setError(
+        "Your message is too long.",
+      )
       return
     }
 
@@ -216,201 +191,47 @@ export default function InvitationRsvp() {
     setIsLoading(true)
 
     try {
-      const result = await verifyGuest(
+      const result = await submitRsvp(
         trimmedName,
         trimmedPhone,
+        trimmedMessage,
       )
 
-      if (!result.verified) {
-        setError(
-          <>
-            <strong className="font-[500]">
-              We couldn&apos;t find a matching invitation.
-            </strong>{" "}
-            Please check your name and phone number.
-          </>,
-        )
+      if (!result.success) {
+        setError(result.message)
         return
       }
 
-      const returnedGuest =
-        result.guest ?? trimmedName
-
-      const returnedGuestCode =
-        result.guestCode ?? ""
-
-      const returnedRsvp =
-        result.rsvp ?? null
-
-      /*
-       * A verified guest must have a guest code.
-       *
-       * The guest code is what allows the next
-       * step to record the RSVP without sending
-       * the guest's name or phone number again.
-       */
-      if (!returnedGuestCode) {
-        setError(
-          "We couldn't complete your verification. Please try again.",
-        )
-        return
-      }
-
-      setGuestCode(returnedGuestCode)
-      setGuestName(returnedGuest)
-      setExistingRsvp(returnedRsvp)
-
-      /*
-       * The guest has successfully passed the
-       * verification stage, so the temporary form
-       * draft is no longer needed.
-       */
       sessionStorage.removeItem(
         RSVP_DRAFT_KEY,
       )
-
-      /*
-       * Existing RSVP:
-       * skip the attendance question completely.
-       */
-      if (returnedRsvp) {
-        if (returnedRsvp === "ATTENDING") {
-          sessionStorage.setItem(
-            ATTENDING_KEY,
-            "true",
-          )
-        } else {
-          sessionStorage.removeItem(
-            ATTENDING_KEY,
-          )
-        }
-
-        setStep("success")
-        return
-      }
-
-      /*
-       * New verified guest:
-       * ask attendance.
-       */
-      setStep("attendance")
-    } catch {
-      setError(
-        "We couldn't connect to the RSVP service. Please try again.",
-      )
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  /*
-   * Record the guest's RSVP response.
-   *
-   * IMPORTANT:
-   * record_rsvp() accepts the verified guest code,
-   * not the guest's name and phone number.
-   */
-  const submitRsvp = async (
-    response: RsvpResponse,
-  ) => {
-    if (!guestCode) {
-      setError(
-        "We couldn't identify your invitation. Please verify again.",
-      )
-      return
-    }
-
-    setError("")
-    setSubmittingResponse(response)
-    setIsLoading(true)
-
-    try {
-      const result = await recordRsvp(
-        guestCode,
-        response,
-      )
-
-      if (!result.success || !result.recorded) {
-        setError(
-          result.message ??
-            "We couldn't record your RSVP. Please try again.",
-        )
-        return
-      }
-
-      setGuestName(
-        result.guest ?? guestName,
-      )
-
-      setExistingRsvp(response)
-
-      /*
-       * The RSVP has now been submitted, so the
-       * temporary form draft must be removed.
-       */
-      sessionStorage.removeItem(
-        RSVP_DRAFT_KEY,
-      )
-
-      if (response === "ATTENDING") {
-        sessionStorage.setItem(
-          ATTENDING_KEY,
-          "true",
-        )
-      } else {
-        sessionStorage.removeItem(
-          ATTENDING_KEY,
-        )
-      }
 
       setStep("success")
+
+      /*
+       * Give the confirmation a moment to breathe
+       * before moving to the closing page.
+       */
+      window.setTimeout(() => {
+        navigate("/closing", {
+          replace: true,
+        })
+      }, 2200)
     } catch {
       setError(
         "We couldn't submit your RSVP. Please try again.",
       )
     } finally {
       setIsLoading(false)
-      setSubmittingResponse(null)
     }
   }
-
-  /*
-   * After a successful attending RSVP,
-   * allow the confirmation to breathe before
-   * navigating to the closing page.
-   *
-   * The actual page transition is handled
-   * globally by App.tsx / PageTransition.
-   */
-  useEffect(() => {
-    if (
-      step !== "success" ||
-      existingRsvp !== "ATTENDING"
-    ) {
-      return
-    }
-
-    const timer = window.setTimeout(() => {
-      navigate("/closing", {
-        replace: true,
-      })
-    }, 2000)
-
-    return () => {
-      window.clearTimeout(timer)
-    }
-  }, [
-    step,
-    existingRsvp,
-    navigate,
-  ])
 
   return (
     <section
       id="rsvp"
       className="px-[var(--page-padding)] pb-[var(--space-section)]"
     >
-      <div className="mx-auto max-w-[820px] rounded-[20px] border border-[var(--color-border)] bg-[var(--color-surface)] px-6 py-10 sm:px-10 sm:py-12">
+      <div className="mx-auto max-w-[760px] rounded-[20px] border border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-8 sm:px-8 sm:py-10">
         <div className="mx-auto max-w-[680px] text-center">
           {/* SECTION LABEL */}
           <ScrollReveal>
@@ -419,9 +240,8 @@ export default function InvitationRsvp() {
             </p>
           </ScrollReveal>
 
-          <div className="mt-8">
+          <div className="mt-7">
             <AnimatePresence mode="wait">
-
               {/* =================================================
                   FORM
                   ================================================= */}
@@ -438,7 +258,7 @@ export default function InvitationRsvp() {
                     We have a seat specially saved for you.
                   </p>
 
-                  <div className="mx-auto mt-9 max-w-[440px] space-y-7">
+                  <div className="mx-auto mt-8 max-w-[500px] space-y-6">
                     {/* NAME */}
                     <div>
                       <label
@@ -453,10 +273,15 @@ export default function InvitationRsvp() {
                         type="text"
                         value={name}
                         onChange={(event) =>
-                          setName(event.target.value)
+                          setName(
+                            event.target.value,
+                          )
                         }
                         onKeyDown={(event) => {
-                          if (event.key === "Enter") {
+                          if (
+                            event.key ===
+                            "Enter"
+                          ) {
                             document
                               .getElementById(
                                 "rsvp-phone",
@@ -484,11 +309,20 @@ export default function InvitationRsvp() {
                         type="tel"
                         value={phone}
                         onChange={(event) =>
-                          setPhone(event.target.value)
+                          setPhone(
+                            event.target.value,
+                          )
                         }
                         onKeyDown={(event) => {
-                          if (event.key === "Enter") {
-                            verifyInvitation()
+                          if (
+                            event.key ===
+                            "Enter"
+                          ) {
+                            document
+                              .getElementById(
+                                "rsvp-message",
+                              )
+                              ?.focus()
                           }
                         }}
                         placeholder="024 000 0000"
@@ -498,6 +332,39 @@ export default function InvitationRsvp() {
                       />
                     </div>
 
+                    {/* MESSAGE */}
+                    <div>
+                      <label
+                        htmlFor="rsvp-message"
+                        className="block text-left font-body text-[0.42rem] font-medium uppercase tracking-[0.28em] text-[var(--color-muted)]"
+                      >
+                        A message for the couple{" "}
+                        <span className="tracking-normal">
+                          [Optional]
+                        </span>
+                      </label>
+
+                      <textarea
+                        id="rsvp-message"
+                        value={message}
+                        onChange={(event) =>
+                          setMessage(
+                            event.target.value,
+                          )
+                        }
+                        placeholder="Leave Manuel & Sharon a message..."
+                        maxLength={500}
+                        rows={1}
+                        className="mt-2 w-full resize-none border-b border-[var(--color-border-strong)] bg-transparent px-1 py-2 font-editorial text-[1.15rem] leading-[1.5] text-[var(--color-espresso)] outline-none placeholder:text-[var(--color-muted)] focus:border-[var(--color-caramel)]"
+                      />
+
+                      <div className="mt-1 text-right">
+                        <span className="font-body text-[0.42rem] tracking-[0.08em] text-[var(--color-muted)]">
+                          {message.length}/500
+                        </span>
+                      </div>
+                    </div>
+
                     {/* ERROR */}
                     <AnimatePresence>
                       {error && (
@@ -505,20 +372,24 @@ export default function InvitationRsvp() {
                           initial={{
                             opacity: 0,
                             y: 6,
-                            filter: "blur(2px)",
+                            filter:
+                              "blur(2px)",
                           }}
                           animate={{
                             opacity: 1,
                             y: 0,
-                            filter: "blur(0px)",
+                            filter:
+                              "blur(0px)",
                           }}
                           exit={{
                             opacity: 0,
                             y: -4,
-                            filter: "blur(2px)",
+                            filter:
+                              "blur(2px)",
                           }}
                           transition={{
-                            duration: durationMicro,
+                            duration:
+                              durationMicro,
                             ease: luxuryEase,
                           }}
                           role="alert"
@@ -529,10 +400,10 @@ export default function InvitationRsvp() {
                       )}
                     </AnimatePresence>
 
-                    {/* CONTINUE */}
+                    {/* SUBMIT */}
                     <motion.button
                       type="button"
-                      onClick={verifyInvitation}
+                      onClick={handleSubmit}
                       disabled={isLoading}
                       whileTap={{
                         scale: 0.98,
@@ -540,84 +411,15 @@ export default function InvitationRsvp() {
                       className="invitation-button"
                     >
                       {isLoading
-                        ? "Checking..."
-                        : "Continue"}
+                        ? "Sending..."
+                        : "Send RSVP"}
                     </motion.button>
                   </div>
                 </motion.div>
               )}
 
               {/* =================================================
-                  VERIFIED — NEW GUEST
-                  ================================================= */}
-
-              {step === "attendance" && (
-                <motion.div
-                  key="attendance"
-                  variants={contentVariants}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                >
-                  <p className="font-editorial text-[clamp(1.7rem,4vw,2.45rem)] leading-[1.2] text-[var(--color-espresso)]">
-                    Hi there, {guestName}.
-                  </p>
-
-                  <p className="mt-7 font-editorial text-[clamp(1.35rem,3vw,1.9rem)] italic text-[var(--color-cinnamon)]">
-                    Will you be joining us?
-                  </p>
-
-                  <div className="mt-7 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-                    <motion.button
-                      type="button"
-                      onClick={() =>
-                        submitRsvp("ATTENDING")
-                      }
-                      disabled={isLoading}
-                      whileTap={{
-                        scale: 0.98,
-                      }}
-                      className="invitation-button w-full sm:w-auto"
-                    >
-                      {submittingResponse ===
-                      "ATTENDING"
-                        ? "Confirming..."
-                        : "Yes, I'll be there"}
-                    </motion.button>
-
-                    <motion.button
-                      type="button"
-                      onClick={() =>
-                        submitRsvp(
-                          "UNABLE TO ATTEND",
-                        )
-                      }
-                      disabled={isLoading}
-                      whileTap={{
-                        scale: 0.98,
-                      }}
-                      className="invitation-button w-full sm:w-auto"
-                    >
-                      {submittingResponse ===
-                      "UNABLE TO ATTEND"
-                        ? "Confirming..."
-                        : "I'm unable to attend"}
-                    </motion.button>
-                  </div>
-
-                  {error && (
-                    <p
-                      role="alert"
-                      className="mt-5 font-body text-[0.46rem] uppercase tracking-[0.14em] text-[var(--color-cinnamon)]"
-                    >
-                      {error}
-                    </p>
-                  )}
-                </motion.div>
-              )}
-
-              {/* =================================================
-                  CONFIRMATION
+                  SUCCESS
                   ================================================= */}
 
               {step === "success" && (
@@ -629,29 +431,16 @@ export default function InvitationRsvp() {
                   exit="exit"
                 >
                   <p className="font-editorial text-[clamp(1.7rem,4vw,2.45rem)] leading-[1.2] text-[var(--color-espresso)]">
-                    Thank you, {guestName}.
+                    Thank you, {name}.
                   </p>
 
                   <p className="mx-auto mt-5 max-w-md font-editorial text-[clamp(1.2rem,3vw,1.7rem)] italic leading-[1.45] text-[var(--color-cinnamon)]">
-                    {existingRsvp === "ATTENDING" ? (
-                      <>
-                        Your RSVP has been confirmed as{" "}
-                        <strong className="font-[550]">
-                          you are attending.
-                        </strong>
-                      </>
-                    ) : (
-                      <>
-                        Your RSVP is recorded as{" "}
-                        <strong className="font-[550]">
-                          you are unable to attend.
-                        </strong>
-                      </>
-                    )}
+                    Your RSVP has been
+                    received. We look forward
+                    to celebrating with you.
                   </p>
                 </motion.div>
               )}
-
             </AnimatePresence>
           </div>
         </div>
