@@ -45,8 +45,17 @@ export default function InvitationPalette() {
           viewport={scrollViewport}
           transition={revealTransition}
         >
-          <p className="font-body text-[0.48rem] font-medium uppercase tracking-[0.38em] text-[var(--color-muted)] sm:text-[0.5rem]">
-            Our Palette
+          <p
+            className="
+              font-body
+              text-sm
+              font-medium
+              uppercase
+              tracking-[0.2em]
+              text-[var(--color-muted)]
+            "
+          >
+            Our Colour Palette
           </p>
 
           <motion.p
@@ -57,7 +66,16 @@ export default function InvitationPalette() {
               ...revealTransition,
               delay: 0.08,
             }}
-            className="mx-auto mt-4 max-w-[460px] font-editorial text-[clamp(1.2rem,3vw,1.6rem)] leading-[1.4] text-[var(--color-espresso)]"
+            className="
+              mx-auto
+              mt-4
+              max-w-[460px]
+              font-editorial
+              text-xl
+              leading-[1.4]
+              text-[var(--color-espresso)]
+              sm:text-2xl
+            "
           >
             Colours chosen for the day.
           </motion.p>
@@ -67,7 +85,7 @@ export default function InvitationPalette() {
             COLOURS
             ================================================= */}
 
-        <div className="mt-9 flex items-start justify-center gap-2 sm:gap-8">
+        <div className="mt-9 flex items-start justify-center gap-4 sm:gap-8">
           {palette.map((colour, index) => (
             <motion.div
               key={colour.hex}
@@ -82,13 +100,30 @@ export default function InvitationPalette() {
             >
               <span
                 aria-label={`${colour.name}: ${colour.hex}`}
-                className="block h-14 w-14 rounded-full sm:h-16 sm:w-16"
+                className="
+                  block
+                  h-14
+                  w-14
+                  rounded-full
+                  sm:h-16
+                  sm:w-16
+                "
                 style={{
                   backgroundColor: colour.hex,
                 }}
               />
 
-              <span className="mt-3 font-body text-[0.4rem] font-medium uppercase tracking-[0.18em] text-[var(--color-muted)] sm:text-[0.42rem]">
+              <span
+                className="
+                  mt-3
+                  font-body
+                  text-sm
+                  font-medium
+                  uppercase
+                  tracking-[0.12em]
+                  text-[var(--color-muted)]
+                "
+              >
                 {colour.name}
               </span>
             </motion.div>

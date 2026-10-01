@@ -21,6 +21,7 @@ export default function InvitationClosing() {
       <div className="mx-auto max-w-[900px] text-center">
 
         {/* Closing label */}
+
         <motion.p
           initial={revealInitial}
           whileInView={revealAnimate}
@@ -32,12 +33,20 @@ export default function InvitationClosing() {
             duration: 1,
             ease: luxuryEase,
           }}
-          className="font-body text-[0.48rem] font-medium uppercase tracking-[0.38em] text-[var(--color-muted)] sm:text-[0.5rem]"
+          className="
+            font-body
+            text-sm
+            font-medium
+            uppercase
+            tracking-[0.2em]
+            text-[var(--color-muted)]
+          "
         >
           See you at the wedding
         </motion.p>
 
         {/* Couple portrait */}
+
         <motion.div
           initial={{
             opacity: 0,
@@ -58,7 +67,13 @@ export default function InvitationClosing() {
             delay: 0.12,
             ease: luxuryEase,
           }}
-          className="mx-auto mt-10 max-w-[760px] overflow-hidden rounded-[var(--radius-lg)]"
+          className="
+            mx-auto
+            mt-10
+            max-w-[760px]
+            overflow-hidden
+            rounded-[var(--radius-lg)]
+          "
         >
           <img
             src={darkCoupleImage}
@@ -69,6 +84,7 @@ export default function InvitationClosing() {
         </motion.div>
 
         {/* Couple signature */}
+
         <motion.h2
           initial={{
             opacity: 0,
@@ -89,7 +105,14 @@ export default function InvitationClosing() {
             delay: 0.28,
             ease: luxuryEase,
           }}
-          className="mt-10 font-display text-[clamp(3.5rem,8vw,6rem)] leading-[1.1] text-[var(--color-espresso)]"
+          className="
+            mt-10
+            font-display
+            text-5xl
+            leading-tight
+            text-[var(--color-espresso)]
+            sm:text-6xl
+          "
         >
           Manuel &amp; Sharon
         </motion.h2>

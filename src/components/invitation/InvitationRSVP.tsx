@@ -268,7 +268,7 @@ export default function InvitationRsvp() {
           {/* SECTION LABEL */}
 
           <ScrollReveal>
-            <p className="font-body text-[0.48rem] font-medium uppercase tracking-[0.38em] text-[var(--color-muted)] sm:text-[0.5rem]">
+            <p className="font-body text-sm font-medium uppercase tracking-[0.2em] text-[var(--color-muted)]">
               RSVP
             </p>
           </ScrollReveal>
@@ -288,7 +288,7 @@ export default function InvitationRsvp() {
                   animate="animate"
                   exit="exit"
                 >
-                  <p className="font-editorial text-[clamp(1.55rem,3.5vw,2.2rem)] leading-[1.25] text-[var(--color-espresso)]">
+                  <p className="font-editorial text-2xl leading-[1.25] text-[var(--color-espresso)] sm:text-3xl">
                     We have a seat specially saved for you.
                   </p>
 
@@ -299,7 +299,7 @@ export default function InvitationRsvp() {
                     <div>
                       <label
                         htmlFor="rsvp-name"
-                        className="block text-left font-body text-[0.42rem] font-medium uppercase tracking-[0.28em] text-[var(--color-muted)]"
+                        className="block text-left font-body text-sm font-medium uppercase tracking-[0.16em] text-[var(--color-muted)]"
                       >
                         Full name
                       </label>
@@ -338,7 +338,7 @@ export default function InvitationRsvp() {
                     <div>
                       <label
                         htmlFor="rsvp-phone"
-                        className="block text-left font-body text-[0.42rem] font-medium uppercase tracking-[0.28em] text-[var(--color-muted)]"
+                        className="block text-left font-body text-sm font-medium uppercase tracking-[0.16em] text-[var(--color-muted)]"
                       >
                         Phone number
                       </label>
@@ -378,7 +378,7 @@ export default function InvitationRsvp() {
                     <div>
                       <label
                         htmlFor="rsvp-message"
-                        className="block text-left font-body text-[0.42rem] font-medium uppercase tracking-[0.28em] text-[var(--color-muted)]"
+                        className="block text-left font-body text-sm font-medium uppercase tracking-[0.16em] text-[var(--color-muted)]"
                       >
                         A message for the couple{" "}
                         <span className="tracking-normal">

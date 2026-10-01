@@ -31,7 +31,13 @@ export default function InvitationDetails() {
           whileInView={revealAnimate}
           viewport={scrollViewport}
           transition={revealTransition}
-          className="font-editorial text-[clamp(2.1rem,5vw,3.5rem)] leading-[1.05] text-[var(--color-espresso)]"
+          className="
+            font-editorial
+            text-4xl
+            leading-tight
+            text-[var(--color-espresso)]
+            sm:text-5xl
+          "
         >
           Saturday, October 24, 2026
         </motion.p>
@@ -48,7 +54,15 @@ export default function InvitationDetails() {
             ...revealTransition,
             delay: 0.08,
           }}
-          className="mt-5 font-body text-[0.48rem] font-medium uppercase tracking-[0.32em] text-[var(--color-muted)] sm:text-[0.52rem]"
+          className="
+            mt-5
+            font-body
+            text-sm
+            font-medium
+            uppercase
+            tracking-[0.2em]
+            text-[var(--color-muted)]
+          "
         >
           At 2:00 PM • GMT
         </motion.p>
@@ -90,7 +104,15 @@ export default function InvitationDetails() {
           }}
           className="mt-16"
         >
-          <p className="font-editorial text-[clamp(1.8rem,4vw,2.6rem)] leading-none text-[var(--color-espresso)]">
+          <p
+            className="
+              font-editorial
+              text-3xl
+              leading-tight
+              text-[var(--color-espresso)]
+              sm:text-4xl
+            "
+          >
             Lotus Garden
           </p>
 
@@ -102,7 +124,15 @@ export default function InvitationDetails() {
               ...revealTransition,
               delay: 0.08,
             }}
-            className="mt-3 font-body text-[0.48rem] font-medium uppercase tracking-[0.38em] text-[var(--color-muted)] sm:text-[0.52rem]"
+            className="
+              mt-3
+              font-body
+              text-sm
+              font-medium
+              uppercase
+              tracking-[0.2em]
+              text-[var(--color-muted)]
+            "
           >
             Adjiringanor
           </motion.p>
