@@ -13,6 +13,9 @@ import ScrollReveal from "../motion/ScrollReveal"
 const RSVP_DRAFT_KEY =
   "themanforshay-rsvp-draft"
 
+const RSVP_SUBMITTED_KEY =
+  "themanforshay-rsvp-submitted"
+
 type RsvpDraft = {
   name: string
   phone: string
@@ -123,8 +126,15 @@ export default function InvitationRsvp() {
     useState(false)
 
   /*
-   * Save the unfinished RSVP locally so
-   * refreshing the page does not erase it.
+   * Save unfinished RSVP data locally.
+   *
+   * This allows the guest to refresh the page
+   * without losing what they have entered.
+   *
+   * IMPORTANT:
+   * This effect does NOT mark the RSVP as submitted.
+   * Submission is only recorded after Supabase
+   * confirms a successful RSVP.
    */
   useEffect(() => {
     if (
@@ -135,6 +145,7 @@ export default function InvitationRsvp() {
       sessionStorage.removeItem(
         RSVP_DRAFT_KEY,
       )
+
       return
     }
 
@@ -155,6 +166,8 @@ export default function InvitationRsvp() {
    * Supabase RPC function.
    */
   const handleSubmit = async () => {
+    if (isLoading) return
+
     const trimmedName = name.trim()
     const trimmedPhone = phone.trim()
     const trimmedMessage = message.trim()
@@ -202,15 +215,33 @@ export default function InvitationRsvp() {
         return
       }
 
+      /*
+       * The RSVP has now been successfully
+       * recorded in Supabase.
+       *
+       * Mark the session as submitted BEFORE
+       * navigating to /closing.
+       */
+      sessionStorage.setItem(
+        RSVP_SUBMITTED_KEY,
+        "true",
+      )
+
+      /*
+       * The unfinished draft is no longer needed.
+       */
       sessionStorage.removeItem(
         RSVP_DRAFT_KEY,
       )
 
+      /*
+       * Show the confirmation message first.
+       */
       setStep("success")
 
       /*
-       * Give the confirmation a moment to breathe
-       * before moving to the closing page.
+       * Then move to the dedicated closing
+       * experience.
        */
       window.setTimeout(() => {
         navigate("/closing", {
@@ -233,6 +264,7 @@ export default function InvitationRsvp() {
     >
       <div className="mx-auto max-w-[760px] rounded-[20px] border border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-8 sm:px-8 sm:py-10">
         <div className="mx-auto max-w-[680px] text-center">
+
           {/* SECTION LABEL */}
           <ScrollReveal>
             <p className="font-body text-[0.48rem] font-medium uppercase tracking-[0.38em] text-[var(--color-muted)] sm:text-[0.5rem]">
@@ -242,6 +274,7 @@ export default function InvitationRsvp() {
 
           <div className="mt-7">
             <AnimatePresence mode="wait">
+
               {/* =================================================
                   FORM
                   ================================================= */}
@@ -259,6 +292,7 @@ export default function InvitationRsvp() {
                   </p>
 
                   <div className="mx-auto mt-8 max-w-[500px] space-y-6">
+
                     {/* NAME */}
                     <div>
                       <label
@@ -272,16 +306,18 @@ export default function InvitationRsvp() {
                         id="rsvp-name"
                         type="text"
                         value={name}
-                        onChange={(event) =>
+                        onChange={(event) => {
                           setName(
                             event.target.value,
                           )
-                        }
+                          setError("")
+                        }}
                         onKeyDown={(event) => {
                           if (
-                            event.key ===
-                            "Enter"
+                            event.key === "Enter"
                           ) {
+                            event.preventDefault()
+
                             document
                               .getElementById(
                                 "rsvp-phone",
@@ -308,16 +344,18 @@ export default function InvitationRsvp() {
                         id="rsvp-phone"
                         type="tel"
                         value={phone}
-                        onChange={(event) =>
+                        onChange={(event) => {
                           setPhone(
                             event.target.value,
                           )
-                        }
+                          setError("")
+                        }}
                         onKeyDown={(event) => {
                           if (
-                            event.key ===
-                            "Enter"
+                            event.key === "Enter"
                           ) {
+                            event.preventDefault()
+
                             document
                               .getElementById(
                                 "rsvp-message",
@@ -347,11 +385,12 @@ export default function InvitationRsvp() {
                       <textarea
                         id="rsvp-message"
                         value={message}
-                        onChange={(event) =>
+                        onChange={(event) => {
                           setMessage(
                             event.target.value,
                           )
-                        }
+                          setError("")
+                        }}
                         placeholder="Leave Manuel & Sharon a message..."
                         maxLength={500}
                         rows={1}
@@ -405,10 +444,14 @@ export default function InvitationRsvp() {
                       type="button"
                       onClick={handleSubmit}
                       disabled={isLoading}
-                      whileTap={{
-                        scale: 0.98,
-                      }}
-                      className="invitation-button"
+                      whileTap={
+                        !isLoading
+                          ? {
+                              scale: 0.98,
+                            }
+                          : undefined
+                      }
+                      className="invitation-button disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {isLoading
                         ? "Sending..."
@@ -441,6 +484,7 @@ export default function InvitationRsvp() {
                   </p>
                 </motion.div>
               )}
+
             </AnimatePresence>
           </div>
         </div>

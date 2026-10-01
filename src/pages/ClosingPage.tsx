@@ -12,34 +12,48 @@ import {
   imageRevealTransition,
 } from "../components/motion/motion"
 
-const ATTENDING_KEY = "themanforshay-attending"
+const RSVP_SUBMITTED_KEY =
+  "themanforshay-rsvp-submitted"
 
 export default function ClosingPage() {
   const navigate = useNavigate()
 
-  const [showImage, setShowImage] = useState(false)
-  const [showFinalText, setShowFinalText] = useState(false)
-  const [showBackButton, setShowBackButton] = useState(false)
+  const [showImage, setShowImage] =
+    useState(false)
+
+  const [showFinalText, setShowFinalText] =
+    useState(false)
+
+  const [showBackButton, setShowBackButton] =
+    useState(false)
 
   /*
-   * Verify that the guest is allowed to access
-   * the closing experience.
-   *
-   * The scripture remains on screen for 5 seconds
-   * before the closing composition begins.
+   * Verify that the guest has successfully
+   * submitted an RSVP before allowing access
+   * to the closing experience.
    */
   useEffect(() => {
-    const isAttending =
-      sessionStorage.getItem(ATTENDING_KEY) === "true"
+    const hasSubmittedRsvp =
+      sessionStorage.getItem(
+        RSVP_SUBMITTED_KEY,
+      ) === "true"
 
-    if (!isAttending) {
-      navigate("/home", { replace: true })
+    if (!hasSubmittedRsvp) {
+      navigate("/home", {
+        replace: true,
+      })
+
       return
     }
 
-    const imageTimer = window.setTimeout(() => {
-      setShowImage(true)
-    }, 5000)
+    /*
+     * Keep the scripture on screen for five
+     * seconds before revealing the photograph.
+     */
+    const imageTimer =
+      window.setTimeout(() => {
+        setShowImage(true)
+      }, 5000)
 
     return () => {
       window.clearTimeout(imageTimer)
@@ -47,16 +61,16 @@ export default function ClosingPage() {
   }, [navigate])
 
   /*
-   * Once the photograph has appeared,
-   * allow it to breathe before revealing
-   * the closing message.
+   * Once the photograph appears, allow it
+   * to breathe before revealing the final message.
    */
   useEffect(() => {
     if (!showImage) return
 
-    const finalTextTimer = window.setTimeout(() => {
-      setShowFinalText(true)
-    }, 1500)
+    const finalTextTimer =
+      window.setTimeout(() => {
+        setShowFinalText(true)
+      }, 1500)
 
     return () => {
       window.clearTimeout(finalTextTimer)
@@ -64,16 +78,16 @@ export default function ClosingPage() {
   }, [showImage])
 
   /*
-   * Once the closing message has appeared,
-   * give it room to breathe before introducing
-   * the return button.
+   * Once the closing message appears,
+   * introduce the return button.
    */
   useEffect(() => {
     if (!showFinalText) return
 
-    const backButtonTimer = window.setTimeout(() => {
-      setShowBackButton(true)
-    }, 1200)
+    const backButtonTimer =
+      window.setTimeout(() => {
+        setShowBackButton(true)
+      }, 1200)
 
     return () => {
       window.clearTimeout(backButtonTimer)
@@ -82,7 +96,9 @@ export default function ClosingPage() {
 
   return (
     <main className="relative min-h-[100svh] overflow-hidden bg-transparent">
+
       <div className="flex min-h-[100svh] w-full items-center justify-center px-[var(--page-padding)] py-16 sm:py-20">
+
         <div className="w-full max-w-[760px]">
 
           {/* =================================================
@@ -193,7 +209,9 @@ export default function ClosingPage() {
               >
                 <button
                   type="button"
-                  onClick={() => navigate("/home")}
+                  onClick={() =>
+                    navigate("/home")
+                  }
                   className="invitation-button whitespace-nowrap"
                 >
                   Back to Invitation
