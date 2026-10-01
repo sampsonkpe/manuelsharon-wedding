@@ -4,6 +4,15 @@
  * ============================================================
  *
  * Motion language:
+ * - restrained
+ * - editorial
+ * - soft
+ * - cinematic
+ * - fluid
+ *
+ * The animation should feel like part of the
+ * invitation rather than an interface layered on top.
+ */
 
 /* ============================================================
    EASING

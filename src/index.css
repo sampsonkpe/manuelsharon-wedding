@@ -41,15 +41,15 @@
   --font-body: "Montserrat", sans-serif;
 
   /* -------------------------------------------------------
-     Motion
-     ------------------------------------------------------- */
+   Motion
+   ------------------------------------------------------- */
 
   --ease-luxury: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-soft: cubic-bezier(0.25, 0.1, 0.25, 1);
 
-  --duration-fast: 240ms;
-  --duration-base: 500ms;
-  --duration-slow: 800ms;
+  --duration-fast: 500ms;
+  --duration-base: 1000ms;
+  --duration-slow: 1300ms;
   --duration-reveal: 1000ms;
 
   /* -------------------------------------------------------
@@ -213,7 +213,7 @@ input:focus-visible {
   border-color: var(--color-caramel);
   background: var(--color-caramel);
   color: #fffaf5;
-  transform: translateY(-1px);
+  transform: translateY(-0.5px);
 }
 
 .invitation-button:active {

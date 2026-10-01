@@ -4,22 +4,23 @@ import { useEffect, useRef, useState } from "react"
 import envelopeVideo from "../assets/invitation/envelope.mp4"
 import {
   luxuryEase,
-  revealInitial,
-  revealAnimate,
-  revealTransition,
+  cinematicInitial,
+  cinematicAnimate,
+  cinematicTransition,
+  durationCinematic,
+  durationPage,
+  staggerSmall,
 } from "../components/motion/motion"
 
-const pageTransition = {
-  duration: 1,
-  ease: luxuryEase,
-}
-
 const finalZoomTransition = {
-  duration: 4.5,
+  duration: durationCinematic + 2.7,
   ease: luxuryEase,
 }
 
-const nameStagger = 0.18
+const pageTransition = {
+  duration: durationPage,
+  ease: luxuryEase,
+}
 
 export default function SplashPage() {
   const navigate = useNavigate()
@@ -29,6 +30,15 @@ export default function SplashPage() {
   const [isFinalZoom, setIsFinalZoom] = useState(false)
   const [showWelcome, setShowWelcome] = useState(false)
   const [showNames, setShowNames] = useState(false)
+
+  /*
+   * ============================================================
+   * INTRO SEQUENCE
+   * ============================================================
+   *
+   * The typography appears in relation to the envelope
+   * animation rather than immediately.
+   */
 
   useEffect(() => {
     const welcomeTimer = window.setTimeout(() => {
@@ -45,17 +55,30 @@ export default function SplashPage() {
     }
   }, [])
 
+  /*
+   * ============================================================
+   * LEAVING SPLASH
+   * ============================================================
+   *
+   * The complete composition remains visible briefly before
+   * the invitation itself is revealed.
+   */
+
   useEffect(() => {
     if (!showNames) return
 
-    // Wait for the names to fully reveal,
-    // then hold the complete composition for 3 seconds.
     const leaveTimer = window.setTimeout(() => {
       setIsLeaving(true)
 
-      window.setTimeout(() => {
-        navigate("/home", { replace: true })
-      }, 800)
+      const navigationTimer = window.setTimeout(() => {
+        navigate("/home", {
+          replace: true,
+        })
+      }, durationPage * 1000)
+
+      return () => {
+        window.clearTimeout(navigationTimer)
+      }
     }, 4800)
 
     return () => {
@@ -63,17 +86,33 @@ export default function SplashPage() {
     }
   }, [showNames, navigate])
 
+  /*
+   * ============================================================
+   * ENVELOPE VIDEO
+   * ============================================================
+   *
+   * Begin the final cinematic zoom shortly before the video
+   * reaches its end.
+   */
+
   const handleTimeUpdate = () => {
     const video = videoRef.current
 
     if (!video || !video.duration) return
 
-    const remaining = video.duration - video.currentTime
+    const remaining =
+      video.duration - video.currentTime
 
     if (remaining <= 3.5) {
       setIsFinalZoom(true)
     }
   }
+
+  /*
+   * ============================================================
+   * AUTOPLAY
+   * ============================================================
+   */
 
   useEffect(() => {
     const video = videoRef.current
@@ -81,19 +120,30 @@ export default function SplashPage() {
     if (!video) return
 
     video.play().catch(() => {
-      // Some browsers may block autoplay.
+      /*
+       * Autoplay may be blocked by the browser.
+       * The muted + playsInline configuration normally
+       * allows playback on modern browsers.
+       */
     })
   }, [])
 
   return (
     <motion.main
       className="fixed inset-0 z-[100] h-[100svh] w-full overflow-hidden bg-[var(--color-envelope)]"
-      initial={{ opacity: 1 }}
-      animate={{ opacity: isLeaving ? 0 : 1 }}
+      initial={{
+        opacity: 1,
+      }}
+      animate={{
+        opacity: isLeaving ? 0 : 1,
+      }}
       transition={pageTransition}
       aria-label="Wedding invitation"
     >
-      {/* ENVELOPE */}
+      {/* =================================================
+          ENVELOPE VIDEO
+          ================================================= */}
+
       <motion.video
         ref={videoRef}
         className="h-full w-full object-cover"
@@ -108,39 +158,73 @@ export default function SplashPage() {
         transition={finalZoomTransition}
         aria-hidden="true"
       >
-        <source src={envelopeVideo} type="video/mp4" />
+        <source
+          src={envelopeVideo}
+          type="video/mp4"
+        />
       </motion.video>
 
-      {/* INTRO TYPOGRAPHY */}
+      {/* =================================================
+          INTRO TYPOGRAPHY
+          ================================================= */}
+
       <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-[var(--page-padding)]">
         <div className="flex w-full max-w-[1100px] flex-col items-center text-center">
+
           {/* WELCOME */}
+
           <motion.p
-            initial={revealInitial}
-            animate={showWelcome ? revealAnimate : revealInitial}
-            transition={revealTransition}
+            initial={cinematicInitial}
+            animate={
+              showWelcome
+                ? cinematicAnimate
+                : cinematicInitial
+            }
+            transition={{
+              ...cinematicTransition,
+              duration:
+                durationCinematic - 0.5,
+            }}
             className="font-body text-[0.46rem] font-medium uppercase leading-[1.9] tracking-[0.34em] text-[var(--color-muted)] sm:text-[0.5rem]"
           >
-            <span className="block">Welcome to</span>
-            <span className="block">the Wedding of</span>
+            <span className="block">
+              Welcome to
+            </span>
+
+            <span className="block">
+              the Wedding of
+            </span>
           </motion.p>
 
           {/* COUPLE */}
+
           <h1 className="mt-6 flex flex-wrap justify-center gap-x-[0.3em] font-display text-[clamp(3.5rem,8vw,6.5rem)] leading-[1.18] text-[var(--color-espresso)]">
+
             <motion.span
-              initial={revealInitial}
-              animate={showNames ? revealAnimate : revealInitial}
-              transition={revealTransition}
+              initial={cinematicInitial}
+              animate={
+                showNames
+                  ? cinematicAnimate
+                  : cinematicInitial
+              }
+              transition={{
+                ...cinematicTransition,
+                delay: staggerSmall,
+              }}
             >
               Manuel &amp;
             </motion.span>
 
             <motion.span
-              initial={revealInitial}
-              animate={showNames ? revealAnimate : revealInitial}
+              initial={cinematicInitial}
+              animate={
+                showNames
+                  ? cinematicAnimate
+                  : cinematicInitial
+              }
               transition={{
-                ...revealTransition,
-                delay: nameStagger,
+                ...cinematicTransition,
+                delay: staggerSmall * 2,
               }}
             >
               Sharon
@@ -148,12 +232,17 @@ export default function SplashPage() {
           </h1>
 
           {/* HASHTAG */}
+
           <motion.p
-            initial={revealInitial}
-            animate={showNames ? revealAnimate : revealInitial}
+            initial={cinematicInitial}
+            animate={
+              showNames
+                ? cinematicAnimate
+                : cinematicInitial
+            }
             transition={{
-              ...revealTransition,
-              delay: 0.35,
+              ...cinematicTransition,
+              delay: staggerSmall * 4,
             }}
             className="mt-5 font-body text-[0.42rem] font-medium uppercase tracking-[0.32em] text-[var(--color-muted)] sm:text-[0.46rem]"
           >
