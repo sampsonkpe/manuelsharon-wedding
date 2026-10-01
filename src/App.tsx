@@ -6,6 +6,7 @@ import {
   useLocation,
 } from "react-router-dom"
 import { AnimatePresence } from "framer-motion"
+import { useState } from "react"
 
 import SplashPage from "./pages/SplashPage"
 import HomePage from "./pages/HomePage"
@@ -26,6 +27,25 @@ function EventHome() {
 
 function AnimatedRoutes() {
   const location = useLocation()
+
+  /*
+   * ============================================================
+   * REFRESH INTRO
+   * ============================================================
+   *
+   * When the browser is refreshed while already on /home,
+   * replay the invitation opening sequence over the HomePage.
+   *
+   * This state is initialised only once when AnimatedRoutes
+   * mounts, so normal navigation to /home does not replay it.
+   */
+
+  const [showRefreshIntro, setShowRefreshIntro] =
+    useState(() => location.pathname === "/home")
+
+  const handleRefreshIntroComplete = () => {
+    setShowRefreshIntro(false)
+  }
 
   const handleExitComplete = () => {
     window.scrollTo({
@@ -48,6 +68,11 @@ function AnimatedRoutes() {
           location={location}
           key={location.pathname}
         >
+
+          {/* =================================================
+              SPLASH
+              ================================================= */}
+
           <Route
             path="/"
             element={
@@ -57,14 +82,32 @@ function AnimatedRoutes() {
             }
           />
 
+          {/* =================================================
+              HOME
+              ================================================= */}
+
           <Route
             path="/home"
             element={
               <PageTransition>
-                <HomePage />
+                <div className="relative min-h-screen">
+                  <HomePage />
+
+                  {showRefreshIntro && (
+                    <SplashPage
+                      onComplete={
+                        handleRefreshIntroComplete
+                      }
+                    />
+                  )}
+                </div>
               </PageTransition>
             }
           />
+
+          {/* =================================================
+              EVENT
+              ================================================= */}
 
           <Route
             path="/event"
@@ -75,6 +118,10 @@ function AnimatedRoutes() {
             }
           />
 
+          {/* =================================================
+              CLOSING
+              ================================================= */}
+
           <Route
             path="/closing"
             element={
@@ -83,6 +130,10 @@ function AnimatedRoutes() {
               </PageTransition>
             }
           />
+
+          {/* =================================================
+              FUTURE WEDDING-DAY ROUTES
+              ================================================= */}
 
           <Route
             path="/programme"
@@ -144,6 +195,10 @@ function AnimatedRoutes() {
             }
           />
 
+          {/* =================================================
+              FALLBACK
+              ================================================= */}
+
           <Route
             path="*"
             element={
@@ -153,6 +208,7 @@ function AnimatedRoutes() {
               />
             }
           />
+
         </Routes>
       </AnimatePresence>
     </>

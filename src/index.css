@@ -41,15 +41,17 @@
   --font-body: "Montserrat", sans-serif;
 
   /*
-   * Type scale
+   * Normal readable type scale.
    *
-   * These are intentionally readable on mobile.
+   * We are deliberately avoiding tiny 0.5–0.7rem text
+   * throughout the invitation.
    */
+
   --text-body: 1rem;
   --text-body-large: 1.125rem;
-  --text-label: 0.75rem;
-  --text-button: 0.75rem;
-  --text-caption: 0.6875rem;
+  --text-label: 0.875rem;
+  --text-button: 0.875rem;
+  --text-caption: 0.75rem;
 
   /* -------------------------------------------------------
      Motion
@@ -119,10 +121,6 @@ body {
 
   text-rendering: optimizeLegibility;
 
-  /*
-   * Subtle entry when the browser refreshes the site.
-   * This is intentionally much softer than the splash transition.
-   */
   animation: page-load 900ms var(--ease-luxury) both;
 }
 
