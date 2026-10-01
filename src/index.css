@@ -41,16 +41,16 @@
   --font-body: "Montserrat", sans-serif;
 
   /* -------------------------------------------------------
-   Motion
-   ------------------------------------------------------- */
+     Motion
+     ------------------------------------------------------- */
 
   --ease-luxury: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-soft: cubic-bezier(0.25, 0.1, 0.25, 1);
 
-  --duration-fast: 500ms;
-  --duration-base: 1000ms;
-  --duration-slow: 1300ms;
-  --duration-reveal: 1000ms;
+  --duration-fast: 650ms;
+  --duration-base: 1350ms;
+  --duration-slow: 1800ms;
+  --duration-reveal: 1350ms;
 
   /* -------------------------------------------------------
      Layout
@@ -61,9 +61,6 @@
 
   --page-padding: clamp(1.25rem, 4vw, 4rem);
 
-  /*
-   * Deliberately restrained vertical rhythm.
-   */
   --space-section: clamp(4rem, 7vw, 6rem);
   --space-section-large: clamp(5rem, 10vw, 8rem);
   --space-content: clamp(2rem, 5vw, 4rem);
@@ -186,8 +183,8 @@ input:focus-visible {
   align-items: center;
   justify-content: center;
 
-  min-height: 2.75rem;
-  padding: 0.7rem 1.35rem;
+  min-height: 3rem;
+  padding: 0.8rem 1.6rem;
 
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-pill);
@@ -196,10 +193,10 @@ input:focus-visible {
   color: var(--color-espresso);
 
   font-family: var(--font-body);
-  font-size: 0.48rem;
+  font-size: 0.62rem;
   font-weight: 500;
   line-height: 1;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
 
   transition:

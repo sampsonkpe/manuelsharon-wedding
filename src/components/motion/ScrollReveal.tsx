@@ -57,12 +57,12 @@ export default function ScrollReveal({
     direction === "down"
       ? {
           opacity: 0,
-          y: -12,
+          y: -6,
           filter: "blur(3px)",
         }
       : {
           opacity: 0,
-          y: 12,
+          y: 6,
           filter: "blur(3px)",
         }
 

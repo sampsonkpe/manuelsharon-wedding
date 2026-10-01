@@ -28,27 +28,27 @@ export const luxuryEaseOut = [0, 0, 0.2, 1] as const
    DURATIONS
    ============================================================ */
 
-export const durationMicro = 0.5
+export const durationMicro = 0.65
 
-export const durationBase = 1.0
+export const durationBase = 1.35
 
-export const durationImage = 1.3
+export const durationImage = 1.8
 
-export const durationCinematic = 1.8
+export const durationCinematic = 2.4
 
-export const durationPage = 1.0
+export const durationPage = 1.4
 
-export const durationSlow = 2.0
+export const durationSlow = 2.8
 
 /* ============================================================
    STAGGER
    ============================================================ */
 
-export const staggerSmall = 0.08
+export const staggerSmall = 0.12
 
-export const staggerMedium = 0.14
+export const staggerMedium = 0.18
 
-export const staggerLarge = 0.2
+export const staggerLarge = 0.26
 
 /* ============================================================
    STANDARD REVEAL
@@ -56,7 +56,7 @@ export const staggerLarge = 0.2
 
 export const revealInitial = {
   opacity: 0,
-  y: 7,
+  y: 5,
   filter: "blur(3px)",
 }
 
@@ -107,7 +107,7 @@ export const softRevealTransition = {
 
 export const imageRevealInitial = {
   opacity: 0,
-  scale: 0.975,
+  scale: 0.98,
   filter: "blur(4px)",
 }
 
@@ -134,7 +134,7 @@ export const imageRevealTransition = {
 
 export const cinematicInitial = {
   opacity: 0,
-  scale: 0.97,
+  scale: 0.985,
   filter: "blur(5px)",
 }
 
@@ -146,7 +146,7 @@ export const cinematicAnimate = {
 
 export const cinematicExit = {
   opacity: 0,
-  scale: 0.985,
+  scale: 0.99,
   filter: "blur(4px)",
 }
 

@@ -12,8 +12,10 @@ import {
   staggerSmall,
 } from "../components/motion/motion"
 
+const ENVELOPE_PLAYBACK_RATE = 0.68
+
 const finalZoomTransition = {
-  duration: durationCinematic + 2.7,
+  duration: durationCinematic + 2.8,
   ease: luxuryEase,
 }
 
@@ -36,18 +38,20 @@ export default function SplashPage() {
    * INTRO SEQUENCE
    * ============================================================
    *
-   * The typography appears in relation to the envelope
-   * animation rather than immediately.
+   * The envelope is intentionally slower so the opening
+   * animation can actually be appreciated.
+   *
+   * Typography follows the slower cinematic pacing.
    */
 
   useEffect(() => {
     const welcomeTimer = window.setTimeout(() => {
       setShowWelcome(true)
-    }, 4000)
+    }, 5600)
 
     const namesTimer = window.setTimeout(() => {
       setShowNames(true)
-    }, 5800)
+    }, 7600)
 
     return () => {
       window.clearTimeout(welcomeTimer)
@@ -60,8 +64,8 @@ export default function SplashPage() {
    * LEAVING SPLASH
    * ============================================================
    *
-   * The complete composition remains visible briefly before
-   * the invitation itself is revealed.
+   * Keep the complete composition visible for a little longer
+   * before transitioning into the invitation.
    */
 
   useEffect(() => {
@@ -79,7 +83,7 @@ export default function SplashPage() {
       return () => {
         window.clearTimeout(navigationTimer)
       }
-    }, 4800)
+    }, 5600)
 
     return () => {
       window.clearTimeout(leaveTimer)
@@ -91,8 +95,21 @@ export default function SplashPage() {
    * ENVELOPE VIDEO
    * ============================================================
    *
-   * Begin the final cinematic zoom shortly before the video
-   * reaches its end.
+   * Slow the actual video playback rather than only animating
+   * the video container.
+   */
+
+  const handleLoadedMetadata = () => {
+    const video = videoRef.current
+
+    if (!video) return
+
+    video.playbackRate = ENVELOPE_PLAYBACK_RATE
+  }
+
+  /*
+   * Begin the final cinematic zoom shortly before
+   * the video reaches its end.
    */
 
   const handleTimeUpdate = () => {
@@ -118,6 +135,8 @@ export default function SplashPage() {
     const video = videoRef.current
 
     if (!video) return
+
+    video.playbackRate = ENVELOPE_PLAYBACK_RATE
 
     video.play().catch(() => {
       /*
@@ -151,6 +170,7 @@ export default function SplashPage() {
         muted
         playsInline
         preload="auto"
+        onLoadedMetadata={handleLoadedMetadata}
         onTimeUpdate={handleTimeUpdate}
         animate={{
           scale: isFinalZoom ? 1.26 : 1,
@@ -182,10 +202,9 @@ export default function SplashPage() {
             }
             transition={{
               ...cinematicTransition,
-              duration:
-                durationCinematic - 0.5,
+              duration: durationCinematic,
             }}
-            className="font-body text-[0.46rem] font-medium uppercase leading-[1.9] tracking-[0.34em] text-[var(--color-muted)] sm:text-[0.5rem]"
+            className="font-body text-[0.56rem] font-medium uppercase leading-[1.9] tracking-[0.34em] text-[var(--color-muted)] sm:text-[0.62rem]"
           >
             <span className="block">
               Welcome to
@@ -198,8 +217,19 @@ export default function SplashPage() {
 
           {/* COUPLE */}
 
-          <h1 className="mt-6 flex flex-wrap justify-center gap-x-[0.3em] font-display text-[clamp(3.5rem,8vw,6.5rem)] leading-[1.18] text-[var(--color-espresso)]">
-
+          <h1
+            className="
+              relative
+              top-4
+              flex
+              flex-col
+              items-center
+              font-display
+              text-[clamp(4.2rem,10vw,7rem)]
+              leading-[0.95]
+              text-[var(--color-espresso)]
+            "
+          >
             <motion.span
               initial={cinematicInitial}
               animate={
@@ -212,7 +242,7 @@ export default function SplashPage() {
                 delay: staggerSmall,
               }}
             >
-              Manuel &amp;
+              Manuel
             </motion.span>
 
             <motion.span
@@ -225,6 +255,22 @@ export default function SplashPage() {
               transition={{
                 ...cinematicTransition,
                 delay: staggerSmall * 2,
+              }}
+              className="my-1 text-[0.55em]"
+            >
+              &amp;
+            </motion.span>
+
+            <motion.span
+              initial={cinematicInitial}
+              animate={
+                showNames
+                  ? cinematicAnimate
+                  : cinematicInitial
+              }
+              transition={{
+                ...cinematicTransition,
+                delay: staggerSmall * 3,
               }}
             >
               Sharon
@@ -244,7 +290,7 @@ export default function SplashPage() {
               ...cinematicTransition,
               delay: staggerSmall * 4,
             }}
-            className="mt-5 font-body text-[0.42rem] font-medium uppercase tracking-[0.32em] text-[var(--color-muted)] sm:text-[0.46rem]"
+            className="mt-6 font-body text-[0.5rem] font-medium uppercase tracking-[0.32em] text-[var(--color-muted)] sm:text-[0.54rem]"
           >
             #THEMANFORSHAY
           </motion.p>
