@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 
 import envelopeVideo from "../assets/invitation/envelope.mp4"
+import envelopePoster from "../assets/invitation/envelope-poster.jpg"
 
 import {
   luxuryEase,
@@ -315,6 +316,7 @@ export default function SplashPage({
         muted
         playsInline
         preload="metadata"
+        poster={envelopePoster}
         onLoadedData={handleVideoReady}
         onCanPlay={handleVideoReady}
         onTimeUpdate={handleTimeUpdate}
