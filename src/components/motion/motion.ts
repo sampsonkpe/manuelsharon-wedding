@@ -10,8 +10,9 @@
  * - cinematic
  * - fluid
  *
- * The animation should feel like part of the
- * invitation rather than an interface layered on top.
+ * Motion is deliberately slower than a conventional website.
+ * The invitation should feel like a physical piece of
+ * stationery unfolding rather than an interface animating.
  */
 
 /* ============================================================
@@ -32,11 +33,11 @@ export const durationMicro = 0.65
 
 export const durationBase = 1.35
 
-export const durationImage = 1.8
+export const durationImage = 1.7
 
 export const durationCinematic = 2.4
 
-export const durationPage = 1.4
+export const durationPage = 1.2
 
 export const durationSlow = 2.8
 
@@ -44,11 +45,11 @@ export const durationSlow = 2.8
    STAGGER
    ============================================================ */
 
-export const staggerSmall = 0.12
+export const staggerSmall = 0.14
 
-export const staggerMedium = 0.18
+export const staggerMedium = 0.22
 
-export const staggerLarge = 0.26
+export const staggerLarge = 0.32
 
 /* ============================================================
    STANDARD REVEAL
@@ -56,7 +57,7 @@ export const staggerLarge = 0.26
 
 export const revealInitial = {
   opacity: 0,
-  y: 5,
+  y: 10,
   filter: "blur(3px)",
 }
 
@@ -68,7 +69,7 @@ export const revealAnimate = {
 
 export const revealExit = {
   opacity: 0,
-  y: -4,
+  y: -6,
   filter: "blur(2px)",
 }
 
@@ -107,7 +108,7 @@ export const softRevealTransition = {
 
 export const imageRevealInitial = {
   opacity: 0,
-  scale: 0.98,
+  scale: 0.975,
   filter: "blur(4px)",
 }
 
@@ -134,7 +135,7 @@ export const imageRevealTransition = {
 
 export const cinematicInitial = {
   opacity: 0,
-  scale: 0.985,
+  scale: 0.97,
   filter: "blur(5px)",
 }
 
@@ -146,7 +147,7 @@ export const cinematicAnimate = {
 
 export const cinematicExit = {
   opacity: 0,
-  scale: 0.99,
+  scale: 0.985,
   filter: "blur(4px)",
 }
 

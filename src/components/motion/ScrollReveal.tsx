@@ -2,10 +2,8 @@ import type { ReactNode } from "react"
 import {
   motion,
   useInView,
-  useMotionValueEvent,
-  useScroll,
 } from "framer-motion"
-import { useRef, useState } from "react"
+import { useRef } from "react"
 import {
   durationBase,
   luxuryEase,
@@ -27,50 +25,20 @@ export default function ScrollReveal({
   const ref = useRef<HTMLDivElement>(null)
 
   const isInView = useInView(ref, {
-    amount: 0.28,
-    margin: "-12% 0px -12% 0px",
+    amount: 0.22,
+    margin: "-10% 0px -10% 0px",
     once,
   })
-
-  const { scrollY } = useScroll()
-
-  const [direction, setDirection] =
-    useState<"up" | "down">("down")
-
-  useMotionValueEvent(
-    scrollY,
-    "change",
-    (current) => {
-      const previous = scrollY.getPrevious()
-
-      if (previous === undefined) return
-
-      if (current > previous) {
-        setDirection("down")
-      } else if (current < previous) {
-        setDirection("up")
-      }
-    },
-  )
-
-  const hiddenState =
-    direction === "down"
-      ? {
-          opacity: 0,
-          y: -6,
-          filter: "blur(3px)",
-        }
-      : {
-          opacity: 0,
-          y: 6,
-          filter: "blur(3px)",
-        }
 
   return (
     <motion.div
       ref={ref}
       className={className}
-      initial={hiddenState}
+      initial={{
+        opacity: 0,
+        y: 14,
+        filter: "blur(3px)",
+      }}
       animate={
         isInView
           ? {
@@ -78,7 +46,11 @@ export default function ScrollReveal({
               y: 0,
               filter: "blur(0px)",
             }
-          : hiddenState
+          : {
+              opacity: 0,
+              y: 14,
+              filter: "blur(3px)",
+            }
       }
       transition={{
         duration: durationBase,

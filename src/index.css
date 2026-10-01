@@ -40,6 +40,17 @@
   --font-editorial: "Cormorant Garamond", serif;
   --font-body: "Montserrat", sans-serif;
 
+  /*
+   * Type scale
+   *
+   * These are intentionally readable on mobile.
+   */
+  --text-body: 1rem;
+  --text-body-large: 1.125rem;
+  --text-label: 0.75rem;
+  --text-button: 0.75rem;
+  --text-caption: 0.6875rem;
+
   /* -------------------------------------------------------
      Motion
      ------------------------------------------------------- */
@@ -49,7 +60,7 @@
 
   --duration-fast: 650ms;
   --duration-base: 1350ms;
-  --duration-slow: 1800ms;
+  --duration-slow: 1700ms;
   --duration-reveal: 1350ms;
 
   /* -------------------------------------------------------
@@ -99,12 +110,20 @@ body {
   color: var(--color-foreground);
 
   font-family: var(--font-body);
+  font-size: var(--text-body);
   font-weight: 400;
+  line-height: 1.6;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
   text-rendering: optimizeLegibility;
+
+  /*
+   * Subtle entry when the browser refreshes the site.
+   * This is intentionally much softer than the splash transition.
+   */
+  animation: page-load 900ms var(--ease-luxury) both;
 }
 
 body,
@@ -144,12 +163,29 @@ a {
 
 
 /* =========================================================
+   PAGE LOAD
+   ========================================================= */
+
+@keyframes page-load {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+
+/* =========================================================
    FOCUS
    ========================================================= */
 
 button:focus-visible,
 a:focus-visible,
-input:focus-visible {
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
   outline: 1px solid var(--color-caramel);
   outline-offset: 6px;
 }
@@ -184,7 +220,7 @@ input:focus-visible {
   justify-content: center;
 
   min-height: 3rem;
-  padding: 0.8rem 1.6rem;
+  padding: 0.8rem 1.5rem;
 
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-pill);
@@ -193,10 +229,10 @@ input:focus-visible {
   color: var(--color-espresso);
 
   font-family: var(--font-body);
-  font-size: 0.62rem;
+  font-size: var(--text-button);
   font-weight: 500;
-  line-height: 1;
-  letter-spacing: 0.24em;
+  line-height: 1.2;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 
   transition:
@@ -210,11 +246,26 @@ input:focus-visible {
   border-color: var(--color-caramel);
   background: var(--color-caramel);
   color: #fffaf5;
-  transform: translateY(-0.5px);
+  transform: translateY(-1px);
 }
 
 .invitation-button:active {
   transform: translateY(0);
+}
+
+
+/* =========================================================
+   FORM CONTROLS
+   ========================================================= */
+
+input,
+textarea,
+select {
+  font-size: 1rem;
+}
+
+::placeholder {
+  opacity: 1;
 }
 
 
@@ -235,6 +286,10 @@ input:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  body {
+    animation: none;
   }
 
   *,

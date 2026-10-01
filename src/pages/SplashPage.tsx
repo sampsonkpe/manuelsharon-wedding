@@ -28,6 +28,8 @@ export default function SplashPage() {
   const navigate = useNavigate()
   const videoRef = useRef<HTMLVideoElement>(null)
 
+  const [pageLoaded, setPageLoaded] = useState(false)
+  const [hasOpened, setHasOpened] = useState(false)
   const [isLeaving, setIsLeaving] = useState(false)
   const [isFinalZoom, setIsFinalZoom] = useState(false)
   const [showWelcome, setShowWelcome] = useState(false)
@@ -35,68 +37,79 @@ export default function SplashPage() {
 
   /*
    * ============================================================
-   * INTRO SEQUENCE
+   * PAGE LOAD
    * ============================================================
    *
-   * The envelope is intentionally slower so the opening
-   * animation can actually be appreciated.
-   *
-   * Typography follows the slower cinematic pacing.
+   * Keep the envelope closed until the browser has completed
+   * loading the page.
    */
 
   useEffect(() => {
-    const welcomeTimer = window.setTimeout(() => {
-      setShowWelcome(true)
-    }, 5600)
+    const handleLoad = () => {
+      setPageLoaded(true)
+    }
 
-    const namesTimer = window.setTimeout(() => {
-      setShowNames(true)
-    }, 7600)
+    if (document.readyState === "complete") {
+      const timer = window.setTimeout(() => {
+        setPageLoaded(true)
+      }, 500)
+
+      return () => {
+        window.clearTimeout(timer)
+      }
+    }
+
+    window.addEventListener("load", handleLoad)
 
     return () => {
-      window.clearTimeout(welcomeTimer)
-      window.clearTimeout(namesTimer)
+      window.removeEventListener("load", handleLoad)
     }
   }, [])
 
   /*
    * ============================================================
-   * LEAVING SPLASH
+   * OPEN INVITATION
    * ============================================================
-   *
-   * Keep the complete composition visible for a little longer
-   * before transitioning into the invitation.
    */
 
-  useEffect(() => {
-    if (!showNames) return
+  const handleOpenInvitation = () => {
+    if (!pageLoaded || hasOpened) return
 
-    const leaveTimer = window.setTimeout(() => {
-      setIsLeaving(true)
+    const video = videoRef.current
 
-      const navigationTimer = window.setTimeout(() => {
-        navigate("/home", {
-          replace: true,
-        })
-      }, durationPage * 1000)
+    if (!video) return
 
-      return () => {
-        window.clearTimeout(navigationTimer)
-      }
-    }, 5600)
+    setHasOpened(true)
 
-    return () => {
-      window.clearTimeout(leaveTimer)
-    }
-  }, [showNames, navigate])
+    video.playbackRate = ENVELOPE_PLAYBACK_RATE
+
+    video.currentTime = 0
+
+    video.play().catch(() => {
+      /*
+       * The interaction itself gives the browser permission
+       * to start playback, so autoplay restrictions should
+       * not normally apply here.
+       */
+    })
+
+    /*
+     * Typography begins after the envelope has had time to
+     * establish the opening sequence.
+     */
+    window.setTimeout(() => {
+      setShowWelcome(true)
+    }, 2600)
+
+    window.setTimeout(() => {
+      setShowNames(true)
+    }, 4700)
+  }
 
   /*
    * ============================================================
-   * ENVELOPE VIDEO
+   * VIDEO METADATA
    * ============================================================
-   *
-   * Slow the actual video playback rather than only animating
-   * the video container.
    */
 
   const handleLoadedMetadata = () => {
@@ -105,17 +118,25 @@ export default function SplashPage() {
     if (!video) return
 
     video.playbackRate = ENVELOPE_PLAYBACK_RATE
+
+    /*
+     * Start from the very beginning so the user always sees
+     * the closed envelope before opening it.
+     */
+    video.currentTime = 0
+    video.pause()
   }
 
   /*
-   * Begin the final cinematic zoom shortly before
-   * the video reaches its end.
+   * ============================================================
+   * FINAL CINEMATIC ZOOM
+   * ============================================================
    */
 
   const handleTimeUpdate = () => {
     const video = videoRef.current
 
-    if (!video || !video.duration) return
+    if (!video || !video.duration || !hasOpened) return
 
     const remaining =
       video.duration - video.currentTime
@@ -127,25 +148,23 @@ export default function SplashPage() {
 
   /*
    * ============================================================
-   * AUTOPLAY
+   * VIDEO COMPLETE
    * ============================================================
+   *
+   * Let the envelope finish before leaving the splash.
    */
 
-  useEffect(() => {
-    const video = videoRef.current
+  const handleVideoEnded = () => {
+    if (!hasOpened) return
 
-    if (!video) return
+    setIsLeaving(true)
 
-    video.playbackRate = ENVELOPE_PLAYBACK_RATE
-
-    video.play().catch(() => {
-      /*
-       * Autoplay may be blocked by the browser.
-       * The muted + playsInline configuration normally
-       * allows playback on modern browsers.
-       */
-    })
-  }, [])
+    window.setTimeout(() => {
+      navigate("/home", {
+        replace: true,
+      })
+    }, durationPage * 1000)
+  }
 
   return (
     <motion.main
@@ -166,12 +185,13 @@ export default function SplashPage() {
       <motion.video
         ref={videoRef}
         className="h-full w-full object-cover"
-        autoPlay
+        autoPlay={false}
         muted
         playsInline
         preload="auto"
         onLoadedMetadata={handleLoadedMetadata}
         onTimeUpdate={handleTimeUpdate}
+        onEnded={handleVideoEnded}
         animate={{
           scale: isFinalZoom ? 1.26 : 1,
         }}
@@ -183,6 +203,41 @@ export default function SplashPage() {
           type="video/mp4"
         />
       </motion.video>
+
+      {/* =================================================
+          OPEN INVITATION OVERLAY
+          ================================================= */}
+
+      <motion.div
+        className="absolute inset-0 z-30 flex items-end justify-center px-6 pb-[12vh]"
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity:
+            pageLoaded && !hasOpened
+              ? 1
+              : 0,
+        }}
+        transition={{
+          duration: 1.2,
+          ease: luxuryEase,
+        }}
+        pointerEvents={
+          pageLoaded && !hasOpened
+            ? "auto"
+            : "none"
+        }
+      >
+        <button
+          type="button"
+          onClick={handleOpenInvitation}
+          disabled={!pageLoaded || hasOpened}
+          className="group flex min-h-12 items-center justify-center rounded-full border border-[var(--color-border-strong)] bg-[rgba(249,243,237,0.82)] px-7 py-3 text-[0.72rem] font-medium uppercase tracking-[0.22em] text-[var(--color-espresso)] backdrop-blur-sm transition-all duration-700 hover:border-[var(--color-caramel)] hover:bg-[var(--color-surface)]"
+        >
+          Open Invitation
+        </button>
+      </motion.div>
 
       {/* =================================================
           INTRO TYPOGRAPHY
@@ -204,7 +259,7 @@ export default function SplashPage() {
               ...cinematicTransition,
               duration: durationCinematic,
             }}
-            className="font-body text-[0.56rem] font-medium uppercase leading-[1.9] tracking-[0.34em] text-[var(--color-muted)] sm:text-[0.62rem]"
+            className="font-body text-[0.72rem] font-medium uppercase leading-[1.9] tracking-[0.30em] text-[var(--color-muted)] sm:text-[0.78rem]"
           >
             <span className="block">
               Welcome to
@@ -215,21 +270,12 @@ export default function SplashPage() {
             </span>
           </motion.p>
 
-          {/* COUPLE */}
+          {/* =================================================
+              COUPLE
+              ================================================= */}
 
-          <h1
-            className="
-              relative
-              top-4
-              flex
-              flex-col
-              items-center
-              font-display
-              text-[clamp(4.2rem,10vw,7rem)]
-              leading-[0.95]
-              text-[var(--color-espresso)]
-            "
-          >
+          <h1 className="mt-7 flex w-full max-w-[92vw] flex-col items-center font-display text-[clamp(4.6rem,17vw,8rem)] leading-[0.88] text-[var(--color-espresso)]">
+
             <motion.span
               initial={cinematicInitial}
               animate={
@@ -241,6 +287,7 @@ export default function SplashPage() {
                 ...cinematicTransition,
                 delay: staggerSmall,
               }}
+              className="whitespace-nowrap"
             >
               Manuel
             </motion.span>
@@ -256,7 +303,7 @@ export default function SplashPage() {
                 ...cinematicTransition,
                 delay: staggerSmall * 2,
               }}
-              className="my-1 text-[0.55em]"
+              className="my-2 text-[0.46em]"
             >
               &amp;
             </motion.span>
@@ -272,12 +319,16 @@ export default function SplashPage() {
                 ...cinematicTransition,
                 delay: staggerSmall * 3,
               }}
+              className="whitespace-nowrap"
             >
               Sharon
             </motion.span>
+
           </h1>
 
-          {/* HASHTAG */}
+          {/* =================================================
+              HASHTAG
+              ================================================= */}
 
           <motion.p
             initial={cinematicInitial}
@@ -290,7 +341,7 @@ export default function SplashPage() {
               ...cinematicTransition,
               delay: staggerSmall * 4,
             }}
-            className="mt-6 font-body text-[0.5rem] font-medium uppercase tracking-[0.32em] text-[var(--color-muted)] sm:text-[0.54rem]"
+            className="mt-8 font-body text-[0.68rem] font-medium uppercase tracking-[0.24em] text-[var(--color-muted)] sm:text-[0.74rem]"
           >
             #THEMANFORSHAY
           </motion.p>
