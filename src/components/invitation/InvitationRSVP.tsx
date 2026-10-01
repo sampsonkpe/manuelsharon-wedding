@@ -240,14 +240,14 @@ export default function InvitationRsvp() {
       setStep("success")
 
       /*
-       * Then move to the dedicated closing
-       * experience.
+       * Keep the confirmation visible long
+       * enough for the guest to comfortably read it.
        */
       window.setTimeout(() => {
         navigate("/closing", {
           replace: true,
         })
-      }, 2200)
+      }, 5000)
     } catch {
       setError(
         "We couldn't submit your RSVP. Please try again.",
@@ -266,6 +266,7 @@ export default function InvitationRsvp() {
         <div className="mx-auto max-w-[680px] text-center">
 
           {/* SECTION LABEL */}
+
           <ScrollReveal>
             <p className="font-body text-[0.48rem] font-medium uppercase tracking-[0.38em] text-[var(--color-muted)] sm:text-[0.5rem]">
               RSVP
@@ -294,6 +295,7 @@ export default function InvitationRsvp() {
                   <div className="mx-auto mt-8 max-w-[500px] space-y-6">
 
                     {/* NAME */}
+
                     <div>
                       <label
                         htmlFor="rsvp-name"
@@ -332,6 +334,7 @@ export default function InvitationRsvp() {
                     </div>
 
                     {/* PHONE */}
+
                     <div>
                       <label
                         htmlFor="rsvp-phone"
@@ -371,6 +374,7 @@ export default function InvitationRsvp() {
                     </div>
 
                     {/* MESSAGE */}
+
                     <div>
                       <label
                         htmlFor="rsvp-message"
@@ -405,41 +409,41 @@ export default function InvitationRsvp() {
                     </div>
 
                     {/* ERROR */}
+
                     <AnimatePresence>
                       {error && (
                         <motion.p
                           initial={{
                             opacity: 0,
                             y: 6,
-                            filter:
-                              "blur(2px)",
+                            filter: "blur(2px)",
                           }}
                           animate={{
                             opacity: 1,
                             y: 0,
-                            filter:
-                              "blur(0px)",
+                            filter: "blur(0px)",
                           }}
                           exit={{
                             opacity: 0,
                             y: -4,
-                            filter:
-                              "blur(2px)",
+                            filter: "blur(2px)",
                           }}
                           transition={{
-                            duration:
-                              durationMicro,
+                            duration: durationMicro,
                             ease: luxuryEase,
                           }}
                           role="alert"
                           className="font-body text-[0.46rem] uppercase leading-[1.7] tracking-[0.14em] text-[var(--color-cinnamon)]"
                         >
-                          {error}
+                          <span className="text-[var(--color-espresso)]">
+                            {error}
+                          </span>
                         </motion.p>
                       )}
                     </AnimatePresence>
 
                     {/* SUBMIT */}
+
                     <motion.button
                       type="button"
                       onClick={handleSubmit}
@@ -478,9 +482,11 @@ export default function InvitationRsvp() {
                   </p>
 
                   <p className="mx-auto mt-5 max-w-md font-editorial text-[clamp(1.2rem,3vw,1.7rem)] italic leading-[1.45] text-[var(--color-cinnamon)]">
-                    Your RSVP has been
-                    received. We look forward
-                    to celebrating with you.
+                    <strong className="text-[var(--color-espresso)]">
+                      Your RSVP has been received.
+                    </strong>{" "}
+                    We look forward to celebrating
+                    with you.
                   </p>
                 </motion.div>
               )}

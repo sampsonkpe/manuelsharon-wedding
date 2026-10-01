@@ -24,43 +24,59 @@ const palette = [
   },
 ]
 
+const scrollViewport = {
+  once: false,
+  amount: 0.35,
+  margin: "-8% 0px -8% 0px",
+}
+
 export default function InvitationPalette() {
   return (
     <section className="px-[var(--page-padding)]">
       <div className="mx-auto max-w-[720px] text-center">
-        {/* INTRODUCTION */}
+
+        {/* =================================================
+            INTRODUCTION
+            ================================================= */}
+
         <motion.div
           initial={revealInitial}
           whileInView={revealAnimate}
-          viewport={{
-            once: true,
-            amount: 0.25,
-          }}
+          viewport={scrollViewport}
           transition={revealTransition}
         >
           <p className="font-body text-[0.48rem] font-medium uppercase tracking-[0.38em] text-[var(--color-muted)] sm:text-[0.5rem]">
             Our Palette
           </p>
 
-          <p className="mx-auto mt-4 max-w-[460px] font-editorial text-[clamp(1.2rem,3vw,1.6rem)] leading-[1.4] text-[var(--color-espresso)]">
+          <motion.p
+            initial={revealInitial}
+            whileInView={revealAnimate}
+            viewport={scrollViewport}
+            transition={{
+              ...revealTransition,
+              delay: 0.08,
+            }}
+            className="mx-auto mt-4 max-w-[460px] font-editorial text-[clamp(1.2rem,3vw,1.6rem)] leading-[1.4] text-[var(--color-espresso)]"
+          >
             Colours chosen for the day.
-          </p>
+          </motion.p>
         </motion.div>
 
-        {/* COLOURS */}
+        {/* =================================================
+            COLOURS
+            ================================================= */}
+
         <div className="mt-9 flex items-start justify-center gap-2 sm:gap-8">
           {palette.map((colour, index) => (
             <motion.div
               key={colour.hex}
               initial={revealInitial}
               whileInView={revealAnimate}
-              viewport={{
-                once: true,
-                amount: 0.25,
-              }}
+              viewport={scrollViewport}
               transition={{
                 ...revealTransition,
-                delay: index * 0.08,
+                delay: index * 0.07,
               }}
               className="flex flex-col items-center"
             >
@@ -78,6 +94,7 @@ export default function InvitationPalette() {
             </motion.div>
           ))}
         </div>
+
       </div>
     </section>
   )

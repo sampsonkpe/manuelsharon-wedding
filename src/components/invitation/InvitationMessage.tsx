@@ -8,6 +8,12 @@ import {
   softRevealTransition,
 } from "../motion/motion"
 
+const scrollViewport = {
+  once: false,
+  amount: 0.35,
+  margin: "-8% 0px -8% 0px",
+}
+
 export default function InvitationMessage() {
   return (
     <section className="px-[var(--page-padding)]">
@@ -20,10 +26,7 @@ export default function InvitationMessage() {
         <motion.blockquote
           initial={revealInitial}
           whileInView={revealAnimate}
-          viewport={{
-            once: true,
-            amount: 0.2,
-          }}
+          viewport={scrollViewport}
           transition={revealTransition}
           className="font-editorial text-[clamp(1.7rem,4vw,2.55rem)] leading-[1.25] text-[var(--color-espresso)]"
         >
@@ -38,13 +41,10 @@ export default function InvitationMessage() {
         <motion.div
           initial={softRevealInitial}
           whileInView={softRevealAnimate}
-          viewport={{
-            once: true,
-            amount: 0.2,
-          }}
+          viewport={scrollViewport}
           transition={{
             ...softRevealTransition,
-            delay: 0.18,
+            delay: 0.1,
           }}
           className="mx-auto mt-10 max-w-[620px]"
         >
@@ -57,9 +57,18 @@ export default function InvitationMessage() {
             ”
           </p>
 
-          <p className="mt-5 font-body text-[0.48rem] font-medium uppercase tracking-[0.34em] text-[var(--color-muted)] sm:text-[0.52rem]">
+          <motion.p
+            initial={softRevealInitial}
+            whileInView={softRevealAnimate}
+            viewport={scrollViewport}
+            transition={{
+              ...softRevealTransition,
+              delay: 0.16,
+            }}
+            className="mt-5 font-body text-[0.48rem] font-medium uppercase tracking-[0.34em] text-[var(--color-muted)] sm:text-[0.52rem]"
+          >
             Ecclesiastes 4:12 • NKJV
-          </p>
+          </motion.p>
         </motion.div>
 
       </div>
