@@ -315,7 +315,7 @@ export default function SplashPage({
         autoPlay={false}
         muted
         playsInline
-        preload="metadata"
+        preload="auto"
         poster={envelopePoster}
         onLoadedData={handleVideoReady}
         onCanPlay={handleVideoReady}
@@ -339,6 +339,8 @@ export default function SplashPage({
 
           Only the wax-seal area is interactive.
 
+          The target is centred over the seal in the poster/video.
+
           Tapping anywhere else on the envelope does nothing.
           ===================================================== */}
 
@@ -347,11 +349,11 @@ export default function SplashPage({
           type="button"
           aria-label="Tap the seal to open the wedding invitation"
           onClick={handleOpenInvitation}
-          disabled={!hasOpened}
+          disabled={!videoReady}
           className="
             absolute
             left-1/2
-            top-[44.5%]
+            top-[50%]
             z-30
             aspect-square
             w-[clamp(5.25rem,18vw,7rem)]
@@ -384,8 +386,14 @@ export default function SplashPage({
           y: 5,
         }}
         animate={{
-          opacity: !hasOpened ? 1 : 0,
-            y: !hasOpened ? 0 : 5,
+          opacity:
+            videoReady && !hasOpened
+              ? 1
+              : 0,
+          y:
+            videoReady && !hasOpened
+              ? 0
+              : 5,
         }}
         transition={{
           duration: 1.4,
