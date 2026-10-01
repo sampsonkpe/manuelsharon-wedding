@@ -223,11 +223,12 @@ export default function SplashPage() {
           duration: 1.2,
           ease: luxuryEase,
         }}
-        pointerEvents={
-          pageLoaded && !hasOpened
-            ? "auto"
-            : "none"
-        }
+        style={{
+          pointerEvents:
+            pageLoaded && !hasOpened
+              ? "auto"
+              : "none",
+        }}
       >
         <button
           type="button"
