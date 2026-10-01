@@ -199,7 +199,7 @@ export default function ClosingPage() {
               }
               transition={{
                 ...cinematicTransition,
-                duration: 1.4,
+                duration: 1.3,
               }}
               className="flex items-start justify-center"
             >
