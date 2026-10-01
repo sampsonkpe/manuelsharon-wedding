@@ -314,7 +314,7 @@ export default function SplashPage({
         autoPlay={false}
         muted
         playsInline
-        preload="auto"
+        preload="metadata"
         onLoadedData={handleVideoReady}
         onCanPlay={handleVideoReady}
         onTimeUpdate={handleTimeUpdate}
@@ -345,7 +345,7 @@ export default function SplashPage({
           type="button"
           aria-label="Tap the seal to open the wedding invitation"
           onClick={handleOpenInvitation}
-          disabled={!videoReady}
+          disabled={!hasOpened}
           className="
             absolute
             left-1/2
@@ -382,14 +382,8 @@ export default function SplashPage({
           y: 5,
         }}
         animate={{
-          opacity:
-            videoReady && !hasOpened
-              ? 1
-              : 0,
-          y:
-            videoReady && !hasOpened
-              ? 0
-              : 5,
+          opacity: !hasOpened ? 1 : 0,
+            y: !hasOpened ? 0 : 5,
         }}
         transition={{
           duration: 1.4,
