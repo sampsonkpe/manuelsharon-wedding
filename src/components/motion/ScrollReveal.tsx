@@ -19,23 +19,24 @@ export default function ScrollReveal({
   children,
   className,
   delay = 0,
-  once = true,
+  once = false,
 }: ScrollRevealProps) {
   return (
     <motion.div
       className={className}
       initial={revealInitial}
       whileInView={revealAnimate}
-      exit={revealExit}
       viewport={{
         once,
-        amount: 0.2,
+        amount: 0.35,
+        margin: "-8% 0px -8% 0px",
       }}
       transition={{
         duration: durationBase,
         delay,
         ease: luxuryEase,
       }}
+      exit={revealExit}
     >
       {children}
     </motion.div>

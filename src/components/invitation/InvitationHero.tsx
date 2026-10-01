@@ -11,15 +11,21 @@ export default function InvitationHero() {
     <section className="px-[var(--page-padding)]">
       <div className="mx-auto max-w-[1100px]">
         <motion.div
-          initial={imageRevealInitial}
-          animate={imageRevealAnimate}
+          initial={{
+            ...imageRevealInitial,
+            y: 10,
+          }}
+          animate={{
+            ...imageRevealAnimate,
+            y: 0,
+          }}
           transition={imageRevealTransition}
         >
           <div className="relative overflow-hidden rounded-[var(--radius-lg)]">
             <div className="flex justify-center bg-[var(--color-envelope)]">
               <img
                 src={coupleImage}
-                alt="Manuel and Sharon"
+                alt="Manuel & Sharon"
                 className="block h-auto w-full max-w-[760px] object-contain"
               />
             </div>
