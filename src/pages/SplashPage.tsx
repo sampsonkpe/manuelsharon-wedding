@@ -50,20 +50,19 @@ const pageTransition = {
    ============================================================ */
 
 /*
- * The video now contains a deliberate static opening section.
+ * Timings begin only after the user taps the seal and the
+ * envelope video starts from frame 0.
  *
- * The first frame is held for approximately 2.5 seconds in
- * the actual MP4 before the original animation begins.
+ * The source video is approximately 6 seconds.
+ * At 0.68x playback it takes approximately 8.8 seconds.
  *
- * The video is then played at 0.68x for a slower, cinematic
- * envelope-opening experience.
- *
- * These timings begin only after the visitor taps the seal.
+ * The envelope itself begins opening at approximately source
+ * video second 2.
  */
 
-const WELCOME_DELAY = 5600
-const NAMES_DELAY = 7600
-const HOLD_AFTER_VIDEO = 4200
+const WELCOME_DELAY = 3000
+const NAMES_DELAY = 5200
+const HOLD_AFTER_NAMES = 4200
 
 /* ============================================================
    COMPONENT
@@ -80,45 +79,15 @@ export default function SplashPage({
   const leaveTimerRef = useRef<number | null>(null)
   const navigationTimerRef = useRef<number | null>(null)
 
-  /*
-   * Prevent loadeddata/canplay from repeatedly resetting
-   * the video.
-   */
   const videoInitialisedRef = useRef(false)
 
   const [videoReady, setVideoReady] = useState(false)
   const [hasOpened, setHasOpened] = useState(false)
-
   const [isLeaving, setIsLeaving] = useState(false)
   const [isFinalZoom, setIsFinalZoom] = useState(false)
 
   const [showWelcome, setShowWelcome] = useState(false)
   const [showNames, setShowNames] = useState(false)
-
-  /* ============================================================
-     LOCK PAGE SCROLL
-     ============================================================ */
-
-  useEffect(() => {
-    /*
-     * The splash is fixed over the application, but a fixed
-     * element alone does NOT prevent the document underneath
-     * from scrolling.
-     *
-     * Lock the body while the splash is mounted.
-     */
-
-    const originalOverflow = document.body.style.overflow
-    const originalTouchAction = document.body.style.touchAction
-
-    document.body.style.overflow = "hidden"
-    document.body.style.touchAction = "none"
-
-    return () => {
-      document.body.style.overflow = originalOverflow
-      document.body.style.touchAction = originalTouchAction
-    }
-  }, [])
 
   /* ============================================================
      CLEANUP
@@ -154,7 +123,7 @@ export default function SplashPage({
     if (!video) return
 
     /*
-     * loadeddata and canplay may both fire.
+     * loadeddata and canplay can both fire.
      * Initialise the video only once.
      */
     if (videoInitialisedRef.current) return
@@ -162,7 +131,7 @@ export default function SplashPage({
     videoInitialisedRef.current = true
 
     /*
-     * Always begin on the first frame.
+     * Always show the sealed first frame.
      */
     video.pause()
     video.currentTime = 0
@@ -183,12 +152,12 @@ export default function SplashPage({
     if (!video) return
 
     /*
-     * Prevent multiple taps from restarting the sequence.
+     * Prevent repeated taps from restarting the sequence.
      */
     setHasOpened(true)
 
     /*
-     * Always begin from the completely sealed frame.
+     * Force the video back to the sealed frame.
      */
     video.pause()
     video.currentTime = 0
@@ -198,24 +167,22 @@ export default function SplashPage({
       await video.play()
     } catch {
       /*
-       * If playback fails, allow the visitor to try again.
+       * If playback fails, allow another attempt.
        */
       setHasOpened(false)
       return
     }
 
-    /* ----------------------------------------------------------
-       WELCOME
-       ---------------------------------------------------------- */
-
+    /*
+     * Welcome appears while the envelope is opening.
+     */
     welcomeTimerRef.current = window.setTimeout(() => {
       setShowWelcome(true)
     }, WELCOME_DELAY)
 
-    /* ----------------------------------------------------------
-       NAMES
-       ---------------------------------------------------------- */
-
+    /*
+     * Names appear afterwards.
+     */
     namesTimerRef.current = window.setTimeout(() => {
       setShowNames(true)
     }, NAMES_DELAY)
@@ -233,10 +200,6 @@ export default function SplashPage({
     const remaining =
       video.duration - video.currentTime
 
-    /*
-     * Begin the final cinematic zoom during the final
-     * portion of the video.
-     */
     if (remaining <= 3.5) {
       setIsFinalZoom(true)
     }
@@ -250,7 +213,7 @@ export default function SplashPage({
     if (!hasOpened) return
 
     /*
-     * Hold the completed composition before transitioning.
+     * Let the completed composition breathe.
      */
     leaveTimerRef.current = window.setTimeout(() => {
       setIsLeaving(true)
@@ -273,7 +236,7 @@ export default function SplashPage({
           replace: true,
         })
       }, durationPage * 1000)
-    }, HOLD_AFTER_VIDEO)
+    }, HOLD_AFTER_NAMES)
   }
 
   /* ============================================================
@@ -289,7 +252,6 @@ export default function SplashPage({
         h-[100svh]
         w-full
         overflow-hidden
-        overscroll-none
         bg-[var(--color-envelope)]
       "
       initial={{
@@ -309,8 +271,6 @@ export default function SplashPage({
       <motion.video
         ref={videoRef}
         className="
-          absolute
-          inset-0
           h-full
           w-full
           object-cover
@@ -337,6 +297,14 @@ export default function SplashPage({
 
       {/* =====================================================
           SEAL TAP TARGET
+          =====================================================
+
+          IMPORTANT:
+
+          This is NOT a full-screen button.
+
+          Only the area around the wax seal is interactive.
+          Tapping elsewhere on the envelope does nothing.
           ===================================================== */}
 
       {!hasOpened && (
@@ -358,13 +326,12 @@ export default function SplashPage({
             rounded-full
             bg-transparent
             outline-none
-            disabled:cursor-default
           "
         />
       )}
 
       {/* =====================================================
-          TAP PROMPT
+          SUBTLE TAP PROMPT
           ===================================================== */}
 
       <motion.div
@@ -511,8 +478,6 @@ export default function SplashPage({
             "
           >
 
-            {/* MANUEL */}
-
             <motion.span
               initial={cinematicInitial}
               animate={
@@ -528,8 +493,6 @@ export default function SplashPage({
             >
               Manuel
             </motion.span>
-
-            {/* & */}
 
             <motion.span
               initial={cinematicInitial}
@@ -549,8 +512,6 @@ export default function SplashPage({
             >
               &amp;
             </motion.span>
-
-            {/* SHARON */}
 
             <motion.span
               initial={cinematicInitial}
