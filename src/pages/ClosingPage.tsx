@@ -1,15 +1,11 @@
-import { AnimatePresence, motion } from "framer-motion"
+import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import closingImage from "../assets/couple/closing.png"
 import {
-  luxuryEase,
-  revealInitial,
-  revealAnimate,
-  revealTransition,
-  imageRevealInitial,
-  imageRevealAnimate,
-  imageRevealTransition,
+  cinematicInitial,
+  cinematicAnimate,
+  cinematicTransition,
 } from "../components/motion/motion"
 
 const RSVP_SUBMITTED_KEY =
@@ -28,10 +24,14 @@ export default function ClosingPage() {
     useState(false)
 
   /*
-   * Verify that the guest has successfully
-   * submitted an RSVP before allowing access
-   * to the closing experience.
+   * ============================================================
+   * RSVP ACCESS
+   * ============================================================
+   *
+   * The closing experience is only available after
+   * a successful RSVP submission.
    */
+
   useEffect(() => {
     const hasSubmittedRsvp =
       sessionStorage.getItem(
@@ -47,9 +47,10 @@ export default function ClosingPage() {
     }
 
     /*
-     * Keep the scripture on screen for five
-     * seconds before revealing the photograph.
+     * Let the opening scripture breathe before
+     * transitioning into the photograph.
      */
+
     const imageTimer =
       window.setTimeout(() => {
         setShowImage(true)
@@ -61,16 +62,21 @@ export default function ClosingPage() {
   }, [navigate])
 
   /*
-   * Once the photograph appears, allow it
-   * to breathe before revealing the final message.
+   * ============================================================
+   * FINAL MESSAGE
+   * ============================================================
+   *
+   * The image remains stationary while the final
+   * message reveals into its reserved space.
    */
+
   useEffect(() => {
     if (!showImage) return
 
     const finalTextTimer =
       window.setTimeout(() => {
         setShowFinalText(true)
-      }, 1500)
+      }, 1800)
 
     return () => {
       window.clearTimeout(finalTextTimer)
@@ -78,9 +84,14 @@ export default function ClosingPage() {
   }, [showImage])
 
   /*
-   * Once the closing message appears,
-   * introduce the return button.
+   * ============================================================
+   * BACK BUTTON
+   * ============================================================
+   *
+   * The button appears after the final message has
+   * had time to breathe.
    */
+
   useEffect(() => {
     if (!showFinalText) return
 
@@ -97,129 +108,113 @@ export default function ClosingPage() {
   return (
     <main className="relative min-h-[100svh] overflow-hidden bg-transparent">
 
-      <div className="flex min-h-[100svh] w-full items-center justify-center px-[var(--page-padding)] py-16 sm:py-20">
+      <div className="flex min-h-[100svh] w-full items-center justify-center px-[var(--page-padding)] py-10 sm:py-14">
 
         <div className="w-full max-w-[760px]">
 
           {/* =================================================
-              SCRIPTURE TRANSITION
+              OPENING SCRIPTURE
               ================================================= */}
 
-          <AnimatePresence mode="wait">
-            {!showImage && (
-              <motion.div
-                key="opening-message"
-                initial={revealInitial}
-                animate={revealAnimate}
-                exit={{
-                  opacity: 0,
-                  filter: "blur(3px)",
-                }}
-                transition={revealTransition}
-                className="fixed left-1/2 top-1/2 z-20 w-[min(90vw,620px)] -translate-x-1/2 -translate-y-1/2 text-center"
-              >
-                <p className="font-editorial text-[clamp(1.7rem,4vw,2.7rem)] italic leading-[1.25] text-[var(--color-espresso)]">
-                  <strong className="font-[550]">
-                    &quot;...And a threefold cord is not
-                    quickly broken.&quot;
-                  </strong>
-                </p>
+          {!showImage && (
+            <motion.div
+              initial={cinematicInitial}
+              animate={cinematicAnimate}
+              exit={{
+                opacity: 0,
+                scale: 0.985,
+                filter: "blur(4px)",
+              }}
+              transition={cinematicTransition}
+              className="fixed left-1/2 top-1/2 z-20 w-[min(90vw,620px)] -translate-x-1/2 -translate-y-1/2 text-center"
+            >
+              <p className="font-editorial text-[clamp(1.7rem,4vw,2.7rem)] italic leading-[1.25] text-[var(--color-espresso)]">
+                &quot;...And a threefold cord is not
+                quickly broken.&quot;
+              </p>
 
-                <p className="mt-5 font-body text-[0.46rem] font-medium uppercase tracking-[0.34em] text-[var(--color-muted)] sm:text-[0.5rem]">
-                  Ecclesiastes 4:12 • NKJV
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
+              <p className="mt-5 font-body text-[0.46rem] font-medium uppercase tracking-[0.34em] text-[var(--color-muted)] sm:text-[0.5rem]">
+                Ecclesiastes 4:12 • NKJV
+              </p>
+            </motion.div>
+          )}
 
           {/* =================================================
-              CLOSING IMAGE
+              CLOSING COMPOSITION
               ================================================= */}
 
-          <motion.div
-            initial={imageRevealInitial}
-            animate={
-              showImage
-                ? imageRevealAnimate
-                : imageRevealInitial
-            }
-            transition={imageRevealTransition}
-            className="relative overflow-hidden rounded-[var(--radius-lg)]"
-          >
-            <img
-              src={closingImage}
-              alt="Manuel and Sharon"
-              loading="eager"
-              className="block h-auto w-full"
-            />
-          </motion.div>
+          <div className="grid grid-rows-[auto_115px_70px] sm:grid-rows-[auto_125px_75px]">
 
-          {/* =================================================
-              FINAL MESSAGE
-              ================================================= */}
+            {/* =================================================
+                CLOSING IMAGE
+                ================================================= */}
 
-          <AnimatePresence>
-            {showFinalText && (
-              <motion.p
-                key="final-message"
-                initial={revealInitial}
-                animate={revealAnimate}
-                exit={{
-                  opacity: 0,
-                  filter: "blur(2px)",
-                }}
-                transition={revealTransition}
-                className="mx-auto mt-9 max-w-[620px] px-4 text-center font-editorial text-[clamp(1.35rem,3vw,1.9rem)] italic leading-[1.4] text-[var(--color-espresso)] sm:mt-14"
+            <motion.div
+              initial={cinematicInitial}
+              animate={
+                showImage
+                  ? cinematicAnimate
+                  : cinematicInitial
+              }
+              transition={cinematicTransition}
+              className="relative h-[58svh] min-h-[420px] max-h-[620px] overflow-hidden rounded-[var(--radius-lg)]"
+            >
+              <img
+                src={closingImage}
+                alt="Manuel and Sharon"
+                loading="eager"
+                className="absolute bottom-0 left-0 block h-auto w-full"
+              />
+            </motion.div>
+
+            {/* =================================================
+                FINAL MESSAGE
+                ================================================= */}
+
+            <motion.p
+              initial={cinematicInitial}
+              animate={
+                showFinalText
+                  ? cinematicAnimate
+                  : cinematicInitial
+              }
+              transition={cinematicTransition}
+              className="mx-auto mt-7 max-w-[620px] self-start px-4 text-center font-editorial text-[clamp(1.35rem,3vw,1.9rem)] italic leading-[1.4] text-[var(--color-espresso)] sm:mt-10"
+            >
+              We can&apos;t wait to have you
+              witness the beginning of our
+              forever.
+            </motion.p>
+
+            {/* =================================================
+                BACK TO INVITATION
+                ================================================= */}
+
+            <motion.div
+              initial={cinematicInitial}
+              animate={
+                showBackButton
+                  ? cinematicAnimate
+                  : cinematicInitial
+              }
+              transition={{
+                ...cinematicTransition,
+                duration: 1.4,
+              }}
+              className="flex items-start justify-center"
+            >
+              <button
+                type="button"
+                onClick={() =>
+                  navigate("/home")
+                }
+                className="invitation-button whitespace-nowrap"
               >
-                We can&apos;t wait to have you
-                witness the beginning of our
-                forever.
-              </motion.p>
-            )}
-          </AnimatePresence>
+                Back to Invitation
+              </button>
+            </motion.div>
 
-          {/* =================================================
-              BACK TO INVITATION
-              ================================================= */}
-
-          <AnimatePresence>
-            {showBackButton && (
-              <motion.div
-                key="back-to-invitation"
-                initial={{
-                  opacity: 0,
-                  y: 10,
-                  filter: "blur(3px)",
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                  filter: "blur(0px)",
-                }}
-                exit={{
-                  opacity: 0,
-                  y: -6,
-                  filter: "blur(2px)",
-                }}
-                transition={{
-                  duration: 0.9,
-                  ease: luxuryEase,
-                }}
-                className="mt-10 flex justify-center sm:mt-14"
-              >
-                <button
-                  type="button"
-                  onClick={() =>
-                    navigate("/home")
-                  }
-                  className="invitation-button whitespace-nowrap"
-                >
-                  Back to Invitation
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
+          </div>
         </div>
       </div>
     </main>
