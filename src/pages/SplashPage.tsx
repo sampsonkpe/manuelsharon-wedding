@@ -45,33 +45,17 @@ const pageTransition = {
 
 /* ============================================================
    INTRO TIMING
-   ============================================================
-
-   These timings begin only after the user taps the wax seal.
-
-   The source video is approximately 6 seconds long.
-
-   At 0.68x playback:
-
-   6 seconds ÷ 0.68 ≈ 8.8 seconds
-
-   The envelope begins opening at approximately source-video
-   second 2, so the visitor gets a deliberate sealed-envelope
-   moment before the flap begins to open.
-
-   5.6 seconds:
-   → Welcome appears when the envelope is almost open.
-
-   7.6 seconds:
-   → Names begin appearing after the envelope has opened.
-
-   5.6 seconds after the video ends:
-   → Hold the completed composition before leaving.
    ============================================================ */
 
 const WELCOME_DELAY = 5600
 const NAMES_DELAY = 7600
 const HOLD_AFTER_VIDEO = 5600
+
+/* ============================================================
+   POSTER TRANSITION
+   ============================================================ */
+
+const POSTER_FADE_DURATION = 0.7
 
 /* ============================================================
    COMPONENT
@@ -81,6 +65,7 @@ export default function SplashPage({
   onComplete,
 }: SplashPageProps) {
   const navigate = useNavigate()
+
   const videoRef = useRef<HTMLVideoElement>(null)
 
   const welcomeTimerRef = useRef<number | null>(null)
@@ -88,14 +73,10 @@ export default function SplashPage({
   const leaveTimerRef = useRef<number | null>(null)
   const navigationTimerRef = useRef<number | null>(null)
 
-  /*
-   * Prevent loadeddata/canplay from repeatedly resetting
-   * the video.
-   */
-  const videoInitialisedRef = useRef(false)
-
-  const [videoReady, setVideoReady] = useState(false)
   const [hasOpened, setHasOpened] = useState(false)
+
+  const [isVideoVisible, setIsVideoVisible] = useState(false)
+  const [isPosterVisible, setIsPosterVisible] = useState(true)
 
   const [isLeaving, setIsLeaving] = useState(false)
   const [isFinalZoom, setIsFinalZoom] = useState(false)
@@ -128,91 +109,79 @@ export default function SplashPage({
   }, [])
 
   /* ============================================================
-     VIDEO INITIALISATION
+     OPEN INVITATION
      ============================================================
 
-     The video is deliberately NOT autoplayed.
+     IMPORTANT:
 
-     We wait until the first frame is available, pause it,
-     and explicitly force it back to frame 0.
+     The poster and seal button are completely independent
+     of the video.
 
-     Therefore the first thing the visitor sees is always the
-     completely sealed envelope.
-     ============================================================ */
-
-  const handleVideoReady = () => {
-    const video = videoRef.current
-
-    if (!video) return
-
-    if (videoInitialisedRef.current) return
-
-    videoInitialisedRef.current = true
-
-    video.pause()
-    video.currentTime = 0
-    video.playbackRate = ENVELOPE_PLAYBACK_RATE
-
-    setVideoReady(true)
-  }
-
-  /* ============================================================
-     OPEN ENVELOPE
-     ============================================================
-
-     Only the wax-seal area is clickable.
-
-     Nothing begins until the user taps the seal.
+     This means the visitor can interact with the invitation
+     immediately, even if Safari has not yet loaded the MP4.
      ============================================================ */
 
   const handleOpenInvitation = async () => {
-    if (!videoReady || hasOpened) return
+    if (hasOpened) return
 
     const video = videoRef.current
 
     if (!video) return
 
     /*
-     * Prevent multiple taps from restarting the sequence.
+     * Lock the interaction immediately so the user cannot
+     * trigger the animation twice.
      */
     setHasOpened(true)
 
     /*
-     * Always begin from the completely sealed frame.
+     * Prepare the video.
      */
     video.pause()
     video.currentTime = 0
     video.playbackRate = ENVELOPE_PLAYBACK_RATE
 
+    /*
+     * Make the video visible underneath the poster.
+     *
+     * The poster remains visible for the moment, allowing
+     * the video to begin without exposing an empty frame.
+     */
+    setIsVideoVisible(true)
+
     try {
       await video.play()
+
+      /*
+       * Once playback successfully begins, fade the poster
+       * away and reveal the actual video.
+       */
+      window.setTimeout(() => {
+        setIsPosterVisible(false)
+      }, 50)
     } catch {
       /*
-       * If playback fails, allow the user to try again.
+       * If mobile Safari refuses playback, restore the
+       * unopened state rather than leaving the invitation
+       * permanently blank.
        */
       setHasOpened(false)
+      setIsVideoVisible(false)
+
       return
     }
 
-    /*
-     * ----------------------------------------------------------
-     * WELCOME
-     * ----------------------------------------------------------
-     *
-     * This intentionally uses the ORIGINAL timing.
-     *
-     * The envelope has had time to open before the text appears.
-     */
+    /* ========================================================
+       WELCOME
+       ======================================================== */
 
     welcomeTimerRef.current = window.setTimeout(() => {
       setShowWelcome(true)
     }, WELCOME_DELAY)
 
-    /*
-     * ----------------------------------------------------------
-     * NAMES
-     * ----------------------------------------------------------
-     */
+    /* ========================================================
+       NAMES
+       ======================================================== */
 
     namesTimerRef.current = window.setTimeout(() => {
       setShowNames(true)
@@ -301,13 +270,60 @@ export default function SplashPage({
       aria-label="Wedding invitation"
     >
 
-      {/* =====================================================
+      {/* ======================================================
+          ENVELOPE POSTER
+          ======================================================
+
+          This is now a REAL full-screen image.
+
+          It is NOT the video poster attribute.
+
+          This guarantees that the sealed envelope exists
+          immediately on mobile Safari.
+          ====================================================== */}
+
+      <motion.img
+        src={envelopePoster}
+        alt=""
+        aria-hidden="true"
+        className="
+          absolute
+          inset-0
+          z-10
+          h-full
+          w-full
+          object-cover
+        "
+        initial={{
+          opacity: 1,
+        }}
+        animate={{
+          opacity: isPosterVisible ? 1 : 0,
+        }}
+        transition={{
+          duration: POSTER_FADE_DURATION,
+          ease: luxuryEase,
+        }}
+      />
+
+      {/* ======================================================
           ENVELOPE VIDEO
-          ===================================================== */}
+          ======================================================
+
+          The video sits underneath the poster.
+
+          It is initially invisible.
+
+          After the seal is tapped and playback successfully
+          begins, the poster fades away and exposes the video.
+          ====================================================== */}
 
       <motion.video
         ref={videoRef}
         className="
+          absolute
+          inset-0
+          z-0
           h-full
           w-full
           object-cover
@@ -316,15 +332,19 @@ export default function SplashPage({
         muted
         playsInline
         preload="auto"
-        poster={envelopePoster}
-        onLoadedData={handleVideoReady}
-        onCanPlay={handleVideoReady}
         onTimeUpdate={handleTimeUpdate}
         onEnded={handleVideoEnded}
         animate={{
+          opacity: isVideoVisible ? 1 : 0,
           scale: isFinalZoom ? 1.26 : 1,
         }}
-        transition={finalZoomTransition}
+        transition={{
+          opacity: {
+            duration: POSTER_FADE_DURATION,
+            ease: luxuryEase,
+          },
+          scale: finalZoomTransition,
+        }}
         aria-hidden="true"
       >
         <source
@@ -333,28 +353,27 @@ export default function SplashPage({
         />
       </motion.video>
 
-      {/* =====================================================
+      {/* ======================================================
           SEAL TAP TARGET
-          =====================================================
+          ======================================================
 
-          Only the wax-seal area is interactive.
+          This button is completely independent of the video.
 
-          The target is centred over the seal in the poster/video.
+          It sits above the poster and video.
 
-          Tapping anywhere else on the envelope does nothing.
-          ===================================================== */}
+          The user can therefore tap the seal immediately.
+          ====================================================== */}
 
       {!hasOpened && (
         <button
           type="button"
           aria-label="Tap the seal to open the wedding invitation"
           onClick={handleOpenInvitation}
-          disabled={!videoReady}
           className="
             absolute
             left-1/2
-            top-[50%]
-            z-30
+            top-[44.5%]
+            z-50
             aspect-square
             w-[clamp(5.25rem,18vw,7rem)]
             -translate-x-1/2
@@ -363,13 +382,14 @@ export default function SplashPage({
             rounded-full
             bg-transparent
             outline-none
+            focus:outline-none
           "
         />
       )}
 
-      {/* =====================================================
+      {/* ======================================================
           TAP PROMPT
-          ===================================================== */}
+          ====================================================== */}
 
       <motion.div
         className="
@@ -386,14 +406,8 @@ export default function SplashPage({
           y: 5,
         }}
         animate={{
-          opacity:
-            videoReady && !hasOpened
-              ? 1
-              : 0,
-          y:
-            videoReady && !hasOpened
-              ? 0
-              : 5,
+          opacity: !hasOpened ? 1 : 0,
+          y: !hasOpened ? 0 : 5,
         }}
         transition={{
           duration: 1.4,
@@ -441,9 +455,9 @@ export default function SplashPage({
         </div>
       </motion.div>
 
-      {/* =====================================================
+      {/* ======================================================
           INTRO TYPOGRAPHY
-          ===================================================== */}
+          ====================================================== */}
 
       <div
         className="
@@ -468,9 +482,9 @@ export default function SplashPage({
           "
         >
 
-          {/* =================================================
+          {/* ==================================================
               WELCOME
-              ================================================= */}
+              ================================================== */}
 
           <motion.p
             initial={cinematicInitial}
@@ -502,9 +516,9 @@ export default function SplashPage({
             </span>
           </motion.p>
 
-          {/* =================================================
+          {/* ==================================================
               COUPLE
-              ================================================= */}
+              ================================================== */}
 
           <h1
             className="
@@ -582,9 +596,9 @@ export default function SplashPage({
 
           </h1>
 
-          {/* =================================================
+          {/* ==================================================
               HASHTAG
-              ================================================= */}
+              ================================================== */}
 
           <motion.p
             initial={cinematicInitial}
