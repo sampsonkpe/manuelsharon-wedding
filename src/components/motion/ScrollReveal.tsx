@@ -19,7 +19,7 @@ export default function ScrollReveal({
   children,
   className,
   delay = 0,
-  once = false,
+  once = true,
 }: ScrollRevealProps) {
   return (
     <motion.div

@@ -1,18 +1,23 @@
 import { useEffect } from "react"
 import { useLocation } from "react-router-dom"
 
-const RSVP_DRAFT_KEY = "themanforshay-rsvp-draft"
+const RSVP_DRAFT_KEY =
+  "themanforshay-rsvp-draft"
 
 function hasRsvpDraft() {
   try {
     const storedDraft =
-      sessionStorage.getItem(RSVP_DRAFT_KEY)
+      sessionStorage.getItem(
+        RSVP_DRAFT_KEY,
+      )
 
     if (!storedDraft) {
       return false
     }
 
-    const draft = JSON.parse(storedDraft) as {
+    const draft = JSON.parse(
+      storedDraft,
+    ) as {
       name?: unknown
       phone?: unknown
     }
@@ -29,7 +34,10 @@ function hasRsvpDraft() {
 
     return Boolean(name || phone)
   } catch {
-    sessionStorage.removeItem(RSVP_DRAFT_KEY)
+    sessionStorage.removeItem(
+      RSVP_DRAFT_KEY,
+    )
+
     return false
   }
 }
@@ -41,41 +49,23 @@ export default function ScrollToTop() {
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual"
     }
+  }, [])
 
+  useEffect(() => {
     /*
-     * When the page is refreshed, check whether the
-     * RSVP form contains meaningful unfinished input.
+     * The RSVP draft behaviour is only relevant
+     * when the user actually reloads /home.
      *
-     * If it does, return the user to the RSVP section.
-     * Otherwise, start the page from the top.
+     * Route transitions themselves are handled by
+     * App.tsx so that scrolling does not interfere
+     * with the page animation.
      */
-    const rsvpDraftExists = hasRsvpDraft()
-
     if (
       pathname === "/home" &&
-      rsvpDraftExists
+      hasRsvpDraft()
     ) {
-      /*
-       * Wait for the page to render before attempting
-       * to find the RSVP section.
-       */
-      window.requestAnimationFrame(() => {
-        document
-          .getElementById("rsvp")
-          ?.scrollIntoView({
-            behavior: "auto",
-            block: "start",
-          })
-      })
-
       return
     }
-
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "auto",
-    })
   }, [pathname])
 
   return null

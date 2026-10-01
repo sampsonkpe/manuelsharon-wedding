@@ -27,11 +27,23 @@ function EventHome() {
 function AnimatedRoutes() {
   const location = useLocation()
 
+  const handleExitComplete = () => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "auto",
+    })
+  }
+
   return (
     <>
       <ScrollToTop />
 
-      <AnimatePresence mode="sync">
+      <AnimatePresence
+        mode="wait"
+        initial={false}
+        onExitComplete={handleExitComplete}
+      >
         <Routes
           location={location}
           key={location.pathname}
@@ -75,49 +87,70 @@ function AnimatedRoutes() {
           <Route
             path="/programme"
             element={
-              <Navigate to="/" replace />
+              <Navigate
+                to="/"
+                replace
+              />
             }
           />
 
           <Route
             path="/moments"
             element={
-              <Navigate to="/" replace />
+              <Navigate
+                to="/"
+                replace
+              />
             }
           />
 
           <Route
             path="/menu"
             element={
-              <Navigate to="/" replace />
+              <Navigate
+                to="/"
+                replace
+              />
             }
           />
 
           <Route
             path="/gifts"
             element={
-              <Navigate to="/" replace />
+              <Navigate
+                to="/"
+                replace
+              />
             }
           />
 
           <Route
             path="/seating"
             element={
-              <Navigate to="/" replace />
+              <Navigate
+                to="/"
+                replace
+              />
             }
           />
 
           <Route
             path="/appreciation"
             element={
-              <Navigate to="/" replace />
+              <Navigate
+                to="/"
+                replace
+              />
             }
           />
 
           <Route
             path="*"
             element={
-              <Navigate to="/" replace />
+              <Navigate
+                to="/"
+                replace
+              />
             }
           />
         </Routes>
@@ -130,10 +163,8 @@ export default function App() {
   return (
     <BrowserRouter>
       <div className="relative min-h-screen bg-[var(--color-background)]">
-        {/* FIXED BACKGROUND MONOGRAM */}
         <BackgroundMonogram />
 
-        {/* SCROLLING PAGE CONTENT */}
         <div className="relative z-20">
           <AnimatedRoutes />
         </div>

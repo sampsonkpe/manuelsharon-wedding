@@ -1,74 +1,66 @@
+/*
+ * ============================================================
+ * THE MAN FOR SHAY — GLOBAL MOTION SYSTEM
+ * ============================================================
+ *
+ * Motion language:
+
+/* ============================================================
+   EASING
+   ============================================================ */
+
 export const luxuryEase = [0.22, 1, 0.36, 1] as const
 
-/*
- * Global motion timing
- *
- * The entire website follows a restrained
- * timing language so every interaction feels
- * like part of the same visual system.
- */
+export const luxuryEaseIn = [0.4, 0, 1, 1] as const
 
-/*
- * Micro interaction
- *
- * Used for subtle interface feedback.
- */
-export const durationMicro = 0.7
+export const luxuryEaseOut = [0, 0, 0.2, 1] as const
 
-/*
- * Base motion
- *
- * The primary duration used across the website.
- * Text reveals, content transitions and page
- * transitions all use this as their foundation.
- */
-export const durationBase = 0.9
+/* ============================================================
+   DURATIONS
+   ============================================================ */
 
-/*
- * Image motion
- *
- * Slightly slower and softer than standard content.
- */
-export const durationImage = 1.1
+export const durationMicro = 0.5
 
-/*
- * Cinematic motion
- *
- * Reserved for major visual moments.
- */
-export const durationCinematic = 1.5
+export const durationBase = 1.0
 
-/*
- * Sequential timing
- *
- * Elements should never feel mechanically staggered.
- * The spacing is deliberately subtle.
- */
-export const staggerSmall = 0.15
-export const staggerMedium = 0.2
+export const durationImage = 1.3
 
-/*
- * Standard content reveal
- *
- * Elements emerge from obscurity rather than
- * visibly travelling into position.
- */
+export const durationCinematic = 1.8
+
+export const durationPage = 1.0
+
+export const durationSlow = 2.0
+
+/* ============================================================
+   STAGGER
+   ============================================================ */
+
+export const staggerSmall = 0.08
+
+export const staggerMedium = 0.14
+
+export const staggerLarge = 0.2
+
+/* ============================================================
+   STANDARD REVEAL
+   ============================================================ */
+
 export const revealInitial = {
   opacity: 0,
-  scale: 0.985,
+  y: 7,
   filter: "blur(3px)",
 }
 
 export const revealAnimate = {
   opacity: 1,
-  scale: 1,
+  y: 0,
   filter: "blur(0px)",
 }
 
 export const revealExit = {
   opacity: 0,
-  scale: 0.985,
-  filter: "blur(3px)",
+  y: -4,
+  filter: "blur(2px)",
 }
 
 export const revealTransition = {
@@ -76,12 +68,34 @@ export const revealTransition = {
   ease: luxuryEase,
 }
 
-/*
- * Image reveal
- *
- * Images use the same visual language as text,
- * with slightly more breathing room.
- */
+/* ============================================================
+   SOFT REVEAL
+   ============================================================ */
+
+export const softRevealInitial = {
+  opacity: 0,
+  filter: "blur(3px)",
+}
+
+export const softRevealAnimate = {
+  opacity: 1,
+  filter: "blur(0px)",
+}
+
+export const softRevealExit = {
+  opacity: 0,
+  filter: "blur(2px)",
+}
+
+export const softRevealTransition = {
+  duration: durationBase,
+  ease: luxuryEase,
+}
+
+/* ============================================================
+   IMAGE REVEAL
+   ============================================================ */
+
 export const imageRevealInitial = {
   opacity: 0,
   scale: 0.975,
@@ -96,8 +110,8 @@ export const imageRevealAnimate = {
 
 export const imageRevealExit = {
   opacity: 0,
-  scale: 0.975,
-  filter: "blur(4px)",
+  scale: 0.985,
+  filter: "blur(3px)",
 }
 
 export const imageRevealTransition = {
@@ -105,12 +119,10 @@ export const imageRevealTransition = {
   ease: luxuryEase,
 }
 
-/*
- * Cinematic reveal
- *
- * Reserved for major visual moments such as
- * the opening sequence.
- */
+/* ============================================================
+   CINEMATIC REVEAL
+   ============================================================ */
+
 export const cinematicInitial = {
   opacity: 0,
   scale: 0.97,
@@ -125,8 +137,8 @@ export const cinematicAnimate = {
 
 export const cinematicExit = {
   opacity: 0,
-  scale: 0.97,
-  filter: "blur(5px)",
+  scale: 0.985,
+  filter: "blur(4px)",
 }
 
 export const cinematicTransition = {
@@ -134,15 +146,13 @@ export const cinematicTransition = {
   ease: luxuryEase,
 }
 
-/*
- * Route/page transition
- *
- * Pages crossfade while gently moving between
- * clarity and obscurity.
- */
+/* ============================================================
+   PAGE TRANSITION
+   ============================================================ */
+
 export const pageInitial = {
   opacity: 0,
-  filter: "blur(3px)",
+  filter: "blur(4px)",
 }
 
 export const pageAnimate = {
@@ -152,10 +162,41 @@ export const pageAnimate = {
 
 export const pageExit = {
   opacity: 0,
-  filter: "blur(3px)",
+  filter: "blur(4px)",
 }
 
 export const pageTransition = {
-  duration: durationBase,
+  duration: durationPage,
   ease: luxuryEase,
+}
+
+/* ============================================================
+   BUTTON INTERACTION
+   ============================================================ */
+
+export const buttonTransition = {
+  duration: durationMicro,
+  ease: luxuryEase,
+}
+
+/* ============================================================
+   STAGGERED CONTAINER
+   ============================================================ */
+
+export const staggerContainer = {
+  initial: {},
+  animate: {
+    transition: {
+      staggerChildren: staggerSmall,
+    },
+  },
+}
+
+export const staggerContainerMedium = {
+  initial: {},
+  animate: {
+    transition: {
+      staggerChildren: staggerMedium,
+    },
+  },
 }
