@@ -665,17 +665,18 @@ export default function SplashPage({
               top-4
               flex
               w-full
-              max-w-full
+              max-w-[94vw]
               flex-col
               items-center
               justify-center
               overflow-visible
-              px-1
+              px-0
               font-display
-              text-[clamp(5rem,21vw,10rem)]
+              text-[clamp(5rem,19vw,10rem)]
               leading-[0.98]
               text-[var(--color-espresso)]
               sm:top-6
+              sm:max-w-[100%]
               sm:px-0
               sm:text-[clamp(5rem,20vw,12rem)]
               sm:leading-[0.9]
@@ -697,7 +698,7 @@ export default function SplashPage({
               className="
                 block
                 whitespace-nowrap
-                px-2
+                max-w-full
               "
             >
               Manuel
@@ -743,7 +744,7 @@ export default function SplashPage({
               className="
                 block
                 whitespace-nowrap
-                px-2
+                max-w-full
               "
             >
               Sharon
