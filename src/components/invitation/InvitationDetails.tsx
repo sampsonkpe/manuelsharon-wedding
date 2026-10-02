@@ -83,7 +83,6 @@ export default function InvitationDetails() {
         >
           <a
             href={calendarFile}
-            download="the-wedding-of-manuel-and-sharon.ics"
             className="invitation-button"
           >
             Add to Calendar
