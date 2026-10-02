@@ -1,6 +1,11 @@
 import { motion } from "framer-motion"
 import { useNavigate } from "react-router-dom"
-import { useEffect, useRef, useState } from "react"
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
 
 import envelopeVideo from "../assets/invitation/envelope.mp4"
 
@@ -14,70 +19,31 @@ import {
   staggerSmall,
 } from "../components/motion/motion"
 
-/* ============================================================
-   TYPES
-   ============================================================ */
-
 interface SplashPageProps {
-  /*
-   * When SplashPage is rendered over /home after a refresh,
-   * this callback tells the parent that the splash is finished.
-   *
-   * When SplashPage is the "/" route, we navigate to /home.
-   */
   onComplete?: () => void
 }
 
-/* ============================================================
-   VIDEO
-   ============================================================ */
-
-/*
- * The new video is intentionally extended:
- *
- * ~0–4s
- * Closed envelope.
- *
- * ~4–8s
- * Envelope opens.
- *
- * ~8s+
- * Flaps are gone and the inside of the envelope is visible.
- *
- * ~10.17s
- * Video ends.
- *
- * We therefore allow the video to play naturally at 1x.
- */
 const ENVELOPE_PLAYBACK_RATE = 1
 
-/*
- * This is intentionally based on the actual visual stage
- * of the supplied video rather than arbitrary UI timing.
- *
- * At approximately 8 seconds the flaps have moved away
- * sufficiently for the typography to appear.
- */
 const WELCOME_AT = 8.0
 const NAMES_AT = 8.65
 
-/*
- * How long the completed composition remains visible
- * after the video has finished.
- */
 const HOLD_AFTER_VIDEO = 3000
 
 /*
- * If the video cannot initialise/play within this period,
- * automatically continue to Home.
- *
- * There is deliberately NO poster fallback.
+ * If the seal is not tapped, transition into the normal
+ * typography sequence after 15 seconds.
  */
-const VIDEO_FALLBACK_DELAY = 5000
+const INACTIVITY_FALLBACK_DELAY = 15000
 
-/* ============================================================
-   MOTION
-   ============================================================ */
+/*
+ * Keep the same relationship between the existing
+ * Welcome and Names animation.
+ */
+const FALLBACK_NAMES_DELAY =
+  (NAMES_AT - WELCOME_AT) * 1000
+
+const FALLBACK_HOLD = 3200
 
 const finalZoomTransition = {
   duration: durationCinematic + 2.8,
@@ -89,87 +55,82 @@ const pageTransition = {
   ease: luxuryEase,
 }
 
-/* ============================================================
-   COMPONENT
-   ============================================================ */
-
 export default function SplashPage({
   onComplete,
 }: SplashPageProps) {
   const navigate = useNavigate()
   const videoRef = useRef<HTMLVideoElement>(null)
 
-  /*
-   * Timers
-   */
-  const fallbackTimerRef = useRef<number | null>(null)
-  const leaveTimerRef = useRef<number | null>(null)
-  const navigationTimerRef = useRef<number | null>(null)
+  const fallbackTimerRef =
+    useRef<number | null>(null)
 
-  /*
-   * Prevents the video initialisation logic from running
-   * repeatedly when multiple media events fire.
-   */
-  const videoInitialisedRef = useRef(false)
+  const leaveTimerRef =
+    useRef<number | null>(null)
 
-  /*
-   * Prevents the navigation sequence from being triggered
-   * more than once.
-   */
-  const hasFinishedRef = useRef(false)
+  const navigationTimerRef =
+    useRef<number | null>(null)
 
-  /*
-   * Whether the video has successfully started playing.
-   */
-  const videoStartedRef = useRef(false)
+  const fallbackNamesTimerRef =
+    useRef<number | null>(null)
 
-  /*
-   * Whether the component is still mounted.
-   */
-  const mountedRef = useRef(true)
+  const videoInitialisedRef =
+    useRef(false)
 
-  /* ==========================================================
-     STATE
-     ========================================================== */
+  const hasFinishedRef =
+    useRef(false)
 
-  const [videoReady, setVideoReady] = useState(false)
+  const videoStartedRef =
+    useRef(false)
 
-  const [showWelcome, setShowWelcome] = useState(false)
-  const [showNames, setShowNames] = useState(false)
+  const mountedRef =
+    useRef(true)
 
-  const [isFinalZoom, setIsFinalZoom] = useState(false)
-  const [isLeaving, setIsLeaving] = useState(false)
+  const [videoReady, setVideoReady] =
+    useState(false)
 
-  /* ==========================================================
-     LOCK THE PAGE
-     ==========================================================
+  const [hasOpened, setHasOpened] =
+    useState(false)
 
-     The splash is an actual full-screen experience.
+  const [showWelcome, setShowWelcome] =
+    useState(false)
 
-     While it is mounted:
+  const [showNames, setShowNames] =
+    useState(false)
 
-     - the page cannot scroll
-     - touch scrolling is disabled
-     - the content underneath cannot be reached
-     - /home remains underneath but completely inaccessible
-     ========================================================== */
+  const [isFinalZoom, setIsFinalZoom] =
+    useState(false)
+
+  const [isLeaving, setIsLeaving] =
+    useState(false)
+
+  const [isVideoFading, setIsVideoFading] =
+    useState(false)
 
   useEffect(() => {
-    const originalOverflow = document.body.style.overflow
-    const originalTouchAction = document.body.style.touchAction
+    const originalOverflow =
+      document.body.style.overflow
+
+    const originalTouchAction =
+      document.body.style.touchAction
+
+    const originalOverscrollBehavior =
+      document.body.style.overscrollBehavior
 
     document.body.style.overflow = "hidden"
     document.body.style.touchAction = "none"
+    document.body.style.overscrollBehavior = "none"
 
     return () => {
-      document.body.style.overflow = originalOverflow
-      document.body.style.touchAction = originalTouchAction
+      document.body.style.overflow =
+        originalOverflow
+
+      document.body.style.touchAction =
+        originalTouchAction
+
+      document.body.style.overscrollBehavior =
+        originalOverscrollBehavior
     }
   }, [])
-
-  /* ==========================================================
-     COMPONENT LIFECYCLE
-     ========================================================== */
 
   useEffect(() => {
     mountedRef.current = true
@@ -177,54 +138,128 @@ export default function SplashPage({
     return () => {
       mountedRef.current = false
 
-      if (fallbackTimerRef.current !== null) {
-        window.clearTimeout(fallbackTimerRef.current)
+      if (
+        fallbackTimerRef.current !== null
+      ) {
+        window.clearTimeout(
+          fallbackTimerRef.current,
+        )
       }
 
-      if (leaveTimerRef.current !== null) {
-        window.clearTimeout(leaveTimerRef.current)
+      if (
+        leaveTimerRef.current !== null
+      ) {
+        window.clearTimeout(
+          leaveTimerRef.current,
+        )
       }
 
-      if (navigationTimerRef.current !== null) {
-        window.clearTimeout(navigationTimerRef.current)
+      if (
+        navigationTimerRef.current !== null
+      ) {
+        window.clearTimeout(
+          navigationTimerRef.current,
+        )
+      }
+
+      if (
+        fallbackNamesTimerRef.current !== null
+      ) {
+        window.clearTimeout(
+          fallbackNamesTimerRef.current,
+        )
       }
     }
   }, [])
 
-  /* ==========================================================
-     FALLBACK TIMER
-     ==========================================================
+  const completeSplash =
+    useCallback(() => {
+      if (!mountedRef.current) return
 
-     There is intentionally no poster.
+      if (onComplete) {
+        onComplete()
+        return
+      }
 
-     If the video has not successfully started within five
-     seconds, we leave the splash and go to Home.
+      navigate("/home", {
+        replace: true,
+      })
+    }, [navigate, onComplete])
 
-     This prevents a broken/slow video from trapping the
-     visitor on a blank splash screen.
-     ========================================================== */
+  const finishSplashImmediately =
+    useCallback(() => {
+      if (hasFinishedRef.current) return
+
+      hasFinishedRef.current = true
+
+      const video = videoRef.current
+
+      if (video) {
+        video.pause()
+      }
+
+      /*
+       * Remove the envelope first.
+       * The existing typography underneath then becomes visible.
+       */
+      setIsVideoFading(true)
+      setHasOpened(true)
+
+      /*
+       * Continue the existing SplashPage animation.
+       */
+      setShowWelcome(true)
+
+      fallbackNamesTimerRef.current =
+        window.setTimeout(() => {
+          if (!mountedRef.current) return
+
+          setShowNames(true)
+        }, FALLBACK_NAMES_DELAY)
+
+      /*
+       * Allow the complete typography composition to breathe.
+       */
+      leaveTimerRef.current =
+        window.setTimeout(() => {
+          if (!mountedRef.current) return
+
+          setIsLeaving(true)
+
+          navigationTimerRef.current =
+            window.setTimeout(() => {
+              completeSplash()
+            }, durationPage * 1000)
+        }, FALLBACK_HOLD)
+    }, [completeSplash])
 
   useEffect(() => {
-    fallbackTimerRef.current = window.setTimeout(() => {
-      if (
-        mountedRef.current &&
-        !videoStartedRef.current &&
-        !hasFinishedRef.current
-      ) {
-        finishSplashImmediately()
-      }
-    }, VIDEO_FALLBACK_DELAY)
+    fallbackTimerRef.current =
+      window.setTimeout(() => {
+        if (
+          mountedRef.current &&
+          !hasOpened &&
+          !hasFinishedRef.current
+        ) {
+          finishSplashImmediately()
+        }
+      }, INACTIVITY_FALLBACK_DELAY)
 
     return () => {
-      if (fallbackTimerRef.current !== null) {
-        window.clearTimeout(fallbackTimerRef.current)
+      if (
+        fallbackTimerRef.current !== null
+      ) {
+        window.clearTimeout(
+          fallbackTimerRef.current,
+        )
+
+        fallbackTimerRef.current = null
       }
     }
-  }, [])
-
-  /* ==========================================================
-     VIDEO READY
-     ========================================================== */
+  }, [
+    hasOpened,
+    finishSplashImmediately,
+  ])
 
   const handleVideoReady = () => {
     const video = videoRef.current
@@ -235,90 +270,92 @@ export default function SplashPage({
 
     videoInitialisedRef.current = true
 
-    /*
-     * Make absolutely certain the video starts from the
-     * beginning of the closed-envelope sequence.
-     */
     video.pause()
     video.currentTime = 0
-    video.playbackRate = ENVELOPE_PLAYBACK_RATE
+    video.playbackRate =
+      ENVELOPE_PLAYBACK_RATE
 
     setVideoReady(true)
   }
 
-  /* ==========================================================
-     VIDEO STARTED
-     ========================================================== */
+  const handleOpenInvitation =
+    async () => {
+      if (!videoReady || hasOpened) return
+
+      const video = videoRef.current
+
+      if (!video) return
+
+      setHasOpened(true)
+
+      /*
+       * The visitor has interacted, so the
+       * 15-second inactivity fallback is no longer needed.
+       */
+      if (
+        fallbackTimerRef.current !== null
+      ) {
+        window.clearTimeout(
+          fallbackTimerRef.current,
+        )
+
+        fallbackTimerRef.current = null
+      }
+
+      video.pause()
+      video.currentTime = 0
+      video.playbackRate =
+        ENVELOPE_PLAYBACK_RATE
+
+      try {
+        await video.play()
+      } catch {
+        setHasOpened(false)
+
+        /*
+         * Restart the inactivity timer if playback fails.
+         */
+        fallbackTimerRef.current =
+          window.setTimeout(() => {
+            if (
+              mountedRef.current &&
+              !hasOpened &&
+              !hasFinishedRef.current
+            ) {
+              finishSplashImmediately()
+            }
+          }, INACTIVITY_FALLBACK_DELAY)
+      }
+    }
 
   const handleVideoStarted = () => {
     videoStartedRef.current = true
 
-    /*
-     * The video successfully started, so the fallback timer
-     * is no longer necessary.
-     */
-    if (fallbackTimerRef.current !== null) {
-      window.clearTimeout(fallbackTimerRef.current)
+    if (
+      fallbackTimerRef.current !== null
+    ) {
+      window.clearTimeout(
+        fallbackTimerRef.current,
+      )
+
       fallbackTimerRef.current = null
     }
   }
 
-  /* ==========================================================
-     PLAY VIDEO
-     ==========================================================
-
-     Normally the muted video will autoplay.
-
-     We also explicitly call play() after the media is ready
-     as an additional reliability measure.
-     ========================================================== */
-
-  useEffect(() => {
-    if (!videoReady) return
-
-    const video = videoRef.current
-
-    if (!video) return
-
-    video.muted = true
-    video.playsInline = true
-    video.playbackRate = ENVELOPE_PLAYBACK_RATE
-
-    const startPlayback = async () => {
-      try {
-        await video.play()
-      } catch {
-        /*
-         * We deliberately do nothing here.
-         *
-         * The five-second fallback remains active and will
-         * redirect to Home if playback never starts.
-         */
-      }
-    }
-
-    startPlayback()
-  }, [videoReady])
-
-  /* ==========================================================
-     VIDEO PROGRESS
-     ========================================================== */
-
   const handleTimeUpdate = () => {
     const video = videoRef.current
 
-    if (!video || !video.duration) return
+    if (
+      !video ||
+      !video.duration ||
+      !hasOpened
+    ) {
+      return
+    }
 
-    const currentTime = video.currentTime
+    const currentTime =
+      video.currentTime
 
-    /*
-     * --------------------------------------------------------
-     * WELCOME
-     * --------------------------------------------------------
-     *
-     * The envelope has almost completely opened.
-     * The flaps are no longer dominating the composition.
-     */
     if (
       currentTime >= WELCOME_AT &&
       !showWelcome
@@ -326,11 +363,6 @@ export default function SplashPage({
       setShowWelcome(true)
     }
 
-    /*
-     * --------------------------------------------------------
-     * NAMES
-     * --------------------------------------------------------
-     */
     if (
       currentTime >= NAMES_AT &&
       !showNames
@@ -338,13 +370,6 @@ export default function SplashPage({
       setShowNames(true)
     }
 
-    /*
-     * --------------------------------------------------------
-     * FINAL CINEMATIC ZOOM
-     * --------------------------------------------------------
-     *
-     * Begin during the final portion of the video.
-     */
     const remaining =
       video.duration - currentTime
 
@@ -356,92 +381,23 @@ export default function SplashPage({
     }
   }
 
-  /* ==========================================================
-     VIDEO COMPLETE
-     * ========================================================= */
-
   const handleVideoEnded = () => {
     if (hasFinishedRef.current) return
 
     hasFinishedRef.current = true
 
-    /*
-     * Give the final composition approximately three seconds
-     * to breathe before leaving the splash.
-     */
-    leaveTimerRef.current = window.setTimeout(() => {
-      if (!mountedRef.current) return
+    leaveTimerRef.current =
+      window.setTimeout(() => {
+        if (!mountedRef.current) return
 
-      setIsLeaving(true)
+        setIsLeaving(true)
 
-      /*
-       * Allow the splash fade to complete before navigating.
-       */
-      navigationTimerRef.current = window.setTimeout(() => {
-        completeSplash()
-      }, durationPage * 1000)
-    }, HOLD_AFTER_VIDEO)
+        navigationTimerRef.current =
+          window.setTimeout(() => {
+            completeSplash()
+          }, durationPage * 1000)
+      }, HOLD_AFTER_VIDEO)
   }
-
-  /* ==========================================================
-     COMPLETE SPLASH
-     ========================================================== */
-
-  function completeSplash() {
-    if (!mountedRef.current) return
-
-    /*
-     * REFRESH / OVERLAY MODE
-     *
-     * The parent already owns /home.
-     */
-    if (onComplete) {
-      onComplete()
-      return
-    }
-
-    /*
-     * NORMAL MODE
-     *
-     * SplashPage is the "/" route.
-     */
-    navigate("/home", {
-      replace: true,
-    })
-  }
-
-  /* ==========================================================
-     IMMEDIATE FALLBACK
-     ========================================================== */
-
-  function finishSplashImmediately() {
-    if (hasFinishedRef.current) return
-
-    hasFinishedRef.current = true
-
-    /*
-     * Stop the video if it exists.
-     */
-    const video = videoRef.current
-
-    if (video) {
-      video.pause()
-    }
-
-    /*
-     * We don't perform the cinematic sequence when the video
-     * has failed. The visitor simply proceeds to Home.
-     */
-    setIsLeaving(true)
-
-    navigationTimerRef.current = window.setTimeout(() => {
-      completeSplash()
-    }, durationPage * 1000)
-  }
-
-  /* ==========================================================
-     RENDER
-     ========================================================== */
 
   return (
     <motion.main
@@ -454,8 +410,8 @@ export default function SplashPage({
         w-full
         overflow-hidden
         overscroll-none
-        bg-[var(--color-envelope)]
         touch-none
+        bg-[var(--color-envelope)]
       "
       initial={{
         opacity: 1,
@@ -466,11 +422,6 @@ export default function SplashPage({
       transition={pageTransition}
       aria-label="Wedding invitation"
     >
-
-      {/* =====================================================
-          ENVELOPE VIDEO
-          ===================================================== */}
-
       <motion.video
         ref={videoRef}
         className="
@@ -481,20 +432,41 @@ export default function SplashPage({
           object-cover
           object-center
         "
-        autoPlay
+        autoPlay={false}
         muted
         playsInline
         preload="auto"
-        onLoadedMetadata={handleVideoReady}
-        onLoadedData={handleVideoReady}
-        onCanPlay={handleVideoReady}
-        onPlay={handleVideoStarted}
-        onTimeUpdate={handleTimeUpdate}
-        onEnded={handleVideoEnded}
+        onLoadedMetadata={
+          handleVideoReady
+        }
+        onLoadedData={
+          handleVideoReady
+        }
+        onCanPlay={
+          handleVideoReady
+        }
+        onPlay={
+          handleVideoStarted
+        }
+        onTimeUpdate={
+          handleTimeUpdate
+        }
+        onEnded={
+          handleVideoEnded
+        }
         animate={{
-          scale: isFinalZoom ? 1.26 : 1,
+          opacity: isVideoFading ? 0 : 1,
+          scale: isFinalZoom
+            ? 1.26
+            : 1,
         }}
-        transition={finalZoomTransition}
+        transition={{
+          opacity: {
+            duration: 1.2,
+            ease: luxuryEase,
+          },
+          scale: finalZoomTransition,
+        }}
         aria-hidden="true"
       >
         <source
@@ -503,9 +475,106 @@ export default function SplashPage({
         />
       </motion.video>
 
-      {/* =====================================================
-          INTRO TYPOGRAPHY
-          ===================================================== */}
+      {!hasOpened && (
+        <button
+          type="button"
+          aria-label="Tap the seal to open the wedding invitation"
+          onClick={
+            handleOpenInvitation
+          }
+          disabled={!videoReady}
+          className="
+            absolute
+            left-1/2
+            top-[44.5%]
+            z-30
+            aspect-square
+            w-[clamp(5.25rem,18vw,7rem)]
+            -translate-x-1/2
+            -translate-y-1/2
+            cursor-pointer
+            rounded-full
+            bg-transparent
+            outline-none
+            focus-visible:ring-2
+            focus-visible:ring-[var(--color-caramel)]
+            focus-visible:ring-offset-2
+          "
+        />
+      )}
+
+      <motion.div
+        className="
+          pointer-events-none
+          absolute
+          inset-x-0
+          bottom-[18vh]
+          z-40
+          flex
+          justify-center
+        "
+        initial={{
+          opacity: 0,
+          y: 5,
+        }}
+        animate={{
+          opacity:
+            videoReady && !hasOpened
+              ? 1
+              : 0,
+          y:
+            videoReady && !hasOpened
+              ? 0
+              : 5,
+        }}
+        transition={{
+          duration: 1.4,
+          ease: luxuryEase,
+        }}
+      >
+        <div
+          className="
+            flex
+            flex-col
+            items-center
+            gap-3
+            text-center
+          "
+        >
+          <motion.span
+            animate={{
+              opacity: [
+                0.75,
+                1,
+                0.75,
+              ],
+            }}
+            transition={{
+              duration: 2.8,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="
+              font-body
+              text-sm
+              font-medium
+              uppercase
+              tracking-[0.22em]
+              text-[var(--color-muted)]
+            "
+          >
+            Tap the seal to open
+          </motion.span>
+
+          <span
+            className="
+              h-px
+              w-8
+              bg-[var(--color-caramel)]
+            "
+          />
+        </div>
+      </motion.div>
 
       <div
         className="
@@ -516,7 +585,8 @@ export default function SplashPage({
           flex
           items-center
           justify-center
-          px-[var(--page-padding)]
+          px-4
+          sm:px-[var(--page-padding)]
         "
       >
         <div
@@ -529,13 +599,10 @@ export default function SplashPage({
             text-center
           "
         >
-
-          {/* =================================================
-              WELCOME
-              ================================================= */}
-
           <motion.p
-            initial={cinematicInitial}
+            initial={
+              cinematicInitial
+            }
             animate={
               showWelcome
                 ? cinematicAnimate
@@ -543,17 +610,19 @@ export default function SplashPage({
             }
             transition={{
               ...cinematicTransition,
-              duration: durationCinematic,
+              duration:
+                durationCinematic,
             }}
             className="
               font-body
-              text-base
+              text-sm
               font-medium
               uppercase
               leading-[1.9]
-              tracking-[0.30em]
+              tracking-[0.24em]
               text-[var(--color-muted)]
               sm:text-lg
+              sm:tracking-[0.30em]
             "
           >
             <span className="block">
@@ -565,30 +634,29 @@ export default function SplashPage({
             </span>
           </motion.p>
 
-          {/* =================================================
-              COUPLE
-              ================================================= */}
-
           <h1
             className="
               relative
-              top-6
+              top-4
               flex
               w-full
-              max-w-[92vw]
+              max-w-full
               flex-col
               items-center
+              overflow-visible
+              px-2
               font-display
-              text-[clamp(4.6rem,17vw,8rem)]
-              leading-[0.88]
+              text-[clamp(3.7rem,15vw,8rem)]
+              leading-[0.9]
               text-[var(--color-espresso)]
+              sm:top-6
+              sm:px-0
             "
           >
-
-            {/* MANUEL */}
-
             <motion.span
-              initial={cinematicInitial}
+              initial={
+                cinematicInitial
+              }
               animate={
                 showNames
                   ? cinematicAnimate
@@ -599,16 +667,18 @@ export default function SplashPage({
                 delay: staggerSmall,
               }}
               className="
+                block
+                max-w-full
                 whitespace-nowrap
               "
             >
               Manuel
             </motion.span>
 
-            {/* & */}
-
             <motion.span
-              initial={cinematicInitial}
+              initial={
+                cinematicInitial
+              }
               animate={
                 showNames
                   ? cinematicAnimate
@@ -616,20 +686,21 @@ export default function SplashPage({
               }
               transition={{
                 ...cinematicTransition,
-                delay: staggerSmall * 2,
+                delay:
+                  staggerSmall * 2,
               }}
               className="
                 my-2
-                text-[0.46em]
+                text-[0.42em]
               "
             >
               &amp;
             </motion.span>
 
-            {/* SHARON */}
-
             <motion.span
-              initial={cinematicInitial}
+              initial={
+                cinematicInitial
+              }
               animate={
                 showNames
                   ? cinematicAnimate
@@ -637,23 +708,23 @@ export default function SplashPage({
               }
               transition={{
                 ...cinematicTransition,
-                delay: staggerSmall * 3,
+                delay:
+                  staggerSmall * 3,
               }}
               className="
+                block
+                max-w-full
                 whitespace-nowrap
               "
             >
               Sharon
             </motion.span>
-
           </h1>
 
-          {/* =================================================
-              HASHTAG
-              ================================================= */}
-
           <motion.p
-            initial={cinematicInitial}
+            initial={
+              cinematicInitial
+            }
             animate={
               showNames
                 ? cinematicAnimate
@@ -661,25 +732,26 @@ export default function SplashPage({
             }
             transition={{
               ...cinematicTransition,
-              delay: staggerSmall * 4,
+              delay:
+                staggerSmall * 4,
             }}
             className="
-              mt-8
+              mt-7
               font-body
-              text-sm
+              text-xs
               font-medium
               uppercase
-              tracking-[0.24em]
+              tracking-[0.20em]
               text-[var(--color-muted)]
+              sm:mt-8
               sm:text-base
+              sm:tracking-[0.24em]
             "
           >
             #THEMANFORSHAY
           </motion.p>
-
         </div>
       </div>
-
     </motion.main>
   )
 }
