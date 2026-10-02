@@ -108,7 +108,18 @@ export default function ClosingPage() {
   return (
     <main className="relative min-h-[100svh] overflow-hidden bg-transparent">
 
-      <div className="flex min-h-[100svh] w-full items-center justify-center px-[var(--page-padding)] py-10 sm:py-14">
+      <div
+        className="
+          flex
+          min-h-[100svh]
+          w-full
+          items-center
+          justify-center
+          px-[var(--page-padding)]
+          py-10
+          sm:py-14
+        "
+      >
 
         <div className="w-full max-w-[760px]">
 
@@ -126,14 +137,44 @@ export default function ClosingPage() {
                 filter: "blur(4px)",
               }}
               transition={cinematicTransition}
-              className="fixed left-1/2 top-1/2 z-20 w-[min(90vw,620px)] -translate-x-1/2 -translate-y-1/2 text-center"
+              className="
+                fixed
+                left-1/2
+                top-1/2
+                z-20
+                w-[min(90vw,620px)]
+                -translate-x-1/2
+                -translate-y-1/2
+                text-center
+              "
             >
-              <p className="font-editorial text-[clamp(1.7rem,4vw,2.7rem)] italic leading-[1.25] text-[var(--color-espresso)]">
+              <p
+                className="
+                  font-editorial
+                  text-2xl
+                  italic
+                  leading-[1.25]
+                  text-[var(--color-espresso)]
+                  sm:text-3xl
+                  md:text-4xl
+                "
+              >
                 &quot;...And a threefold cord is not
                 quickly broken.&quot;
               </p>
 
-              <p className="mt-5 font-body text-[0.46rem] font-medium uppercase tracking-[0.34em] text-[var(--color-muted)] sm:text-[0.5rem]">
+              <p
+                className="
+                  mt-5
+                  font-body
+                  text-sm
+                  font-medium
+                  uppercase
+                  tracking-[0.2em]
+                  text-[var(--color-muted)]
+                  sm:text-base
+                "
+              >
                 Ecclesiastes 4:12 • NKJV
               </p>
             </motion.div>
@@ -143,7 +184,13 @@ export default function ClosingPage() {
               CLOSING COMPOSITION
               ================================================= */}
 
-          <div className="grid grid-rows-[auto_115px_70px] sm:grid-rows-[auto_125px_75px]">
+          <div
+            className="
+              grid
+              grid-rows-[auto_115px_70px]
+              sm:grid-rows-[auto_125px_75px]
+            "
+          >
 
             {/* =================================================
                 CLOSING IMAGE
@@ -157,13 +204,27 @@ export default function ClosingPage() {
                   : cinematicInitial
               }
               transition={cinematicTransition}
-              className="relative h-[58svh] min-h-[420px] max-h-[620px] overflow-hidden rounded-[var(--radius-lg)]"
+              className="
+                relative
+                h-[58svh]
+                min-h-[420px]
+                max-h-[620px]
+                overflow-hidden
+                rounded-[var(--radius-lg)]
+              "
             >
               <img
                 src={closingImage}
                 alt="Manuel and Sharon"
                 loading="eager"
-                className="absolute bottom-0 left-0 block h-auto w-full"
+                className="
+                  absolute
+                  bottom-0
+                  left-0
+                  block
+                  h-auto
+                  w-full
+                "
               />
             </motion.div>
 
@@ -179,7 +240,21 @@ export default function ClosingPage() {
                   : cinematicInitial
               }
               transition={cinematicTransition}
-              className="mx-auto mt-7 max-w-[620px] self-start px-4 text-center font-editorial text-[clamp(1.35rem,3vw,1.9rem)] italic leading-[1.4] text-[var(--color-espresso)] sm:mt-10"
+              className="
+                mx-auto
+                mt-7
+                max-w-[620px]
+                self-start
+                px-4
+                text-center
+                font-editorial
+                text-2xl
+                italic
+                leading-[1.25]
+                text-[var(--color-espresso)]
+                sm:mt-10
+                sm:text-3xl
+              "
             >
               We can&apos;t wait to have you
               witness the beginning of our
@@ -201,14 +276,21 @@ export default function ClosingPage() {
                 ...cinematicTransition,
                 duration: 1.3,
               }}
-              className="flex items-start justify-center"
+              className="
+                flex
+                items-start
+                justify-center
+              "
             >
               <button
                 type="button"
                 onClick={() =>
                   navigate("/home")
                 }
-                className="invitation-button whitespace-nowrap"
+                className="
+                  invitation-button
+                  whitespace-nowrap
+                "
               >
                 Back to Invitation
               </button>
