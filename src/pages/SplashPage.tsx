@@ -30,16 +30,8 @@ const NAMES_AT = 8.65
 
 const HOLD_AFTER_VIDEO = 3000
 
-/*
- * If the seal is not tapped, transition into the normal
- * typography sequence after 15 seconds.
- */
-const INACTIVITY_FALLBACK_DELAY = 15000
+const INACTIVITY_FALLBACK_DELAY = 10000
 
-/*
- * Keep the same relationship between the existing
- * Welcome and Names animation.
- */
 const FALLBACK_NAMES_DELAY =
   (NAMES_AT - WELCOME_AT) * 1000
 
@@ -74,6 +66,9 @@ export default function SplashPage({
     useRef<number | null>(null)
 
   const videoInitialisedRef =
+    useRef(false)
+
+  const isPrimingVideoRef =
     useRef(false)
 
   const hasFinishedRef =
@@ -198,16 +193,8 @@ export default function SplashPage({
         video.pause()
       }
 
-      /*
-       * Remove the envelope first.
-       * The existing typography underneath then becomes visible.
-       */
       setIsVideoFading(true)
       setHasOpened(true)
-
-      /*
-       * Continue the existing SplashPage animation.
-       */
       setShowWelcome(true)
 
       fallbackNamesTimerRef.current =
@@ -217,9 +204,6 @@ export default function SplashPage({
           setShowNames(true)
         }, FALLBACK_NAMES_DELAY)
 
-      /*
-       * Allow the complete typography composition to breathe.
-       */
       leaveTimerRef.current =
         window.setTimeout(() => {
           if (!mountedRef.current) return
@@ -261,6 +245,54 @@ export default function SplashPage({
     finishSplashImmediately,
   ])
 
+  const waitForPaint = () =>
+    new Promise<void>((resolve) => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          resolve()
+        })
+      })
+    })
+
+  const initialiseVideoRenderer =
+    async (video: HTMLVideoElement) => {
+      if (
+        videoInitialisedRef.current ||
+        isPrimingVideoRef.current
+      ) {
+        return
+      }
+
+      isPrimingVideoRef.current = true
+
+      video.muted = true
+      video.playsInline = true
+      video.playbackRate =
+        ENVELOPE_PLAYBACK_RATE
+
+      try {
+        await video.play()
+
+        await waitForPaint()
+
+        video.pause()
+
+        video.currentTime = 0
+
+        await waitForPaint()
+      } catch {
+        video.pause()
+        video.currentTime = 0
+      } finally {
+        isPrimingVideoRef.current = false
+        videoInitialisedRef.current = true
+
+        if (mountedRef.current) {
+          setVideoReady(true)
+        }
+      }
+    }
+
   const handleVideoReady = () => {
     const video = videoRef.current
 
@@ -268,14 +300,7 @@ export default function SplashPage({
 
     if (videoInitialisedRef.current) return
 
-    videoInitialisedRef.current = true
-
-    video.pause()
-    video.currentTime = 0
-    video.playbackRate =
-      ENVELOPE_PLAYBACK_RATE
-
-    setVideoReady(true)
+    void initialiseVideoRenderer(video)
   }
 
   const handleOpenInvitation =
@@ -288,10 +313,6 @@ export default function SplashPage({
 
       setHasOpened(true)
 
-      /*
-       * The visitor has interacted, so the
-       * 15-second inactivity fallback is no longer needed.
-       */
       if (
         fallbackTimerRef.current !== null
       ) {
@@ -312,14 +333,10 @@ export default function SplashPage({
       } catch {
         setHasOpened(false)
 
-        /*
-         * Restart the inactivity timer if playback fails.
-         */
         fallbackTimerRef.current =
           window.setTimeout(() => {
             if (
               mountedRef.current &&
-              !hasOpened &&
               !hasFinishedRef.current
             ) {
               finishSplashImmediately()
@@ -329,6 +346,10 @@ export default function SplashPage({
     }
 
   const handleVideoStarted = () => {
+    if (isPrimingVideoRef.current) {
+      return
+    }
+
     videoStartedRef.current = true
 
     if (
