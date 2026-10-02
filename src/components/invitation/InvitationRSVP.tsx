@@ -302,6 +302,7 @@ export default function InvitationRsvp() {
                   uppercase
                   tracking-[0.2em]
                   text-[var(--color-muted)]
+                  sm:text-base
                 "
               >
                 RSVP
@@ -315,6 +316,7 @@ export default function InvitationRsvp() {
                   uppercase
                   tracking-[0.24em]
                   text-[var(--color-espresso)]
+                  sm:text-base
                 "
               >
                 [Strictly by invitation]
@@ -345,6 +347,7 @@ export default function InvitationRsvp() {
                       font-editorial
                       text-2xl
                       leading-[1.25]
+                      tracking-[-0.01em]
                       text-[var(--color-espresso)]
                       sm:text-3xl
                     "
@@ -365,23 +368,22 @@ export default function InvitationRsvp() {
                     <p
                       className="
                         font-editorial
-                        text-base
-                        leading-[1.5]
+                        text-lg
+                        leading-[1.7]
                         text-[var(--color-muted)]
-                        sm:text-lg
+                        sm:text-xl
                       "
                     >
-                      Kindly confirm your
-                      attendance by{" "}
+                      Kindly confirm your attendance by
                       <span
                         className="
+                          block
                           font-medium
                           text-[var(--color-espresso)]
                         "
                       >
-                        {RSVP_DEADLINE}
+                        {RSVP_DEADLINE}.
                       </span>
-                      .
                     </p>
                   </div>
 
@@ -408,6 +410,7 @@ export default function InvitationRsvp() {
                           uppercase
                           tracking-[0.16em]
                           text-[var(--color-muted)]
+                          sm:text-base
                         "
                       >
                         Full name
@@ -451,6 +454,9 @@ export default function InvitationRsvp() {
                           text-[1.25rem]
                           text-[var(--color-espresso)]
                           outline-none
+                          placeholder:font-body
+                          placeholder:text-base
+                          placeholder:tracking-normal
                           placeholder:text-[var(--color-muted)]
                           focus:border-[var(--color-caramel)]
                         "
@@ -471,6 +477,7 @@ export default function InvitationRsvp() {
                           uppercase
                           tracking-[0.16em]
                           text-[var(--color-muted)]
+                          sm:text-base
                         "
                       >
                         Phone number
@@ -516,6 +523,9 @@ export default function InvitationRsvp() {
                           tracking-[0.04em]
                           text-[var(--color-espresso)]
                           outline-none
+                          placeholder:font-body
+                          placeholder:text-base
+                          placeholder:tracking-normal
                           placeholder:text-[var(--color-muted)]
                           focus:border-[var(--color-caramel)]
                         "
@@ -536,6 +546,7 @@ export default function InvitationRsvp() {
                           uppercase
                           tracking-[0.16em]
                           text-[var(--color-muted)]
+                          sm:text-base
                         "
                       >
                         A message for the couple{" "}
@@ -570,6 +581,9 @@ export default function InvitationRsvp() {
                           leading-[1.5]
                           text-[var(--color-espresso)]
                           outline-none
+                          placeholder:font-body
+                          placeholder:text-base
+                          placeholder:tracking-normal
                           placeholder:text-[var(--color-muted)]
                           focus:border-[var(--color-caramel)]
                         "
@@ -579,7 +593,7 @@ export default function InvitationRsvp() {
                         <span
                           className="
                             font-body
-                            text-[0.42rem]
+                            text-caption
                             tracking-[0.08em]
                             text-[var(--color-muted)]
                           "
@@ -620,7 +634,7 @@ export default function InvitationRsvp() {
                           role="alert"
                           className="
                             font-body
-                            text-[0.46rem]
+                            text-xs
                             uppercase
                             leading-[1.7]
                             tracking-[0.14em]

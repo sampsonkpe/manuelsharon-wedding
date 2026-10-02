@@ -59,12 +59,12 @@ export default function InvitationDetails() {
           className="
             mt-5
             font-body
-            text-xs
+            text-sm
             font-medium
             uppercase
             tracking-[0.2em]
             text-[var(--color-muted)]
-            sm:text-sm
+            sm:text-base
           "
         >
           At 2:00 PM • GMT
@@ -131,12 +131,12 @@ export default function InvitationDetails() {
             className="
               mt-3
               font-body
-              text-xs
+              text-sm
               font-medium
               uppercase
               tracking-[0.2em]
               text-[var(--color-muted)]
-              sm:text-sm
+              sm:text-base
             "
           >
             Adjiringanor

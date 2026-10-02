@@ -53,6 +53,7 @@ export default function InvitationPalette() {
               uppercase
               tracking-[0.2em]
               text-[var(--color-muted)]
+              sm:text-base
             "
           >
             Our Colour Palette
@@ -71,10 +72,12 @@ export default function InvitationPalette() {
               mt-4
               max-w-[460px]
               font-editorial
-              text-xl
-              leading-[1.4]
+              text-2xl
+              leading-[1.15]
+              tracking-[-0.01em]
               text-[var(--color-espresso)]
-              sm:text-2xl
+              sm:text-3xl
+              md:text-4xl
             "
           >
             Colours chosen for the day.
@@ -135,12 +138,12 @@ export default function InvitationPalette() {
                 className="
                   mt-3
                   font-body
-                  text-[0.65rem]
+                  text-sm
                   font-medium
                   uppercase
-                  tracking-[0.10em]
+                  tracking-[0.1em]
                   text-[var(--color-muted)]
-                  sm:text-sm
+                  sm:text-base
                   sm:tracking-[0.12em]
                 "
               >

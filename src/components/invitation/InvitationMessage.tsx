@@ -31,9 +31,11 @@ export default function InvitationMessage() {
           className="
             font-editorial
             text-3xl
-            leading-[1.25]
+            leading-[1.15]
+            tracking-[-0.01em]
             text-[var(--color-espresso)]
             sm:text-4xl
+            md:text-5xl
           "
         >
           We, together with our families, kindly request your
@@ -58,10 +60,12 @@ export default function InvitationMessage() {
             className="
               font-editorial
               text-2xl
-              italic
-              leading-[1.45]
+              leading-[1.25]
+              tracking-[-0.01em]
               text-[var(--color-espresso)]
+              italic
               sm:text-3xl
+              md:text-4xl
             "
           >
             “Though one may be overpowered by another, two can
@@ -88,6 +92,7 @@ export default function InvitationMessage() {
               uppercase
               tracking-[0.2em]
               text-[var(--color-muted)]
+              sm:text-base
             "
           >
             Ecclesiastes 4:12 • NKJV
