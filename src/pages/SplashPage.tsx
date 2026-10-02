@@ -699,20 +699,16 @@ export default function SplashPage({
               className="
                 flex
                 w-full
-                max-w-[900px]
                 flex-col
                 items-center
                 justify-center
                 overflow-visible
                 text-center
-                font-display
-                text-[clamp(5rem,21vw,10rem)]
-                leading-none
                 text-[var(--color-espresso)]
-                sm:text-[clamp(5rem,20vw,12rem)]
               "
             >
-              <motion.span
+              {/* MANUEL */}
+              <motion.div
                 initial={cinematicInitial}
                 animate={
                   showNames
@@ -724,15 +720,30 @@ export default function SplashPage({
                   delay: staggerSmall,
                 }}
                 className="
-                  block
-                  whitespace-nowrap
-                  px-[0.08em]
+                  flex
+                  w-fit
+                  max-w-none
+                  justify-center
+                  overflow-visible
                 "
               >
-                Manuel
-              </motion.span>
+                <span
+                  className="
+                    inline-block
+                    overflow-visible
+                    px-[0.18em]
+                    font-display
+                    text-[clamp(5rem,21vw,10rem)]
+                    leading-none
+                    whitespace-nowrap
+                  "
+                >
+                  Manuel
+                </span>
+              </motion.div>
 
-              <motion.span
+              {/* AMPERSAND */}
+              <motion.div
                 initial={cinematicInitial}
                 animate={
                   showNames
@@ -744,16 +755,27 @@ export default function SplashPage({
                   delay: staggerSmall * 2,
                 }}
                 className="
-                  block
-                  -my-1
-                  text-[0.42em]
-                  sm:-my-2
+                  flex
+                  w-fit
+                  justify-center
+                  overflow-visible
                 "
               >
-                &amp;
-              </motion.span>
+                <span
+                  className="
+                    inline-block
+                    overflow-visible
+                    font-display
+                    text-[clamp(2.1rem,8.8vw,4.2rem)]
+                    leading-none
+                  "
+                >
+                  &amp;
+                </span>
+              </motion.div>
 
-              <motion.span
+              {/* SHARON */}
+              <motion.div
                 initial={cinematicInitial}
                 animate={
                   showNames
@@ -765,13 +787,27 @@ export default function SplashPage({
                   delay: staggerSmall * 3,
                 }}
                 className="
-                  block
-                  whitespace-nowrap
-                  px-[0.08em]
+                  flex
+                  w-fit
+                  max-w-none
+                  justify-center
+                  overflow-visible
                 "
               >
-                Sharon
-              </motion.span>
+                <span
+                  className="
+                    inline-block
+                    overflow-visible
+                    px-[0.18em]
+                    font-display
+                    text-[clamp(5rem,21vw,10rem)]
+                    leading-none
+                    whitespace-nowrap
+                  "
+                >
+                  Sharon
+                </span>
+              </motion.div>
             </h1>
           </div>
 
