@@ -85,7 +85,20 @@ export default function InvitationPalette() {
             COLOURS
             ================================================= */}
 
-        <div className="mt-9 flex items-start justify-center gap-4 sm:gap-8">
+        <div
+          className="
+            mx-auto
+            mt-9
+            flex
+            w-full
+            max-w-[500px]
+            items-start
+            justify-between
+            px-4
+            sm:max-w-[560px]
+            sm:px-6
+          "
+        >
           {palette.map((colour, index) => (
             <motion.div
               key={colour.hex}
@@ -96,7 +109,12 @@ export default function InvitationPalette() {
                 ...revealTransition,
                 delay: index * 0.07,
               }}
-              className="flex flex-col items-center"
+              className="
+                flex
+                min-w-0
+                flex-col
+                items-center
+              "
             >
               <span
                 aria-label={`${colour.name}: ${colour.hex}`}
@@ -117,11 +135,13 @@ export default function InvitationPalette() {
                 className="
                   mt-3
                   font-body
-                  text-sm
+                  text-[0.65rem]
                   font-medium
                   uppercase
-                  tracking-[0.12em]
+                  tracking-[0.10em]
                   text-[var(--color-muted)]
+                  sm:text-sm
+                  sm:tracking-[0.12em]
                 "
               >
                 {colour.name}

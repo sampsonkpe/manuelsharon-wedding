@@ -16,6 +16,9 @@ const RSVP_DRAFT_KEY =
 const RSVP_SUBMITTED_KEY =
   "themanforshay-rsvp-submitted"
 
+const RSVP_DEADLINE =
+  "October 15, 2026"
+
 type RsvpDraft = {
   name: string
   phone: string
@@ -260,17 +263,63 @@ export default function InvitationRsvp() {
   return (
     <section
       id="rsvp"
-      className="px-[var(--page-padding)] pb-[var(--space-section)]"
+      className="
+        px-[var(--page-padding)]
+        pb-[var(--space-section)]
+      "
     >
-      <div className="mx-auto max-w-[760px] rounded-[20px] border border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-8 sm:px-8 sm:py-10">
-        <div className="mx-auto max-w-[680px] text-center">
+      <div
+        className="
+          mx-auto
+          max-w-[760px]
+          rounded-[20px]
+          border
+          border-[var(--color-border)]
+          bg-[var(--color-surface)]
+          px-5
+          py-8
+          sm:px-8
+          sm:py-10
+        "
+      >
+        <div
+          className="
+            mx-auto
+            max-w-[680px]
+            text-center
+          "
+        >
 
           {/* SECTION LABEL */}
 
           <ScrollReveal>
-            <p className="font-body text-sm font-medium uppercase tracking-[0.2em] text-[var(--color-muted)]">
-              RSVP
-            </p>
+            <div className="flex flex-col items-center">
+              <p
+                className="
+                  font-body
+                  text-sm
+                  font-medium
+                  uppercase
+                  tracking-[0.2em]
+                  text-[var(--color-muted)]
+                "
+              >
+                RSVP
+              </p>
+
+              <p
+                className="
+                  font-body
+                  text-sm
+                  font-bold
+                  uppercase
+                  tracking-[0.24em]
+                  text-[var(--color-espresso)]
+                "
+              >
+                [Strictly by invitation]
+              </p>
+            </div>
           </ScrollReveal>
 
           <div className="mt-7">
@@ -288,18 +337,78 @@ export default function InvitationRsvp() {
                   animate="animate"
                   exit="exit"
                 >
-                  <p className="font-editorial text-2xl leading-[1.25] text-[var(--color-espresso)] sm:text-3xl">
-                    We have a seat specially saved for you.
+
+                  {/* INTRODUCTION */}
+
+                  <p
+                    className="
+                      font-editorial
+                      text-2xl
+                      leading-[1.25]
+                      text-[var(--color-espresso)]
+                      sm:text-3xl
+                    "
+                  >
+                    We have a seat specially
+                    saved for you.
                   </p>
 
-                  <div className="mx-auto mt-8 max-w-[500px] space-y-6">
+                  {/* RSVP DEADLINE */}
+
+                  <div
+                    className="
+                      mx-auto
+                      mt-6
+                      max-w-[500px]
+                    "
+                  >
+                    <p
+                      className="
+                        font-editorial
+                        text-base
+                        leading-[1.5]
+                        text-[var(--color-muted)]
+                        sm:text-lg
+                      "
+                    >
+                      Kindly confirm your
+                      attendance by{" "}
+                      <span
+                        className="
+                          font-medium
+                          text-[var(--color-espresso)]
+                        "
+                      >
+                        {RSVP_DEADLINE}
+                      </span>
+                      .
+                    </p>
+                  </div>
+
+                  <div
+                    className="
+                      mx-auto
+                      mt-8
+                      max-w-[500px]
+                      space-y-6
+                    "
+                  >
 
                     {/* NAME */}
 
                     <div>
                       <label
                         htmlFor="rsvp-name"
-                        className="block text-left font-body text-sm font-medium uppercase tracking-[0.16em] text-[var(--color-muted)]"
+                        className="
+                          block
+                          text-left
+                          font-body
+                          text-sm
+                          font-medium
+                          uppercase
+                          tracking-[0.16em]
+                          text-[var(--color-muted)]
+                        "
                       >
                         Full name
                       </label>
@@ -316,7 +425,8 @@ export default function InvitationRsvp() {
                         }}
                         onKeyDown={(event) => {
                           if (
-                            event.key === "Enter"
+                            event.key ===
+                            "Enter"
                           ) {
                             event.preventDefault()
 
@@ -329,7 +439,21 @@ export default function InvitationRsvp() {
                         }}
                         placeholder="Your full name"
                         autoComplete="name"
-                        className="mt-2 w-full border-b border-[var(--color-border-strong)] bg-transparent px-1 py-2.5 font-editorial text-[1.25rem] text-[var(--color-espresso)] outline-none placeholder:text-[var(--color-muted)] focus:border-[var(--color-caramel)]"
+                        className="
+                          mt-2
+                          w-full
+                          border-b
+                          border-[var(--color-border-strong)]
+                          bg-transparent
+                          px-1
+                          py-2.5
+                          font-editorial
+                          text-[1.25rem]
+                          text-[var(--color-espresso)]
+                          outline-none
+                          placeholder:text-[var(--color-muted)]
+                          focus:border-[var(--color-caramel)]
+                        "
                       />
                     </div>
 
@@ -338,7 +462,16 @@ export default function InvitationRsvp() {
                     <div>
                       <label
                         htmlFor="rsvp-phone"
-                        className="block text-left font-body text-sm font-medium uppercase tracking-[0.16em] text-[var(--color-muted)]"
+                        className="
+                          block
+                          text-left
+                          font-body
+                          text-sm
+                          font-medium
+                          uppercase
+                          tracking-[0.16em]
+                          text-[var(--color-muted)]
+                        "
                       >
                         Phone number
                       </label>
@@ -355,7 +488,8 @@ export default function InvitationRsvp() {
                         }}
                         onKeyDown={(event) => {
                           if (
-                            event.key === "Enter"
+                            event.key ===
+                            "Enter"
                           ) {
                             event.preventDefault()
 
@@ -369,7 +503,22 @@ export default function InvitationRsvp() {
                         placeholder="024 000 0000"
                         autoComplete="tel"
                         inputMode="tel"
-                        className="mt-2 w-full border-b border-[var(--color-border-strong)] bg-transparent px-1 py-2.5 font-editorial text-[1.25rem] tracking-[0.04em] text-[var(--color-espresso)] outline-none placeholder:text-[var(--color-muted)] focus:border-[var(--color-caramel)]"
+                        className="
+                          mt-2
+                          w-full
+                          border-b
+                          border-[var(--color-border-strong)]
+                          bg-transparent
+                          px-1
+                          py-2.5
+                          font-editorial
+                          text-[1.25rem]
+                          tracking-[0.04em]
+                          text-[var(--color-espresso)]
+                          outline-none
+                          placeholder:text-[var(--color-muted)]
+                          focus:border-[var(--color-caramel)]
+                        "
                       />
                     </div>
 
@@ -378,7 +527,16 @@ export default function InvitationRsvp() {
                     <div>
                       <label
                         htmlFor="rsvp-message"
-                        className="block text-left font-body text-sm font-medium uppercase tracking-[0.16em] text-[var(--color-muted)]"
+                        className="
+                          block
+                          text-left
+                          font-body
+                          text-sm
+                          font-medium
+                          uppercase
+                          tracking-[0.16em]
+                          text-[var(--color-muted)]
+                        "
                       >
                         A message for the couple{" "}
                         <span className="tracking-normal">
@@ -398,11 +556,34 @@ export default function InvitationRsvp() {
                         placeholder="Leave Manuel & Sharon a message..."
                         maxLength={500}
                         rows={1}
-                        className="mt-2 w-full resize-none border-b border-[var(--color-border-strong)] bg-transparent px-1 py-2 font-editorial text-[1.15rem] leading-[1.5] text-[var(--color-espresso)] outline-none placeholder:text-[var(--color-muted)] focus:border-[var(--color-caramel)]"
+                        className="
+                          mt-2
+                          w-full
+                          resize-none
+                          border-b
+                          border-[var(--color-border-strong)]
+                          bg-transparent
+                          px-1
+                          py-2
+                          font-editorial
+                          text-[1.15rem]
+                          leading-[1.5]
+                          text-[var(--color-espresso)]
+                          outline-none
+                          placeholder:text-[var(--color-muted)]
+                          focus:border-[var(--color-caramel)]
+                        "
                       />
 
                       <div className="mt-1 text-right">
-                        <span className="font-body text-[0.42rem] tracking-[0.08em] text-[var(--color-muted)]">
+                        <span
+                          className="
+                            font-body
+                            text-[0.42rem]
+                            tracking-[0.08em]
+                            text-[var(--color-muted)]
+                          "
+                        >
                           {message.length}/500
                         </span>
                       </div>
@@ -416,24 +597,35 @@ export default function InvitationRsvp() {
                           initial={{
                             opacity: 0,
                             y: 6,
-                            filter: "blur(2px)",
+                            filter:
+                              "blur(2px)",
                           }}
                           animate={{
                             opacity: 1,
                             y: 0,
-                            filter: "blur(0px)",
+                            filter:
+                              "blur(0px)",
                           }}
                           exit={{
                             opacity: 0,
                             y: -4,
-                            filter: "blur(2px)",
+                            filter:
+                              "blur(2px)",
                           }}
                           transition={{
-                            duration: durationMicro,
+                            duration:
+                              durationMicro,
                             ease: luxuryEase,
                           }}
                           role="alert"
-                          className="font-body text-[0.46rem] uppercase leading-[1.7] tracking-[0.14em] text-[var(--color-cinnamon)]"
+                          className="
+                            font-body
+                            text-[0.46rem]
+                            uppercase
+                            leading-[1.7]
+                            tracking-[0.14em]
+                            text-[var(--color-cinnamon)]
+                          "
                         >
                           <span className="text-[var(--color-espresso)]">
                             {error}
@@ -455,7 +647,11 @@ export default function InvitationRsvp() {
                             }
                           : undefined
                       }
-                      className="invitation-button disabled:cursor-not-allowed disabled:opacity-60"
+                      className="
+                        invitation-button
+                        disabled:cursor-not-allowed
+                        disabled:opacity-60
+                      "
                     >
                       {isLoading
                         ? "Sending..."
@@ -477,11 +673,29 @@ export default function InvitationRsvp() {
                   animate="animate"
                   exit="exit"
                 >
-                  <p className="font-editorial text-[clamp(1.7rem,4vw,2.45rem)] leading-[1.2] text-[var(--color-espresso)]">
+                  <p
+                    className="
+                      font-editorial
+                      text-[clamp(1.7rem,4vw,2.45rem)]
+                      leading-[1.2]
+                      text-[var(--color-espresso)]
+                    "
+                  >
                     Thank you, {name}.
                   </p>
 
-                  <p className="mx-auto mt-5 max-w-md font-editorial text-[clamp(1.2rem,3vw,1.7rem)] italic leading-[1.45] text-[var(--color-cinnamon)]">
+                  <p
+                    className="
+                      mx-auto
+                      mt-5
+                      max-w-md
+                      font-editorial
+                      text-[clamp(1.2rem,3vw,1.7rem)]
+                      italic
+                      leading-[1.45]
+                      text-[var(--color-cinnamon)]
+                    "
+                  >
                     <strong className="text-[var(--color-espresso)]">
                       Your RSVP has been received.
                     </strong>{" "}

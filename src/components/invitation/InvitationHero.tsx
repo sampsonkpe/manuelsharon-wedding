@@ -36,46 +36,36 @@ export default function InvitationHero() {
   }, [])
 
   return (
-    <section className="px-[var(--page-padding)]">
-      <div className="mx-auto max-w-[1100px]">
-        <motion.div
-          initial={{
-            ...imageRevealInitial,
-            y: 10,
-          }}
-          animate={{
-            ...imageRevealAnimate,
-            y: 0,
-          }}
-          transition={imageRevealTransition}
-        >
-          <div className="relative overflow-hidden rounded-[var(--radius-lg)]">
-            <div className="flex justify-center bg-[var(--color-envelope)]">
-              <img
-                src={coupleImage}
-                alt="Manuel & Sharon"
-                className="
-                  block
-                  h-auto
-                  w-full
-                  max-w-[760px]
-                  object-contain
-                "
-              />
-            </div>
-          </div>
-        </motion.div>
+    <section
+      className="
+        relative
+        px-[var(--page-padding)]
+        pt-20
+        sm:pt-24
+      "
+    >
+      <div className="relative mx-auto max-w-[1100px]">
 
-        {/* Scroll to Explore */}
+        {/* =================================================
+            SCROLL TO EXPLORE
+            Positioned independently from the image so
+            shorter phone screens do not push it down.
+            ================================================= */}
+
         <motion.div
           className="
-            mt-8
+            absolute
+            inset-x-0
+            top-0
+            z-20
             flex
+            -translate-y-full
             flex-col
             items-center
             justify-center
             text-center
-            sm:mt-10
+            pb-6
+            sm:pb-8
           "
           initial={{
             opacity: 0,
@@ -116,6 +106,7 @@ export default function InvitationHero() {
               block
               h-8
               w-px
+              origin-top
               bg-[var(--color-caramel)]
               sm:h-10
             "
@@ -129,6 +120,50 @@ export default function InvitationHero() {
               ease: "easeInOut",
             }}
           />
+        </motion.div>
+
+        {/* =================================================
+            HERO IMAGE
+            ================================================= */}
+
+        <motion.div
+          initial={{
+            ...imageRevealInitial,
+            y: 10,
+          }}
+          animate={{
+            ...imageRevealAnimate,
+            y: 0,
+          }}
+          transition={imageRevealTransition}
+        >
+          <div
+            className="
+              relative
+              overflow-hidden
+              rounded-[var(--radius-lg)]
+            "
+          >
+            <div
+              className="
+                flex
+                justify-center
+                bg-[var(--color-envelope)]
+              "
+            >
+              <img
+                src={coupleImage}
+                alt="Manuel & Sharon"
+                className="
+                  block
+                  h-auto
+                  w-full
+                  max-w-[760px]
+                  object-contain
+                "
+              />
+            </div>
+          </div>
         </motion.div>
       </div>
     </section>
