@@ -1,5 +1,4 @@
 import { motion } from "framer-motion"
-import { useEffect, useState } from "react"
 
 import coupleImage from "../../assets/couple/hero.png"
 
@@ -11,30 +10,6 @@ import {
 } from "../motion/motion"
 
 export default function InvitationHero() {
-  const [hasScrolled, setHasScrolled] =
-    useState(false)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 0) {
-        setHasScrolled(true)
-      }
-    }
-
-    window.addEventListener(
-      "scroll",
-      handleScroll,
-      { passive: true },
-    )
-
-    return () => {
-      window.removeEventListener(
-        "scroll",
-        handleScroll,
-      )
-    }
-  }, [])
-
   return (
     <section
       className="
@@ -70,17 +45,12 @@ export default function InvitationHero() {
             y: 8,
           }}
           animate={{
-            opacity: hasScrolled ? 0 : 1,
-            y: hasScrolled ? -8 : 0,
+            opacity: 1,
+            y: 0,
           }}
           transition={{
             duration: 0.7,
             ease: luxuryEase,
-          }}
-          style={{
-            pointerEvents: hasScrolled
-              ? "none"
-              : "auto",
           }}
         >
           <span

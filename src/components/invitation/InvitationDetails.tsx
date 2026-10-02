@@ -33,10 +33,12 @@ export default function InvitationDetails() {
           transition={revealTransition}
           className="
             font-editorial
-            text-4xl
-            leading-tight
+            text-3xl
+            leading-[1.15]
+            tracking-[-0.01em]
             text-[var(--color-espresso)]
-            sm:text-5xl
+            sm:text-4xl
+            md:text-5xl
           "
         >
           Saturday, October 24, 2026
@@ -57,11 +59,12 @@ export default function InvitationDetails() {
           className="
             mt-5
             font-body
-            text-sm
+            text-xs
             font-medium
             uppercase
             tracking-[0.2em]
             text-[var(--color-muted)]
+            sm:text-sm
           "
         >
           At 2:00 PM • GMT
@@ -107,9 +110,11 @@ export default function InvitationDetails() {
             className="
               font-editorial
               text-3xl
-              leading-tight
+              leading-[1.15]
+              tracking-[-0.01em]
               text-[var(--color-espresso)]
               sm:text-4xl
+              md:text-5xl
             "
           >
             Lotus Garden
@@ -126,17 +131,20 @@ export default function InvitationDetails() {
             className="
               mt-3
               font-body
-              text-sm
+              text-xs
               font-medium
               uppercase
               tracking-[0.2em]
               text-[var(--color-muted)]
+              sm:text-sm
             "
           >
             Adjiringanor
           </motion.p>
 
-          {/* MAPS */}
+          {/* =================================================
+              MAPS
+              ================================================= */}
 
           <motion.div
             initial={revealInitial}
