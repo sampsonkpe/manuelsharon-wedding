@@ -11,9 +11,6 @@ import envelopeVideo from "../assets/invitation/envelope.mp4"
 
 import {
   luxuryEase,
-  cinematicInitial,
-  cinematicAnimate,
-  cinematicTransition,
   durationCinematic,
   durationPage,
   staggerSmall,
@@ -612,7 +609,7 @@ export default function SplashPage({
         </div>
       </motion.div>
 
-      {/* =====================================================
+            {/* =====================================================
           TYPOGRAPHY OVERLAY
           ===================================================== */}
 
@@ -625,12 +622,18 @@ export default function SplashPage({
           flex
           items-center
           justify-center
+          overflow-hidden
+          px-4
+          py-[5dvh]
+          sm:px-6
+          sm:py-[6dvh]
         "
       >
         <div
           className="
             flex
             w-full
+            max-w-[1100px]
             flex-col
             items-center
             justify-center
@@ -642,31 +645,33 @@ export default function SplashPage({
               ------------------------------------------------- */}
 
           <motion.p
-            initial={
-              cinematicInitial
-            }
-            animate={
-              showWelcome
-                ? cinematicAnimate
-                : cinematicInitial
-            }
+            initial={{
+              opacity: 0,
+              filter: "blur(5px)",
+            }}
+            animate={{
+              opacity: showWelcome ? 1 : 0,
+              filter:
+                showWelcome
+                  ? "blur(0px)"
+                  : "blur(5px)",
+            }}
             transition={{
-              ...cinematicTransition,
-              duration:
-                durationCinematic,
+              duration: durationCinematic,
+              ease: luxuryEase,
             }}
             className="
               w-full
-              px-5
+              px-2
               font-body
-              text-sm
+              text-[clamp(0.75rem,3.6vw,1.125rem)]
               font-medium
               uppercase
               leading-[1.9]
               tracking-[0.24em]
               text-[var(--color-muted)]
               sm:px-[var(--page-padding)]
-              sm:text-lg
+              sm:text-[clamp(0.875rem,1.7vw,1.125rem)]
               sm:tracking-[0.30em]
             "
           >
@@ -681,43 +686,50 @@ export default function SplashPage({
 
           {/* -------------------------------------------------
               NAMES
-              
-              Deliberately uses viewport width rather than
-              sharing the welcome/hashtag width constraint.
-              This prevents Mea Culpa's large flourishes from
-              being clipped on narrow iOS viewports.
+
+              Height-aware sizing is intentional.
+
+              The second value in clamp() uses the smaller of
+              viewport width and viewport height so the large
+              Mea Culpa flourishes remain inside short phones.
               ------------------------------------------------- */}
 
           <h1
             className="
               relative
-              top-4
+              mt-[1.5dvh]
               flex
-              w-screen
+              w-full
               flex-col
               items-center
               justify-center
               overflow-visible
               font-display
-              text-[clamp(5rem,21vw,10rem)]
-              leading-[1]
+              text-[clamp(4rem,min(21vw,18vh),10rem)]
+              leading-[0.82]
               text-[var(--color-espresso)]
-              sm:top-6
-              sm:text-[clamp(5rem,20vw,12rem)]
-              sm:leading-[0.9]
+              sm:mt-[2dvh]
+              sm:text-[clamp(5rem,min(20vw,18vh),12rem)]
+              sm:leading-[0.86]
             "
           >
+            {/* MANUEL */}
+
             <motion.span
-              initial={
-                cinematicInitial
-              }
-              animate={
-                showNames
-                  ? cinematicAnimate
-                  : cinematicInitial
-              }
+              initial={{
+                opacity: 0,
+                filter: "blur(5px)",
+              }}
+              animate={{
+                opacity: showNames ? 1 : 0,
+                filter:
+                  showNames
+                    ? "blur(0px)"
+                    : "blur(5px)",
+              }}
               transition={{
-                ...cinematicTransition,
+                duration: durationCinematic,
+                ease: luxuryEase,
                 delay: staggerSmall,
               }}
               className="
@@ -728,40 +740,53 @@ export default function SplashPage({
               Manuel
             </motion.span>
 
+            {/* AMPERSAND */}
+
             <motion.span
-              initial={
-                cinematicInitial
-              }
-              animate={
-                showNames
-                  ? cinematicAnimate
-                  : cinematicInitial
-              }
+              initial={{
+                opacity: 0,
+                filter: "blur(5px)",
+              }}
+              animate={{
+                opacity: showNames ? 1 : 0,
+                filter:
+                  showNames
+                    ? "blur(0px)"
+                    : "blur(5px)",
+              }}
               transition={{
-                ...cinematicTransition,
+                duration: durationCinematic,
+                ease: luxuryEase,
                 delay:
                   staggerSmall * 2,
               }}
               className="
-                my-2
+                my-[0.12em]
                 block
                 text-[0.42em]
+                leading-none
               "
             >
               &amp;
             </motion.span>
 
+            {/* SHARON */}
+
             <motion.span
-              initial={
-                cinematicInitial
-              }
-              animate={
-                showNames
-                  ? cinematicAnimate
-                  : cinematicInitial
-              }
+              initial={{
+                opacity: 0,
+                filter: "blur(5px)",
+              }}
+              animate={{
+                opacity: showNames ? 1 : 0,
+                filter:
+                  showNames
+                    ? "blur(0px)"
+                    : "blur(5px)",
+              }}
               transition={{
-                ...cinematicTransition,
+                duration: durationCinematic,
+                ease: luxuryEase,
                 delay:
                   staggerSmall * 3,
               }}
@@ -779,32 +804,36 @@ export default function SplashPage({
               ------------------------------------------------- */}
 
           <motion.p
-            initial={
-              cinematicInitial
-            }
-            animate={
-              showNames
-                ? cinematicAnimate
-                : cinematicInitial
-            }
+            initial={{
+              opacity: 0,
+              filter: "blur(5px)",
+            }}
+            animate={{
+              opacity: showNames ? 1 : 0,
+              filter:
+                showNames
+                  ? "blur(0px)"
+                  : "blur(5px)",
+            }}
             transition={{
-              ...cinematicTransition,
+              duration: durationCinematic,
+              ease: luxuryEase,
               delay:
                 staggerSmall * 4,
             }}
             className="
-              mt-7
+              mt-[2dvh]
               w-full
-              px-5
+              px-2
               font-body
-              text-xs
+              text-[clamp(0.65rem,3vw,1rem)]
               font-medium
               uppercase
               tracking-[0.20em]
               text-[var(--color-muted)]
-              sm:mt-8
+              sm:mt-[2.5dvh]
               sm:px-[var(--page-padding)]
-              sm:text-base
+              sm:text-[clamp(0.75rem,1.5vw,1rem)]
               sm:tracking-[0.24em]
             "
           >
