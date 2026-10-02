@@ -25,8 +25,11 @@ interface SplashPageProps {
 
 const ENVELOPE_PLAYBACK_RATE = 1
 
-const WELCOME_AT = 8.0
-const NAMES_AT = 8.65
+/*
+ * Updated for the new ~7.16s envelope video.
+ */
+const WELCOME_AT = 4.8
+const NAMES_AT = 5.45
 
 const HOLD_AFTER_VIDEO = 3000
 
@@ -606,7 +609,7 @@ export default function SplashPage({
           flex
           items-center
           justify-center
-          px-4
+          px-5
           sm:px-[var(--page-padding)]
         "
       >
@@ -617,6 +620,7 @@ export default function SplashPage({
             max-w-[1100px]
             flex-col
             items-center
+            justify-center
             text-center
           "
         >
@@ -664,14 +668,17 @@ export default function SplashPage({
               max-w-full
               flex-col
               items-center
+              justify-center
               overflow-visible
-              px-2
+              px-1
               font-display
-              text-[clamp(3.7rem,15vw,8rem)]
-              leading-[0.9]
+              text-[clamp(5rem,21vw,10rem)]
+              leading-[0.98]
               text-[var(--color-espresso)]
               sm:top-6
               sm:px-0
+              sm:text-[clamp(5rem,20vw,12rem)]
+              sm:leading-[0.9]
             "
           >
             <motion.span
@@ -689,8 +696,8 @@ export default function SplashPage({
               }}
               className="
                 block
-                max-w-full
                 whitespace-nowrap
+                px-2
               "
             >
               Manuel
@@ -712,6 +719,7 @@ export default function SplashPage({
               }}
               className="
                 my-2
+                block
                 text-[0.42em]
               "
             >
@@ -734,8 +742,8 @@ export default function SplashPage({
               }}
               className="
                 block
-                max-w-full
                 whitespace-nowrap
+                px-2
               "
             >
               Sharon
