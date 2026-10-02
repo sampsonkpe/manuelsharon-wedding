@@ -681,98 +681,99 @@ export default function SplashPage({
 
           {/* -------------------------------------------------
               NAMES
-              
-              Deliberately uses viewport width rather than
-              sharing the welcome/hashtag width constraint.
-              This prevents Mea Culpa's large flourishes from
-              being clipped on narrow iOS viewports.
               ------------------------------------------------- */}
 
-          <h1
+          <div
             className="
               relative
-              top-4
+              mt-8
               flex
-              w-screen
-              flex-col
-              items-center
+              w-full
               justify-center
               overflow-visible
-              font-editorial
-              text-[clamp(5rem,21vw,10rem)]
-              leading-[1]
-              text-[var(--color-espresso)]
-              sm:top-6
-              sm:text-[clamp(5rem,20vw,12rem)]
-              sm:leading-[0.9]
+              px-8
+              sm:px-12
             "
           >
-            <motion.span
-              initial={
-                cinematicInitial
-              }
-              animate={
-                showNames
-                  ? cinematicAnimate
-                  : cinematicInitial
-              }
-              transition={{
-                ...cinematicTransition,
-                delay: staggerSmall,
-              }}
+            <h1
               className="
-                block
-                whitespace-nowrap
+                flex
+                w-full
+                max-w-[900px]
+                flex-col
+                items-center
+                justify-center
+                overflow-visible
+                text-center
+                font-display
+                text-[clamp(5rem,21vw,10rem)]
+                leading-none
+                text-[var(--color-espresso)]
+                sm:text-[clamp(5rem,20vw,12rem)]
               "
             >
-              Manuel
-            </motion.span>
+              <motion.span
+                initial={cinematicInitial}
+                animate={
+                  showNames
+                    ? cinematicAnimate
+                    : cinematicInitial
+                }
+                transition={{
+                  ...cinematicTransition,
+                  delay: staggerSmall,
+                }}
+                className="
+                  block
+                  whitespace-nowrap
+                  px-[0.08em]
+                "
+              >
+                Manuel
+              </motion.span>
 
-            <motion.span
-              initial={
-                cinematicInitial
-              }
-              animate={
-                showNames
-                  ? cinematicAnimate
-                  : cinematicInitial
-              }
-              transition={{
-                ...cinematicTransition,
-                delay:
-                  staggerSmall * 2,
-              }}
-              className="
-                my-2
-                block
-                text-[0.42em]
-              "
-            >
-              &amp;
-            </motion.span>
+              <motion.span
+                initial={cinematicInitial}
+                animate={
+                  showNames
+                    ? cinematicAnimate
+                    : cinematicInitial
+                }
+                transition={{
+                  ...cinematicTransition,
+                  delay: staggerSmall * 2,
+                }}
+                className="
+                  block
+                  -my-1
+                  text-[0.42em]
+                  sm:-my-2
+                "
+              >
+                &amp;
+              </motion.span>
 
-            <motion.span
-              initial={
-                cinematicInitial
-              }
-              animate={
-                showNames
-                  ? cinematicAnimate
-                  : cinematicInitial
-              }
-              transition={{
-                ...cinematicTransition,
-                delay:
-                  staggerSmall * 3,
-              }}
-              className="
-                block
-                whitespace-nowrap
-              "
-            >
-              Sharon
-            </motion.span>
-          </h1>
+              <motion.span
+                initial={cinematicInitial}
+                animate={
+                  showNames
+                    ? cinematicAnimate
+                    : cinematicInitial
+                }
+                transition={{
+                  ...cinematicTransition,
+                  delay: staggerSmall * 3,
+                }}
+                className="
+                  block
+                  whitespace-nowrap
+                  px-[0.08em]
+                "
+              >
+                Sharon
+              </motion.span>
+            </h1>
+          </div>
 
           {/* -------------------------------------------------
               HASHTAG
