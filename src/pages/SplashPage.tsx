@@ -625,16 +625,12 @@ export default function SplashPage({
           flex
           items-center
           justify-center
-          px-6
-          sm:px-10
-          md:px-16
         "
       >
         <div
           className="
             flex
             w-full
-            max-w-[900px]
             flex-col
             items-center
             justify-center
@@ -661,7 +657,7 @@ export default function SplashPage({
             }}
             className="
               w-full
-              px-4
+              px-5
               font-body
               text-sm
               font-medium
@@ -669,7 +665,7 @@ export default function SplashPage({
               leading-[1.9]
               tracking-[0.24em]
               text-[var(--color-muted)]
-              sm:px-8
+              sm:px-[var(--page-padding)]
               sm:text-lg
               sm:tracking-[0.30em]
             "
@@ -685,24 +681,30 @@ export default function SplashPage({
 
           {/* -------------------------------------------------
               NAMES
+              
+              Deliberately uses viewport width rather than
+              sharing the welcome/hashtag width constraint.
+              This prevents Mea Culpa's large flourishes from
+              being clipped on narrow iOS viewports.
               ------------------------------------------------- */}
 
           <h1
             className="
-              mt-[clamp(2.75rem,9vh,6rem)]
+              relative
+              top-4
               flex
-              w-full
+              w-screen
               flex-col
               items-center
               justify-center
               overflow-visible
-              px-6
-              font-display
-              text-[clamp(4.5rem,19vw,10rem)]
-              leading-[0.95]
+              font-editorial
+              text-[clamp(5rem,21vw,10rem)]
+              leading-[1]
               text-[var(--color-espresso)]
-              sm:px-10
-              sm:text-[clamp(5rem,18vw,12rem)]
+              sm:top-6
+              sm:text-[clamp(5rem,20vw,12rem)]
+              sm:leading-[0.9]
             "
           >
             <motion.span
@@ -741,10 +743,9 @@ export default function SplashPage({
                   staggerSmall * 2,
               }}
               className="
-                my-3
+                my-2
                 block
                 text-[0.42em]
-                sm:my-4
               "
             >
               &amp;
@@ -792,16 +793,17 @@ export default function SplashPage({
                 staggerSmall * 4,
             }}
             className="
-              mt-[clamp(2.75rem,8vh,5rem)]
+              mt-7
               w-full
-              px-6
+              px-5
               font-body
               text-xs
               font-medium
               uppercase
               tracking-[0.20em]
               text-[var(--color-muted)]
-              sm:px-10
+              sm:mt-8
+              sm:px-[var(--page-padding)]
               sm:text-base
               sm:tracking-[0.24em]
             "
