@@ -48,8 +48,6 @@ export default function InvitationHero() {
 
         {/* =================================================
             SCROLL TO EXPLORE
-            Positioned independently from the image so
-            shorter phone screens do not push it down.
             ================================================= */}
 
         <motion.div
@@ -63,8 +61,8 @@ export default function InvitationHero() {
             flex-col
             items-center
             justify-center
-            text-center
             pb-6
+            text-center
             sm:pb-8
           "
           initial={{
@@ -88,13 +86,11 @@ export default function InvitationHero() {
           <span
             className="
               font-body
-              text-[0.65rem]
+              text-sm
               font-medium
               uppercase
-              tracking-[0.30em]
+              tracking-[0.22em]
               text-[var(--color-muted)]
-              sm:text-xs
-              sm:tracking-[0.34em]
             "
           >
             Scroll to explore

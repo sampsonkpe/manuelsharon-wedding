@@ -849,7 +849,7 @@ export default function SplashPage({
               w-full
               px-5
               font-body
-              text-xs
+              text-sm
               font-medium
               uppercase
               tracking-[0.20em]
