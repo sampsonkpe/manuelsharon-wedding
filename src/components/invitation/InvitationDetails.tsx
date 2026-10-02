@@ -6,7 +6,7 @@ import {
 } from "../motion/motion"
 
 const calendarFile =
-  "/assets/invitation/manuel-sharon-wedding.ics"
+  "/manuel-sharon-wedding.ics"
 
 const mapsUrl =
   "https://maps.app.goo.gl/yusiFU7JZERTZsdi7?g_st=ic"
