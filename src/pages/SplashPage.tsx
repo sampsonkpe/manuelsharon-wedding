@@ -446,6 +446,10 @@ export default function SplashPage({
       transition={pageTransition}
       aria-label="Wedding invitation"
     >
+      {/* =====================================================
+          ENVELOPE VIDEO
+          ===================================================== */}
+
       <motion.video
         ref={videoRef}
         className="
@@ -499,6 +503,10 @@ export default function SplashPage({
         />
       </motion.video>
 
+      {/* =====================================================
+          SEAL HIT AREA
+          ===================================================== */}
+
       {!hasOpened && (
         <button
           type="button"
@@ -526,6 +534,10 @@ export default function SplashPage({
           "
         />
       )}
+
+      {/* =====================================================
+          TAP PROMPT
+          ===================================================== */}
 
       <motion.div
         className="
@@ -600,6 +612,10 @@ export default function SplashPage({
         </div>
       </motion.div>
 
+      {/* =====================================================
+          TYPOGRAPHY OVERLAY
+          ===================================================== */}
+
       <div
         className="
           pointer-events-none
@@ -609,21 +625,22 @@ export default function SplashPage({
           flex
           items-center
           justify-center
-          px-5
-          sm:px-[var(--page-padding)]
         "
       >
         <div
           className="
             flex
             w-full
-            max-w-[1100px]
             flex-col
             items-center
             justify-center
             text-center
           "
         >
+          {/* -------------------------------------------------
+              WELCOME
+              ------------------------------------------------- */}
+
           <motion.p
             initial={
               cinematicInitial
@@ -639,6 +656,8 @@ export default function SplashPage({
                 durationCinematic,
             }}
             className="
+              w-full
+              px-5
               font-body
               text-sm
               font-medium
@@ -646,6 +665,7 @@ export default function SplashPage({
               leading-[1.9]
               tracking-[0.24em]
               text-[var(--color-muted)]
+              sm:px-[var(--page-padding)]
               sm:text-lg
               sm:tracking-[0.30em]
             "
@@ -659,25 +679,30 @@ export default function SplashPage({
             </span>
           </motion.p>
 
+          {/* -------------------------------------------------
+              NAMES
+              
+              Deliberately uses viewport width rather than
+              sharing the welcome/hashtag width constraint.
+              This prevents Mea Culpa's large flourishes from
+              being clipped on narrow iOS viewports.
+              ------------------------------------------------- */}
+
           <h1
             className="
               relative
               top-4
               flex
-              w-full
-              max-w-[94vw]
+              w-screen
               flex-col
               items-center
               justify-center
               overflow-visible
-              px-0
               font-display
-              text-[clamp(5rem,19vw,10rem)]
-              leading-[0.98]
+              text-[clamp(5rem,21vw,10rem)]
+              leading-[1]
               text-[var(--color-espresso)]
               sm:top-6
-              sm:max-w-[100%]
-              sm:px-0
               sm:text-[clamp(5rem,20vw,12rem)]
               sm:leading-[0.9]
             "
@@ -698,7 +723,6 @@ export default function SplashPage({
               className="
                 block
                 whitespace-nowrap
-                max-w-full
               "
             >
               Manuel
@@ -744,12 +768,15 @@ export default function SplashPage({
               className="
                 block
                 whitespace-nowrap
-                max-w-full
               "
             >
               Sharon
             </motion.span>
           </h1>
+
+          {/* -------------------------------------------------
+              HASHTAG
+              ------------------------------------------------- */}
 
           <motion.p
             initial={
@@ -767,6 +794,8 @@ export default function SplashPage({
             }}
             className="
               mt-7
+              w-full
+              px-5
               font-body
               text-xs
               font-medium
@@ -774,6 +803,7 @@ export default function SplashPage({
               tracking-[0.20em]
               text-[var(--color-muted)]
               sm:mt-8
+              sm:px-[var(--page-padding)]
               sm:text-base
               sm:tracking-[0.24em]
             "
