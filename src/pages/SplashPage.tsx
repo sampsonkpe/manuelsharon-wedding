@@ -50,6 +50,21 @@ const pageTransition = {
   ease: luxuryEase,
 }
 
+const nameInitial = {
+  opacity: 0,
+  y: 8,
+}
+
+const nameAnimate = {
+  opacity: 1,
+  y: 0,
+}
+
+const nameTransition = {
+  duration: durationCinematic,
+  ease: luxuryEase,
+}
+
 export default function SplashPage({
   onComplete,
 }: SplashPageProps) {
@@ -709,14 +724,14 @@ export default function SplashPage({
             >
               {/* MANUEL */}
               <motion.div
-                initial={cinematicInitial}
+                initial={nameInitial}
                 animate={
                   showNames
-                    ? cinematicAnimate
-                    : cinematicInitial
+                    ? nameAnimate
+                    : nameInitial
                 }
                 transition={{
-                  ...cinematicTransition,
+                  ...nameTransition,
                   delay: staggerSmall,
                 }}
                 className="
@@ -744,14 +759,14 @@ export default function SplashPage({
 
               {/* AMPERSAND */}
               <motion.div
-                initial={cinematicInitial}
+                initial={nameInitial}
                 animate={
                   showNames
-                    ? cinematicAnimate
-                    : cinematicInitial
+                    ? nameAnimate
+                    : nameInitial
                 }
                 transition={{
-                  ...cinematicTransition,
+                  ...nameTransition,
                   delay: staggerSmall * 2,
                 }}
                 className="
@@ -776,14 +791,14 @@ export default function SplashPage({
 
               {/* SHARON */}
               <motion.div
-                initial={cinematicInitial}
+                initial={nameInitial}
                 animate={
                   showNames
-                    ? cinematicAnimate
-                    : cinematicInitial
+                    ? nameAnimate
+                    : nameInitial
                 }
                 transition={{
-                  ...cinematicTransition,
+                  ...nameTransition,
                   delay: staggerSmall * 3,
                 }}
                 className="
