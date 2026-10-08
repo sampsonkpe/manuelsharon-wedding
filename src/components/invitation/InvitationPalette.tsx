@@ -91,15 +91,17 @@ export default function InvitationPalette() {
         <div
           className="
             mx-auto
-            mt-9
-            flex
+            mt-10
+            grid
             w-full
-            max-w-[500px]
-            items-start
-            justify-between
-            px-4
+            max-w-[420px]
+            grid-cols-2
+            gap-x-8
+            gap-y-9
             sm:max-w-[560px]
-            sm:px-6
+            sm:grid-cols-4
+            sm:gap-x-6
+            sm:gap-y-0
           "
         >
           {palette.map((colour, index) => (
@@ -123,8 +125,8 @@ export default function InvitationPalette() {
                 aria-label={`${colour.name}: ${colour.hex}`}
                 className="
                   block
-                  h-14
-                  w-14
+                  h-20
+                  w-20
                   rounded-full
                   sm:h-16
                   sm:w-16
@@ -137,14 +139,15 @@ export default function InvitationPalette() {
               <span
                 className="
                   mt-3
+                  whitespace-nowrap
                   font-body
                   text-sm
                   font-medium
                   uppercase
-                  tracking-[0.1em]
+                  tracking-[0.12em]
                   text-[var(--color-muted)]
                   sm:text-base
-                  sm:tracking-[0.12em]
+                  sm:tracking-[0.14em]
                 "
               >
                 {colour.name}
@@ -152,7 +155,6 @@ export default function InvitationPalette() {
             </motion.div>
           ))}
         </div>
-
       </div>
     </section>
   )

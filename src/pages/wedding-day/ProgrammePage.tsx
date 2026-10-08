@@ -1,0 +1,631 @@
+import { AnimatePresence, motion } from "framer-motion"
+import { useState } from "react"
+import {
+  cinematicAnimate,
+  cinematicInitial,
+  cinematicTransition,
+  luxuryEase,
+} from "../../components/motion/motion"
+
+type ProgrammeItem = {
+  title: string
+  person?: string
+  children?: string[]
+  expandable?: "scripture" | "hymn"
+}
+
+const programme: ProgrammeItem[] = [
+  {
+    title: "Pre-Ceremony",
+    children: [
+      "Guest arrival & seating",
+      "Musical Interlude",
+      "Ushers welcome guests",
+    ],
+  },
+  {
+    title: "Opening Prayer & Welcome Statement",
+    person: "Richmond Brempong",
+  },
+  {
+    title: "Procession of the Bridal Team",
+    children: [
+      "Entrance of Bridesmaids",
+      "Entrance of Bride",
+    ],
+  },
+  {
+    title: "Vows",
+    person: "Apostle K. E. Hagan",
+  },
+  {
+    title: "Scripture Reading",
+    person: "Mr. Jude Ayettey",
+    expandable: "scripture",
+  },
+  {
+    title: "Poetry",
+    person: "Job Agyeman",
+  },
+  {
+    title: "Worship",
+    person: "EWC Live",
+  },
+  {
+    title: "Sermon",
+    person: "Rev. John Ametsikor",
+  },
+  {
+    title: "Offering & Signing of Certificates",
+    person: "Min. Eli Manuel",
+  },
+  {
+    title: "Best Man Announcement & Ministration",
+    person: "Min. Eli Manuel",
+  },
+  {
+    title: "Presentation of Certificate",
+    person: "Mrs. Swanzy",
+  },
+  {
+    title: "Communion",
+    person: "Rev. John Ametsikor",
+  },
+  {
+    title: "Announcement",
+    person: "MC",
+    children: ["Pictures and reception"],
+  },
+  {
+    title: "Hymn",
+    person: "EWC Live",
+    expandable: "hymn",
+  },
+  {
+    title: "Closing Prayer & Benediction",
+    person: "Rev. John Ametsikor",
+  },
+  {
+    title: "Couple Recession",
+  },
+]
+
+const scrollViewport = {
+  once: false,
+  amount: 0.2,
+  margin: "-8% 0px -8% 0px",
+}
+
+const scriptureText =
+  "“Haven’t you read,” He replied, “that He who created them in the beginning made them male and female,” and He also said: “For this reason a man will leave his father and mother and be joined to his wife, and the two will become one flesh? So they are no longer two, but one flesh. Therefore, what God has joined together, man must not separate.”"
+
+const hymnStanzas = [
+  [
+    "Now thank we all our God",
+    "with heart and hands and voices,",
+    "who wondrous things has done,",
+    "in whom his world rejoices;",
+    "who from our mothers' arms",
+    "has blessed us on our way",
+    "with countless gifts of love,",
+    "and still is ours today.",
+  ],
+  [
+    "O may this bounteous God",
+    "through all our life be near us,",
+    "with ever joyful hearts",
+    "and blessed peace to cheer us,",
+    "to keep us in his grace,",
+    "and guide us when perplexed,",
+    "and free us from all ills",
+    "of this world in the next.",
+  ],
+  [
+    "All praise and thanks to God",
+    "the Father now be given,",
+    "the Son and Spirit blest,",
+    "who reign in highest heaven",
+    "the one eternal God,",
+    "whom heaven and earth adore;",
+    "for thus it was, is now,",
+    "and shall be evermore.",
+  ],
+]
+
+export default function ProgrammePage() {
+  const [openItem, setOpenItem] =
+    useState<number | null>(null)
+
+  const toggleItem = (index: number) => {
+    setOpenItem((current) =>
+      current === index ? null : index,
+    )
+  }
+
+  return (
+    <main className="min-h-screen bg-transparent">
+      <div
+        className="
+          mx-auto
+          w-full
+          max-w-[900px]
+          px-[var(--page-padding)]
+          py-20
+          sm:py-28
+        "
+      >
+        {/* =================================================
+            HEADER
+            ================================================= */}
+
+        <motion.header
+          initial={cinematicInitial}
+          animate={cinematicAnimate}
+          transition={cinematicTransition}
+          className="text-center"
+        >
+          <p
+            className="
+              font-body
+              text-sm
+              font-medium
+              uppercase
+              tracking-[0.2em]
+              text-[var(--color-muted)]
+              sm:text-base
+            "
+          >
+            The Wedding of
+          </p>
+
+          <h1
+            className="
+              mt-4
+              font-display
+              text-6xl
+              leading-[1]
+              text-[var(--color-espresso)]
+              sm:text-7xl
+              md:text-8xl
+            "
+          >
+            Manuel &amp; Sharon
+          </h1>
+
+          <p
+            className="
+              mx-auto
+              mt-6
+              max-w-[500px]
+              font-editorial
+              text-2xl
+              leading-[1.15]
+              tracking-[-0.01em]
+              text-[var(--color-espresso)]
+              sm:text-3xl
+              md:text-4xl
+            "
+          >
+            Order of Service
+          </p>
+
+          <div
+            className="
+              mx-auto
+              mt-8
+              h-px
+              w-8
+              bg-[var(--color-caramel)]
+            "
+          />
+        </motion.header>
+
+        {/* =================================================
+            PROGRAMME
+            ================================================= */}
+
+        <section className="mt-20 sm:mt-24">
+          <div
+            className="
+              border-t
+              border-[var(--color-border)]
+            "
+          >
+            {programme.map((item, index) => {
+              const isOpen =
+                openItem === index
+
+              const hasChildren =
+                Boolean(
+                  item.children &&
+                    item.children.length > 0,
+                )
+
+              const isExpandable =
+                hasChildren ||
+                Boolean(item.expandable)
+
+              const content = (
+                <>
+                  {/* =================================================
+                      TITLE
+                      ================================================= */}
+
+                  <span
+                    className="
+                      block
+                      font-editorial
+                      text-2xl
+                      leading-[1.2]
+                      tracking-[-0.01em]
+                      text-[var(--color-espresso)]
+                      sm:text-3xl
+                    "
+                  >
+                    {item.title}
+                  </span>
+
+                  {/* =================================================
+                      PERSON
+                      ================================================= */}
+
+                  {item.person && (
+                    <span
+                      className="
+                        mt-2
+                        block
+                        font-body
+                        text-sm
+                        font-medium
+                        uppercase
+                        tracking-[0.2em]
+                        text-[var(--color-muted)]
+                        sm:text-base
+                      "
+                    >
+                      {item.person}
+                    </span>
+                  )}
+
+                  {/* =================================================
+                      EXPAND INDICATOR
+                      ================================================= */}
+
+                  {isExpandable && (
+                    <motion.span
+                      animate={{
+                        rotate: isOpen ? 45 : 0,
+                      }}
+                      transition={{
+                        duration: 0.5,
+                        ease: luxuryEase,
+                      }}
+                      className="
+                        mx-auto
+                        mt-4
+                        block
+                        h-5
+                        w-5
+                        font-editorial
+                        text-xl
+                        leading-[1]
+                        text-[var(--color-caramel)]
+                      "
+                      aria-hidden="true"
+                    >
+                      +
+                    </motion.span>
+                  )}
+                </>
+              )
+
+              return (
+                <motion.article
+                  key={item.title}
+                  initial={cinematicInitial}
+                  whileInView={cinematicAnimate}
+                  viewport={scrollViewport}
+                  transition={{
+                    ...cinematicTransition,
+                    delay: 0.03,
+                  }}
+                  className="
+                    border-b
+                    border-[var(--color-border)]
+                    text-center
+                  "
+                >
+                  {/* =================================================
+                      ITEM HEADER
+                      ================================================= */}
+
+                  {isExpandable ? (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        toggleItem(index)
+                      }
+                      aria-expanded={isOpen}
+                      className="
+                        block
+                        w-full
+                        py-8
+                        text-center
+                        sm:py-10
+                      "
+                    >
+                      {content}
+                    </button>
+                  ) : (
+                    <div
+                      className="
+                        py-8
+                        sm:py-10
+                      "
+                    >
+                      {content}
+                    </div>
+                  )}
+
+                  {/* =================================================
+                      CHILD EVENTS
+                      ================================================= */}
+
+                  <AnimatePresence
+                    initial={false}
+                  >
+                    {isOpen &&
+                      hasChildren && (
+                        <motion.div
+                          initial={{
+                            height: 0,
+                            opacity: 0,
+                            filter:
+                              "blur(3px)",
+                          }}
+                          animate={{
+                            height: "auto",
+                            opacity: 1,
+                            filter:
+                              "blur(0px)",
+                          }}
+                          exit={{
+                            height: 0,
+                            opacity: 0,
+                            filter:
+                              "blur(3px)",
+                          }}
+                          transition={{
+                            duration: 0.7,
+                            ease: luxuryEase,
+                          }}
+                          className="overflow-hidden"
+                        >
+                          <div
+                            className="
+                              mx-auto
+                              max-w-[500px]
+                              px-5
+                              pb-8
+                              sm:pb-10
+                            "
+                          >
+                            <div className="space-y-3">
+                              {item.children?.map(
+                                (child) => (
+                                  <p
+                                    key={child}
+                                    className="
+                                      font-editorial
+                                      text-lg
+                                      leading-[1.5]
+                                      text-[var(--color-muted)]
+                                      sm:text-xl
+                                    "
+                                  >
+                                    {child}
+                                  </p>
+                                ),
+                              )}
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                  </AnimatePresence>
+
+                  {/* =================================================
+                      SCRIPTURE
+                      ================================================= */}
+
+                  <AnimatePresence
+                    initial={false}
+                  >
+                    {isOpen &&
+                      item.expandable ===
+                        "scripture" && (
+                        <motion.div
+                          initial={{
+                            height: 0,
+                            opacity: 0,
+                            filter:
+                              "blur(3px)",
+                          }}
+                          animate={{
+                            height: "auto",
+                            opacity: 1,
+                            filter:
+                              "blur(0px)",
+                          }}
+                          exit={{
+                            height: 0,
+                            opacity: 0,
+                            filter:
+                              "blur(3px)",
+                          }}
+                          transition={{
+                            duration: 0.8,
+                            ease: luxuryEase,
+                          }}
+                          className="overflow-hidden"
+                        >
+                          <div
+                            className="
+                              mx-auto
+                              max-w-[680px]
+                              px-5
+                              pb-10
+                              sm:px-8
+                              sm:pb-12
+                            "
+                          >
+                            <p
+                              className="
+                                font-body
+                                text-sm
+                                font-medium
+                                uppercase
+                                tracking-[0.2em]
+                                text-[var(--color-muted)]
+                              "
+                            >
+                              Matthew 19:4–6 · HCSB
+                            </p>
+
+                            <p
+                              className="
+                                mt-6
+                                font-editorial
+                                text-lg
+                                leading-[1.65]
+                                text-[var(--color-espresso)]
+                                sm:text-xl
+                              "
+                            >
+                              {scriptureText}
+                            </p>
+                          </div>
+                        </motion.div>
+                      )}
+                  </AnimatePresence>
+
+                  {/* =================================================
+                      HYMN
+                      ================================================= */}
+
+                  <AnimatePresence
+                    initial={false}
+                  >
+                    {isOpen &&
+                      item.expandable ===
+                        "hymn" && (
+                        <motion.div
+                          initial={{
+                            height: 0,
+                            opacity: 0,
+                            filter:
+                              "blur(3px)",
+                          }}
+                          animate={{
+                            height: "auto",
+                            opacity: 1,
+                            filter:
+                              "blur(0px)",
+                          }}
+                          exit={{
+                            height: 0,
+                            opacity: 0,
+                            filter:
+                              "blur(3px)",
+                          }}
+                          transition={{
+                            duration: 0.8,
+                            ease: luxuryEase,
+                          }}
+                          className="overflow-hidden"
+                        >
+                          <div
+                            className="
+                              mx-auto
+                              max-w-[680px]
+                              px-5
+                              pb-10
+                              text-center
+                              sm:px-8
+                              sm:pb-12
+                            "
+                          >
+                            <p
+                              className="
+                                font-body
+                                text-sm
+                                font-medium
+                                uppercase
+                                tracking-[0.2em]
+                                text-[var(--color-muted)]
+                              "
+                            >
+                              Now Thank We All
+                              Our God
+                            </p>
+
+                            <div
+                              className="
+                                mx-auto
+                                mt-8
+                                max-w-[560px]
+                                space-y-10
+                                sm:mt-10
+                              "
+                            >
+                              {hymnStanzas.map(
+                                (
+                                  stanza,
+                                  stanzaIndex,
+                                ) => (
+                                  <div
+                                    key={
+                                      stanzaIndex
+                                    }
+                                  >
+                                    <p
+                                      className="
+                                        font-editorial
+                                        text-lg
+                                        leading-[1.65]
+                                        text-[var(--color-espresso)]
+                                        sm:text-xl
+                                      "
+                                    >
+                                      {stanza.map(
+                                        (
+                                          line,
+                                          lineIndex,
+                                        ) => (
+                                          <span
+                                            key={`${stanzaIndex}-${lineIndex}`}
+                                            className="block"
+                                          >
+                                            {
+                                              line
+                                            }
+                                          </span>
+                                        ),
+                                      )}
+                                    </p>
+                                  </div>
+                                ),
+                              )}
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                  </AnimatePresence>
+                </motion.article>
+              )
+            })}
+          </div>
+        </section>
+      </div>
+    </main>
+  )
+}
