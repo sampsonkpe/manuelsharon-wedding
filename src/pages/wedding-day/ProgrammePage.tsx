@@ -5,6 +5,7 @@ import {
   cinematicInitial,
   cinematicTransition,
   luxuryEase,
+  staggerSmall,
 } from "../../components/motion/motion"
 
 type ProgrammeItem = {
@@ -74,7 +75,7 @@ const programme: ProgrammeItem[] = [
   {
     title: "Announcement",
     person: "MC",
-    children: ["Pictures and reception"],
+    children: ["[Pictures and Reception]"],
   },
   {
     title: "Hymn",
@@ -122,15 +123,32 @@ const hymnStanzas = [
   ],
   [
     "All praise and thanks to God",
-    "the Father now be given,",
-    "the Son and Spirit blest,",
+    "the Father now be given",
+    "the Son and Spirit blest",
     "who reign in highest heaven",
-    "the one eternal God,",
+    "the one eternal God",
     "whom heaven and earth adore;",
     "for thus it was, is now,",
     "and shall be evermore.",
   ],
 ]
+
+const nameInitial = {
+  opacity: 0,
+  scale: 0.985,
+  filter: "blur(3px)",
+}
+
+const nameAnimate = {
+  opacity: 1,
+  scale: 1,
+  filter: "blur(0px)",
+}
+
+const nameTransition = {
+  duration: 0.9,
+  ease: luxuryEase,
+}
 
 export default function ProgrammePage() {
   const [openItem, setOpenItem] =
@@ -178,24 +196,134 @@ export default function ProgrammePage() {
             The Wedding of
           </p>
 
-          <h1
+          {/* =================================================
+              COUPLE NAMES
+              Same visual treatment as the splash
+              ================================================= */}
+
+          <div
             className="
-              mt-4
-              font-display
-              text-6xl
-              leading-[1]
-              text-[var(--color-espresso)]
-              sm:text-7xl
-              md:text-8xl
+              relative
+              mt-8
+              flex
+              w-full
+              justify-center
+              overflow-visible
+              px-8
+              sm:px-12
             "
           >
-            Manuel &amp; Sharon
-          </h1>
+            <h1
+              className="
+                flex
+                w-full
+                flex-col
+                items-center
+                justify-center
+                overflow-visible
+                text-center
+                text-[var(--color-espresso)]
+              "
+            >
+              {/* MANUEL */}
+
+              <motion.div
+                initial={nameInitial}
+                animate={nameAnimate}
+                transition={{
+                  ...nameTransition,
+                  delay: staggerSmall,
+                }}
+                className="
+                  flex
+                  w-fit
+                  max-w-none
+                  justify-center
+                  overflow-visible
+                "
+              >
+                <span
+                  className="
+                    inline-block
+                    overflow-visible
+                    px-[0.18em]
+                    font-display
+                    text-[clamp(5rem,21vw,10rem)]
+                    leading-none
+                    whitespace-nowrap
+                  "
+                >
+                  Manuel
+                </span>
+              </motion.div>
+
+              {/* AMPERSAND */}
+
+              <motion.div
+                initial={nameInitial}
+                animate={nameAnimate}
+                transition={{
+                  ...nameTransition,
+                  delay: staggerSmall * 2,
+                }}
+                className="
+                  flex
+                  w-fit
+                  justify-center
+                  overflow-visible
+                "
+              >
+                <span
+                  className="
+                    inline-block
+                    overflow-visible
+                    font-display
+                    text-[clamp(2.1rem,8.8vw,4.2rem)]
+                    leading-none
+                  "
+                >
+                  &amp;
+                </span>
+              </motion.div>
+
+              {/* SHARON */}
+
+              <motion.div
+                initial={nameInitial}
+                animate={nameAnimate}
+                transition={{
+                  ...nameTransition,
+                  delay: staggerSmall * 3,
+                }}
+                className="
+                  flex
+                  w-fit
+                  max-w-none
+                  justify-center
+                  overflow-visible
+                "
+              >
+                <span
+                  className="
+                    inline-block
+                    overflow-visible
+                    px-[0.18em]
+                    font-display
+                    text-[clamp(5rem,21vw,10rem)]
+                    leading-none
+                    whitespace-nowrap
+                  "
+                >
+                  Sharon
+                </span>
+              </motion.div>
+            </h1>
+          </div>
 
           <p
             className="
               mx-auto
-              mt-6
+              mt-8
               max-w-[500px]
               font-editorial
               text-2xl
@@ -371,29 +499,24 @@ export default function ProgrammePage() {
                       CHILD EVENTS
                       ================================================= */}
 
-                  <AnimatePresence
-                    initial={false}
-                  >
+                  <AnimatePresence initial={false}>
                     {isOpen &&
                       hasChildren && (
                         <motion.div
                           initial={{
                             height: 0,
                             opacity: 0,
-                            filter:
-                              "blur(3px)",
+                            filter: "blur(3px)",
                           }}
                           animate={{
                             height: "auto",
                             opacity: 1,
-                            filter:
-                              "blur(0px)",
+                            filter: "blur(0px)",
                           }}
                           exit={{
                             height: 0,
                             opacity: 0,
-                            filter:
-                              "blur(3px)",
+                            filter: "blur(3px)",
                           }}
                           transition={{
                             duration: 0.7,
@@ -437,9 +560,7 @@ export default function ProgrammePage() {
                       SCRIPTURE
                       ================================================= */}
 
-                  <AnimatePresence
-                    initial={false}
-                  >
+                  <AnimatePresence initial={false}>
                     {isOpen &&
                       item.expandable ===
                         "scripture" && (
@@ -447,20 +568,17 @@ export default function ProgrammePage() {
                           initial={{
                             height: 0,
                             opacity: 0,
-                            filter:
-                              "blur(3px)",
+                            filter: "blur(3px)",
                           }}
                           animate={{
                             height: "auto",
                             opacity: 1,
-                            filter:
-                              "blur(0px)",
+                            filter: "blur(0px)",
                           }}
                           exit={{
                             height: 0,
                             opacity: 0,
-                            filter:
-                              "blur(3px)",
+                            filter: "blur(3px)",
                           }}
                           transition={{
                             duration: 0.8,
@@ -512,9 +630,7 @@ export default function ProgrammePage() {
                       HYMN
                       ================================================= */}
 
-                  <AnimatePresence
-                    initial={false}
-                  >
+                  <AnimatePresence initial={false}>
                     {isOpen &&
                       item.expandable ===
                         "hymn" && (
@@ -522,20 +638,17 @@ export default function ProgrammePage() {
                           initial={{
                             height: 0,
                             opacity: 0,
-                            filter:
-                              "blur(3px)",
+                            filter: "blur(3px)",
                           }}
                           animate={{
                             height: "auto",
                             opacity: 1,
-                            filter:
-                              "blur(0px)",
+                            filter: "blur(0px)",
                           }}
                           exit={{
                             height: 0,
                             opacity: 0,
-                            filter:
-                              "blur(3px)",
+                            filter: "blur(3px)",
                           }}
                           transition={{
                             duration: 0.8,
@@ -605,9 +718,7 @@ export default function ProgrammePage() {
                                             key={`${stanzaIndex}-${lineIndex}`}
                                             className="block"
                                           >
-                                            {
-                                              line
-                                            }
+                                            {line}
                                           </span>
                                         ),
                                       )}
