@@ -7,6 +7,7 @@ import {
   luxuryEase,
   staggerSmall,
 } from "../../components/motion/motion"
+import FallingPetals from "../../components/wedding-day/FallingPetals"
 
 type ProgrammeItem = {
   title: string
@@ -19,9 +20,9 @@ const programme: ProgrammeItem[] = [
   {
     title: "Pre-Ceremony",
     children: [
-      "Guest arrival & seating",
+      "Guests arrival & seating",
       "Musical Interlude",
-      "Ushers welcome guests",
+      "Ushers welcome Guests",
     ],
   },
   {
@@ -57,25 +58,21 @@ const programme: ProgrammeItem[] = [
     person: "Rev. John Ametsikor",
   },
   {
-    title: "Offering & Signing of Certificates",
-    person: "Min. Eli Manuel",
+    title: "Offering & Signing of Certificate",
+    person: "Ministration by Eli Manuel",
+    children: [
+      "Best Man Announcement",
+    ],
   },
   {
-    title: "Best Man Announcement & Ministration",
-    person: "Min. Eli Manuel",
-  },
-  {
-    title: "Presentation of Certificate",
-    person: "Mrs. Swanzy",
+    title: "Presentation of Marriage Certificate",
   },
   {
     title: "Communion",
     person: "Rev. John Ametsikor",
   },
   {
-    title: "Announcement",
-    person: "MC",
-    children: ["[Pictures and Reception]"],
+    title: "Announcements",
   },
   {
     title: "Hymn",
@@ -162,16 +159,21 @@ export default function ProgrammePage() {
 
   return (
     <main className="min-h-screen bg-transparent">
-      <div
-        className="
-          mx-auto
-          w-full
-          max-w-[900px]
-          px-[var(--page-padding)]
-          py-20
-          sm:py-28
-        "
-      >
+      <FallingPetals />
+
+        <div
+          className="
+            relative
+            z-20
+            mx-auto
+            w-full
+            max-w-[900px]
+            px-[var(--page-padding)]
+            py-20
+            sm:py-28
+          "
+        >
+
         {/* =================================================
             HEADER
             ================================================= */}
@@ -320,23 +322,6 @@ export default function ProgrammePage() {
             </h1>
           </div>
 
-          <p
-            className="
-              mx-auto
-              mt-8
-              max-w-[500px]
-              font-editorial
-              text-2xl
-              leading-[1.15]
-              tracking-[-0.01em]
-              text-[var(--color-espresso)]
-              sm:text-3xl
-              md:text-4xl
-            "
-          >
-            Order of Service
-          </p>
-
           <div
             className="
               mx-auto
@@ -346,13 +331,28 @@ export default function ProgrammePage() {
               bg-[var(--color-caramel)]
             "
           />
+
+          <p
+            className="
+              font-body
+              mt-8
+              text-sm
+              font-medium
+              uppercase
+              tracking-[0.24em]
+              text-[var(--color-espresso)]
+              sm:text-base
+            "
+          >
+            Order of Service
+          </p>
         </motion.header>
 
         {/* =================================================
             PROGRAMME
             ================================================= */}
 
-        <section className="mt-20 sm:mt-24">
+        <section className="mt-10 sm:mt-24">
           <div
             className="
               border-t
