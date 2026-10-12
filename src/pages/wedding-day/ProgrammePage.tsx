@@ -1,6 +1,21 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { useState } from "react"
 import {
+  HandHeart,
+  Rose,
+  Heart,
+  BookOpenText,
+  Feather,
+  ClefTreble,
+  Music4,
+  Signature,
+  FileHeart,
+  Wine,
+  BellDot,
+  Footprints,
+  ChevronDown,
+} from "lucide-react"
+import {
   cinematicAnimate,
   cinematicInitial,
   cinematicTransition,
@@ -30,7 +45,7 @@ const programme: ProgrammeItem[] = [
     person: "Mr. Richmond Brempong",
   },
   {
-    title: "Procession of the Bridal Team",
+    title: "Procession of the Bridal Party",
     children: [
       "Entrance of Bridesmaids",
       "Entrance of the Bride",
@@ -61,7 +76,7 @@ const programme: ProgrammeItem[] = [
     title: "Offering & Signing of Certificate",
     person: "Ministration by Eli Manuel",
     children: [
-      "Announcement by Bestman",
+      "Couple Re-entry Announcement by Best Man",
     ],
   },
   {
@@ -86,6 +101,24 @@ const programme: ProgrammeItem[] = [
   {
     title: "Couple Recession",
   },
+]
+
+const programmeIcons = [
+  Music4,
+  HandHeart,
+  Rose,
+  Heart,
+  BookOpenText,
+  Feather,
+  ClefTreble,
+  BookOpenText,
+  Signature,
+  FileHeart,
+  Wine,
+  BellDot,
+  ClefTreble,
+  HandHeart,
+  Footprints,
 ]
 
 const scrollViewport = {
@@ -373,8 +406,29 @@ export default function ProgrammePage() {
                 hasChildren ||
                 Boolean(item.expandable)
 
+              const ProgrammeIcon = programmeIcons[index]
+
               const content = (
                 <>
+                  {/* =================================================
+                      PROGRAMME ICON
+                      ================================================= */}
+
+                  <span
+                    className="
+                      mb-4
+                      flex
+                      justify-center
+                      text-[var(--color-caramel)]
+                    "
+                    aria-hidden="true"
+                  >
+                    <ProgrammeIcon
+                      size={28}
+                      strokeWidth={1.5}
+                    />
+                  </span>
+
                   {/* =================================================
                       TITLE
                       ================================================= */}
@@ -422,7 +476,7 @@ export default function ProgrammePage() {
                   {isExpandable && (
                     <motion.span
                       animate={{
-                        rotate: isOpen ? 45 : 0,
+                        rotate: isOpen ? 180 : 0,
                       }}
                       transition={{
                         duration: 0.5,
@@ -431,17 +485,19 @@ export default function ProgrammePage() {
                       className="
                         mx-auto
                         mt-4
-                        block
+                        flex
                         h-5
                         w-5
-                        font-editorial
-                        text-xl
-                        leading-[1]
+                        items-center
+                        justify-center
                         text-[var(--color-caramel)]
                       "
                       aria-hidden="true"
                     >
-                      +
+                      <ChevronDown
+                        size={18}
+                        strokeWidth={1.5}
+                      />
                     </motion.span>
                   )}
                 </>
