@@ -20,20 +20,20 @@ const programme: ProgrammeItem[] = [
   {
     title: "Pre-Ceremony",
     children: [
-      "Guests arrival & seating",
+      "Guest Arrivals & Seating",
       "Musical Interlude",
       "Ushers welcome Guests",
     ],
   },
   {
     title: "Opening Prayer & Welcome Statement",
-    person: "Richmond Brempong",
+    person: "Mr. Richmond Brempong",
   },
   {
     title: "Procession of the Bridal Team",
     children: [
       "Entrance of Bridesmaids",
-      "Entrance of Bride",
+      "Entrance of the Bride",
     ],
   },
   {
@@ -47,7 +47,7 @@ const programme: ProgrammeItem[] = [
   },
   {
     title: "Poetry",
-    person: "Job Agyeman",
+    person: "Mr. Job Agyeman",
   },
   {
     title: "Worship",
@@ -61,7 +61,7 @@ const programme: ProgrammeItem[] = [
     title: "Offering & Signing of Certificate",
     person: "Ministration by Eli Manuel",
     children: [
-      "Best Man Announcement",
+      "Announcement by Bestman",
     ],
   },
   {
