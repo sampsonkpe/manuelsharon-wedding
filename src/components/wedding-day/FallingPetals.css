@@ -1,0 +1,41 @@
+
+.falling-petal {
+  opacity: 0;
+  animation-name: petal-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes petal-fall {
+  0% {
+    transform: translate3d(0, -15vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 0.72;
+  }
+
+  50% {
+    transform: translate3d(35px, 50vh, 0) rotate(180deg);
+    opacity: 0.62;
+  }
+
+  90% {
+    opacity: 0.42;
+  }
+
+  100% {
+    transform: translate3d(-20px, 110vh, 0) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .falling-petal {
+    animation: none;
+    opacity: 0.45;
+    transform: none;
+  }
+}
