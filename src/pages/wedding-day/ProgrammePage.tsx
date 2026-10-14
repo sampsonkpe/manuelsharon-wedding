@@ -122,7 +122,7 @@ const programme: ProgrammeItem[] = [
       "13. Couple with Groom's Family",
       "14. Couple with Both Families",
       "15. Couple with Both Parents",
-      "16. Couple with both Bride’s and Groom’s Siblings",
+      "16. Couple with Both Bride’s and Groom’s Siblings",
       "17. Couple with Bride’s Siblings",
       "18. Couple with Groom’s Siblings",
       "19. Couple with Assemblies of God",
