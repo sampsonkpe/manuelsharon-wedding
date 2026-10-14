@@ -1,3 +1,4 @@
+
 import { AnimatePresence, motion } from "framer-motion"
 import { useState } from "react"
 import {
@@ -13,6 +14,7 @@ import {
   Wine,
   BellDot,
   Footprints,
+  Camera,
   ChevronDown,
 } from "lucide-react"
 import {
@@ -28,7 +30,7 @@ type ProgrammeItem = {
   title: string
   person?: string
   children?: string[]
-  expandable?: "scripture" | "hymn"
+  expandable?: "scripture" | "hymn" | "photography"
 }
 
 const programme: ProgrammeItem[] = [
@@ -101,6 +103,34 @@ const programme: ProgrammeItem[] = [
   {
     title: "Couple Recession",
   },
+  {
+    title: "Order of Photography",
+    expandable: "photography",
+    children: [
+      "1. Clergy",
+      "2. Couple with Clergy",
+      "3. Couple with Counsellors",
+      "4. Couple with Bridal Party",
+      "5. Couple with Bridesmaids",
+      "6. Couple with Groomsmen",
+      "7. Bridal Party",
+      "8. Bridesmaids",
+      "9. Groomsmen",
+      "10. Couple with Parents of the Bride",
+      "11. Couple with Parents of the Groom",
+      "12. Couple with Bride’s Family",
+      "13. Couple with Groom's Family",
+      "14. Couple with Both Families",
+      "15. Couple with Both Parents",
+      "16. Couple with both Bride’s and Groom’s Siblings",
+      "17. Couple with Bride’s Siblings",
+      "18. Couple with Groom’s Siblings",
+      "19. Couple with Assemblies of God",
+      "20. Couple with GCCI",
+      "21. Couple with EWC",
+      "22. Couple with Friends",
+    ],
+  },
 ]
 
 const programmeIcons = [
@@ -119,6 +149,7 @@ const programmeIcons = [
   ClefTreble,
   HandHeart,
   Footprints,
+  Camera,
 ]
 
 const scrollViewport = {
@@ -194,19 +225,18 @@ export default function ProgrammePage() {
     <main className="min-h-screen bg-transparent">
       <FallingPetals />
 
-        <div
-          className="
-            relative
-            z-20
-            mx-auto
-            w-full
-            max-w-[900px]
-            px-[var(--page-padding)]
-            py-20
-            sm:py-28
-          "
-        >
-
+      <div
+        className="
+          relative
+          z-20
+          mx-auto
+          w-full
+          max-w-[900px]
+          px-[var(--page-padding)]
+          py-20
+          sm:py-28
+        "
+      >
         {/* =================================================
             HEADER
             ================================================= */}
@@ -406,7 +436,8 @@ export default function ProgrammePage() {
                 hasChildren ||
                 Boolean(item.expandable)
 
-              const ProgrammeIcon = programmeIcons[index]
+              const ProgrammeIcon =
+                programmeIcons[index]
 
               const content = (
                 <>
@@ -557,7 +588,9 @@ export default function ProgrammePage() {
 
                   <AnimatePresence initial={false}>
                     {isOpen &&
-                      hasChildren && (
+                      hasChildren &&
+                      item.expandable !==
+                        "photography" && (
                         <motion.div
                           initial={{
                             height: 0,
@@ -783,6 +816,71 @@ export default function ProgrammePage() {
                                 ),
                               )}
                             </div>
+                          </div>
+                        </motion.div>
+                      )}
+                  </AnimatePresence>
+
+                  {/* =================================================
+                      ORDER OF PHOTOGRAPHY
+                      ================================================= */}
+
+                  <AnimatePresence initial={false}>
+                    {isOpen &&
+                      item.expandable === "photography" && (
+                        <motion.div
+                          initial={{
+                            height: 0,
+                            opacity: 0,
+                            filter: "blur(3px)",
+                          }}
+                          animate={{
+                            height: "auto",
+                            opacity: 1,
+                            filter: "blur(0px)",
+                          }}
+                          exit={{
+                            height: 0,
+                            opacity: 0,
+                            filter: "blur(3px)",
+                          }}
+                          transition={{
+                            duration: 0.8,
+                            ease: luxuryEase,
+                          }}
+                          className="overflow-hidden"
+                        >
+                          <div
+                            className="
+                              mx-auto
+                              max-w-[560px]
+                              px-5
+                              pb-10
+                              sm:px-8
+                              sm:pb-12
+                            "
+                          >
+                            <ol className="space-y-3">
+                              {item.children?.map((child) => {
+                                const description = child.replace(/^\d+\.\s*/, "")
+
+                                return (
+                                  <li
+                                    key={child}
+                                    className="
+                                      text-center
+                                      font-editorial
+                                      text-lg
+                                      leading-[1.5]
+                                      text-[var(--color-muted)]
+                                      sm:text-xl
+                                    "
+                                  >
+                                    {description}
+                                  </li>
+                                )
+                              })}
+                            </ol>
                           </div>
                         </motion.div>
                       )}
