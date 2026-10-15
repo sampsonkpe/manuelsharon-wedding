@@ -1,8 +1,7 @@
-
 import { AnimatePresence, motion } from "framer-motion"
+import type { MouseEvent } from "react"
 import { useCallback, useEffect, useState } from "react"
 import {
-  ArrowDownToLine,
   ChevronLeft,
   ChevronRight,
   X,
@@ -90,7 +89,8 @@ const controlClass = `
 `
 
 export default function MomentsPage() {
-  const [activeIndex, setActiveIndex] = useState<number | null>(null)
+  const [activeIndex, setActiveIndex] =
+    useState<number | null>(null)
 
   const closeLightbox = useCallback(() => {
     setActiveIndex(null)
@@ -111,6 +111,17 @@ export default function MomentsPage() {
         : (current + 1) % memories.length,
     )
   }, [])
+
+  /*
+   * Discourage context-menu saving and image dragging.
+   * These measures cannot prevent screenshots or screen recording.
+   */
+
+  const preventImageSaving = (
+    event: MouseEvent<HTMLElement>,
+  ) => {
+    event.preventDefault()
+  }
 
   useEffect(() => {
     if (activeIndex === null) return
@@ -133,7 +144,10 @@ export default function MomentsPage() {
   }, [activeIndex, closeLightbox, showPrevious, showNext])
 
   return (
-    <main className="min-h-screen bg-transparent">
+    <main
+      className="min-h-screen bg-transparent"
+      onContextMenu={preventImageSaving}
+    >
       <div
         className="
           relative
@@ -157,8 +171,16 @@ export default function MomentsPage() {
           className="mb-12 text-center sm:mb-20"
         >
           <motion.p
-            initial={{ opacity: 0, y: 10, filter: "blur(3px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            initial={{
+              opacity: 0,
+              y: 10,
+              filter: "blur(3px)",
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              filter: "blur(0px)",
+            }}
             transition={{
               duration: 1.1,
               ease: luxuryEase,
@@ -244,8 +266,14 @@ export default function MomentsPage() {
           </h1>
 
           <motion.div
-            initial={{ opacity: 0, scaleX: 0.5 }}
-            animate={{ opacity: 1, scaleX: 1 }}
+            initial={{
+              opacity: 0,
+              scaleX: 0.5,
+            }}
+            animate={{
+              opacity: 1,
+              scaleX: 1,
+            }}
             transition={{
               duration: 1,
               delay: 0.8,
@@ -333,6 +361,7 @@ export default function MomentsPage() {
                 type="button"
                 aria-label={`View photo ${index + 1} of ${memories.length}`}
                 onClick={() => setActiveIndex(index)}
+                onContextMenu={preventImageSaving}
                 whileHover={{ scale: 1.02 }}
                 transition={{
                   duration: 0.2,
@@ -362,9 +391,12 @@ export default function MomentsPage() {
                   alt={memory.alt}
                   loading={index < 2 ? "eager" : "lazy"}
                   decoding="async"
+                  draggable={false}
+                  onContextMenu={preventImageSaving}
                   className="
                     block
                     w-full
+                    select-none
                     object-cover
                     transition-transform
                     duration-700
@@ -426,34 +458,7 @@ export default function MomentsPage() {
             aria-modal="true"
             aria-label="Pre-wedding photo viewer"
           >
-            {/* DOWNLOAD — FAR LEFT */}
-
-            <a
-              href={memories[activeIndex].src}
-              download={`manuel-sharon-memory-${String(
-                activeIndex + 1,
-              ).padStart(2, "0")}.webp`}
-              onClick={(event) => event.stopPropagation()}
-              aria-label="Download photo"
-              title="Download photo"
-              className={`
-                ${controlClass}
-                absolute
-                left-5
-                top-[calc(env(safe-area-inset-top)+1rem)]
-                z-20
-                sm:left-8
-                sm:top-8
-              `}
-            >
-              <ArrowDownToLine
-                size={18}
-                strokeWidth={1.6}
-                className="text-current transition-colors duration-300 group-hover:text-white"
-              />
-            </a>
-
-            {/* CLOSE — FAR RIGHT */}
+            {/* CLOSE BUTTON */}
 
             <button
               type="button"
@@ -461,6 +466,7 @@ export default function MomentsPage() {
                 event.stopPropagation()
                 closeLightbox()
               }}
+              onContextMenu={preventImageSaving}
               aria-label="Close photo viewer"
               title="Close"
               className={`
@@ -544,6 +550,8 @@ export default function MomentsPage() {
                   ease: easeSilk,
                 }}
                 onClick={(event) => event.stopPropagation()}
+                onContextMenu={preventImageSaving}
+                draggable={false}
                 className="
                   block
                   max-h-[calc(85svh-3rem)]
@@ -558,7 +566,6 @@ export default function MomentsPage() {
                 style={{
                   willChange: "transform, opacity",
                 }}
-                draggable={false}
               />
             </AnimatePresence>
 
