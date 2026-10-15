@@ -9,8 +9,8 @@ import {
 } from "lucide-react"
 
 import {
-  cinematicInitial,
   cinematicAnimate,
+  cinematicInitial,
   cinematicTransition,
   luxuryEase,
   staggerSmall,
@@ -24,34 +24,42 @@ const memories = [
   {
     src: "/images/memories-01.webp",
     alt: "Manuel and Sharon during their pre-wedding photoshoot.",
+    height: 320,
   },
   {
     src: "/images/memories-02.webp",
     alt: "Manuel and Sharon during their pre-wedding photoshoot.",
+    height: 240,
   },
   {
     src: "/images/memories-03.webp",
     alt: "Manuel and Sharon during their pre-wedding photoshoot.",
+    height: 290,
   },
   {
     src: "/images/memories-04.webp",
     alt: "Manuel and Sharon during their pre-wedding photoshoot.",
+    height: 350,
   },
   {
     src: "/images/memories-05.webp",
     alt: "Manuel and Sharon during their pre-wedding photoshoot.",
+    height: 250,
   },
   {
     src: "/images/memories-06.webp",
     alt: "Manuel and Sharon during their pre-wedding photoshoot.",
+    height: 310,
   },
   {
     src: "/images/memories-07.webp",
     alt: "Manuel and Sharon during their pre-wedding photoshoot.",
+    height: 270,
   },
 ]
 
 const controlClass = `
+  group
   flex
   h-10
   w-10
@@ -117,7 +125,7 @@ export default function MomentsPage() {
       document.body.style.overflow = previousOverflow
       window.removeEventListener("keydown", handleKeyDown)
     }
-  }, [activeIndex, closeLightbox, showNext, showPrevious])
+  }, [activeIndex, closeLightbox, showPrevious, showNext])
 
   return (
     <main className="min-h-screen bg-transparent">
@@ -138,31 +146,14 @@ export default function MomentsPage() {
         {/* WEDDING HEADING */}
 
         <motion.header
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: {},
-            visible: {
-              transition: {
-                staggerChildren: 0.2,
-              },
-            },
-          }}
+          initial={cinematicInitial}
+          animate={cinematicAnimate}
+          transition={cinematicTransition}
           className="mb-12 text-center sm:mb-20"
         >
           <motion.p
-            variants={{
-              hidden: {
-                opacity: 0,
-                y: 10,
-                filter: "blur(4px)",
-              },
-              visible: {
-                opacity: 1,
-                y: 0,
-                filter: "blur(0px)",
-              },
-            }}
+            initial={{ opacity: 0, y: 10, filter: "blur(3px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{
               duration: 1.1,
               ease: luxuryEase,
@@ -186,28 +177,20 @@ export default function MomentsPage() {
               flex
               flex-col
               items-center
+              justify-center
               text-center
               text-[var(--color-espresso)]
             "
           >
             <motion.span
-              variants={{
-                hidden: {
-                  opacity: 0,
-                  y: 14,
-                  filter: "blur(5px)",
-                },
-                visible: {
-                  opacity: 1,
-                  y: 0,
-                  filter: "blur(0px)",
-                },
-              }}
+              initial={cinematicInitial}
+              animate={cinematicAnimate}
               transition={{
-                duration: 1.3,
-                ease: luxuryEase,
+                ...cinematicTransition,
+                delay: staggerSmall,
               }}
               className="
+                inline-block
                 px-[0.12em]
                 font-display
                 text-[clamp(4.5rem,16vw,9rem)]
@@ -219,21 +202,13 @@ export default function MomentsPage() {
             </motion.span>
 
             <motion.span
-              aria-hidden="true"
-              variants={{
-                hidden: {
-                  opacity: 0,
-                  y: 8,
-                },
-                visible: {
-                  opacity: 1,
-                  y: 0,
-                },
-              }}
+              initial={cinematicInitial}
+              animate={cinematicAnimate}
               transition={{
-                duration: 1,
-                ease: luxuryEase,
+                ...cinematicTransition,
+                delay: staggerSmall * 2,
               }}
+              aria-hidden="true"
               className="
                 font-display
                 text-[clamp(2rem,7vw,3.8rem)]
@@ -244,23 +219,14 @@ export default function MomentsPage() {
             </motion.span>
 
             <motion.span
-              variants={{
-                hidden: {
-                  opacity: 0,
-                  y: 14,
-                  filter: "blur(5px)",
-                },
-                visible: {
-                  opacity: 1,
-                  y: 0,
-                  filter: "blur(0px)",
-                },
-              }}
+              initial={cinematicInitial}
+              animate={cinematicAnimate}
               transition={{
-                duration: 1.3,
-                ease: luxuryEase,
+                ...cinematicTransition,
+                delay: staggerSmall * 3,
               }}
               className="
+                inline-block
                 px-[0.12em]
                 font-display
                 text-[clamp(4.5rem,16vw,9rem)]
@@ -277,7 +243,7 @@ export default function MomentsPage() {
             animate={{ opacity: 1, scaleX: 1 }}
             transition={{
               duration: 1,
-              delay: 1,
+              delay: 0.8,
               ease: luxuryEase,
             }}
             className="
@@ -294,20 +260,11 @@ export default function MomentsPage() {
           {/* MEMORIES TITLE */}
 
           <motion.p
-            initial={{
-              opacity: 0,
-              y: 12,
-              filter: "blur(4px)",
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              filter: "blur(0px)",
-            }}
+            initial={cinematicInitial}
+            animate={cinematicAnimate}
             transition={{
-              duration: 1.2,
-              delay: 1.2,
-              ease: luxuryEase,
+              ...cinematicTransition,
+              delay: 1,
             }}
             className="
               mt-7
@@ -335,18 +292,16 @@ export default function MomentsPage() {
             sm:gap-5
             lg:columns-3
             lg:gap-6
+            [contain:layout_paint]
           "
         >
           {memories.map((memory, index) => (
-            <motion.button
+            <motion.figure
               key={memory.src}
-              type="button"
-              aria-label={`View photo ${index + 1} of ${memories.length}`}
-              onClick={() => setActiveIndex(index)}
               initial={{
                 opacity: 0,
-                y: 22,
-                filter: "blur(5px)",
+                y: 18,
+                filter: "blur(3px)",
               }}
               whileInView={{
                 opacity: 1,
@@ -359,41 +314,77 @@ export default function MomentsPage() {
               }}
               transition={{
                 duration: 1.1,
-                delay: (index % 3) * 0.12,
+                delay: (index % 3) * 0.08,
                 ease: luxuryEase,
-              }}
-              whileHover={{
-                scale: 1.015,
               }}
               className="
                 mb-3
-                block
-                w-full
                 break-inside-avoid
-                overflow-hidden
-                rounded-2xl
-                shadow-sm
-                transition-shadow
-                duration-500
-                hover:shadow-lg
-                focus-visible:outline
-                focus-visible:outline-2
-                focus-visible:outline-offset-4
-                focus-visible:outline-[var(--color-caramel)]
                 sm:mb-5
                 lg:mb-6
-                motion-reduce:transform-none
               "
             >
-              <img
-                src={memory.src}
-                alt={memory.alt}
-                loading={index < 2 ? "eager" : "lazy"}
-                decoding="async"
-                className="block h-auto w-full"
-                sizes="(max-width: 1023px) 50vw, 33vw"
-              />
-            </motion.button>
+              <motion.button
+                type="button"
+                aria-label={`View photo ${index + 1} of ${memories.length}`}
+                onClick={() => setActiveIndex(index)}
+                whileHover={{ scale: 1.02 }}
+                transition={{
+                  duration: 0.2,
+                  ease: easeSilk,
+                }}
+                className="
+                  group
+                  relative
+                  block
+                  w-full
+                  cursor-zoom-in
+                  overflow-hidden
+                  rounded-2xl
+                  bg-[var(--color-espresso)]
+                  shadow-sm
+                  transition-shadow
+                  duration-300
+                  hover:shadow-lg
+                  focus-visible:outline
+                  focus-visible:outline-offset-4
+                  focus-visible:outline-[var(--color-caramel)]
+                  motion-reduce:transform-none
+                "
+              >
+                <img
+                  src={memory.src}
+                  alt={memory.alt}
+                  loading={index < 2 ? "eager" : "lazy"}
+                  decoding="async"
+                  className="
+                    block
+                    w-full
+                    object-cover
+                    transition-transform
+                    duration-700
+                    ease-out
+                    group-hover:scale-[1.025]
+                    motion-reduce:transition-none
+                  "
+                  style={{ height: `${memory.height}px` }}
+                  sizes="(max-width: 1023px) 50vw, 33vw"
+                />
+
+                <span
+                  aria-hidden="true"
+                  className="
+                    pointer-events-none
+                    absolute
+                    inset-0
+                    bg-black/0
+                    transition-colors
+                    duration-500
+                    group-hover:bg-black/[0.08]
+                  "
+                />
+              </motion.button>
+            </motion.figure>
           ))}
         </section>
       </div>
@@ -408,7 +399,7 @@ export default function MomentsPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{
-              duration: 0.35,
+              duration: 0.3,
               ease: easeSilk,
             }}
             onClick={closeLightbox}
@@ -430,7 +421,7 @@ export default function MomentsPage() {
             aria-modal="true"
             aria-label="Pre-wedding photo viewer"
           >
-            {/* DOWNLOAD: LEFT SIDE */}
+            {/* DOWNLOAD — FAR LEFT */}
 
             <a
               href={memories[activeIndex].src}
@@ -450,10 +441,14 @@ export default function MomentsPage() {
                 sm:top-8
               `}
             >
-              <ArrowDownToLine size={18} strokeWidth={1.6} />
+              <ArrowDownToLine
+                size={18}
+                strokeWidth={1.6}
+                className="text-current transition-colors duration-300 group-hover:text-white"
+              />
             </a>
 
-            {/* CLOSE: RIGHT SIDE */}
+            {/* CLOSE — FAR RIGHT */}
 
             <button
               type="button"
@@ -473,7 +468,11 @@ export default function MomentsPage() {
                 sm:top-8
               `}
             >
-              <X size={18} strokeWidth={1.6} />
+              <X
+                size={18}
+                strokeWidth={1.6}
+                className="text-current transition-colors duration-300 group-hover:text-white"
+              />
             </button>
 
             {/* PREVIOUS PHOTO */}
@@ -524,7 +523,7 @@ export default function MomentsPage() {
                 src={memories[activeIndex].src}
                 alt={memories[activeIndex].alt}
                 initial={{
-                  scale: 0.97,
+                  scale: 0.96,
                   opacity: 0,
                 }}
                 animate={{
@@ -532,11 +531,11 @@ export default function MomentsPage() {
                   opacity: 1,
                 }}
                 exit={{
-                  scale: 0.97,
+                  scale: 0.96,
                   opacity: 0,
                 }}
                 transition={{
-                  duration: 0.45,
+                  duration: 0.4,
                   ease: easeSilk,
                 }}
                 onClick={(event) => event.stopPropagation()}
