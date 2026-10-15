@@ -56,6 +56,11 @@ const memories = [
     alt: "Manuel and Sharon during their pre-wedding photoshoot.",
     height: 270,
   },
+  {
+    src: "/images/memories-08.webp",
+    alt: "Manuel and Sharon during their pre-wedding photoshoot.",
+    height: 370,
+  },
 ]
 
 const controlClass = `
