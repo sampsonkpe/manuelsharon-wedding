@@ -1,5 +1,5 @@
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { useCallback, useEffect, useState } from "react"
 import {
   ArrowDownToLine,
@@ -8,51 +8,50 @@ import {
   X,
 } from "lucide-react"
 
-import ScrollReveal from "../../components/motion/ScrollReveal"
-import { luxuryEase } from "../../components/motion/motion"
+import {
+  cinematicInitial,
+  cinematicAnimate,
+  cinematicTransition,
+  luxuryEase,
+  staggerSmall,
+} from "../../components/motion/motion"
 
-const easeSilk: [number, number, number, number] = [0.22, 1, 0.36, 1]
+const easeSilk: [number, number, number, number] = [
+  0.22, 1, 0.36, 1,
+]
 
 const memories = [
   {
     src: "/images/memories-01.webp",
     alt: "Manuel and Sharon during their pre-wedding photoshoot.",
-    height: 320,
   },
   {
     src: "/images/memories-02.webp",
     alt: "Manuel and Sharon during their pre-wedding photoshoot.",
-    height: 240,
   },
   {
     src: "/images/memories-03.webp",
     alt: "Manuel and Sharon during their pre-wedding photoshoot.",
-    height: 290,
   },
   {
     src: "/images/memories-04.webp",
     alt: "Manuel and Sharon during their pre-wedding photoshoot.",
-    height: 350,
   },
   {
     src: "/images/memories-05.webp",
     alt: "Manuel and Sharon during their pre-wedding photoshoot.",
-    height: 250,
   },
   {
     src: "/images/memories-06.webp",
     alt: "Manuel and Sharon during their pre-wedding photoshoot.",
-    height: 310,
   },
   {
     src: "/images/memories-07.webp",
     alt: "Manuel and Sharon during their pre-wedding photoshoot.",
-    height: 270,
   },
 ]
 
 const controlClass = `
-  group
   flex
   h-10
   w-10
@@ -65,26 +64,20 @@ const controlClass = `
   bg-[var(--color-background)]/40
   text-[var(--color-espresso)]
   backdrop-blur-sm
-  transition-all
+  transition-colors
   duration-300
   hover:border-[var(--color-caramel)]
   hover:bg-[var(--color-caramel)]
   hover:text-white
   focus-visible:outline
   focus-visible:outline-2
-  focus-visible:outline-offset-3
+  focus-visible:outline-offset-4
   focus-visible:outline-[var(--color-caramel)]
   motion-reduce:transition-none
 `
 
-const headingTransition = {
-  duration: 1.1,
-  ease: luxuryEase,
-}
-
 export default function MomentsPage() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
-  const prefersReducedMotion = useReducedMotion()
 
   const closeLightbox = useCallback(() => {
     setActiveIndex(null)
@@ -126,16 +119,6 @@ export default function MomentsPage() {
     }
   }, [activeIndex, closeLightbox, showNext, showPrevious])
 
-  const headingInitial = prefersReducedMotion
-    ? false
-    : { opacity: 0, y: 10, filter: "blur(3px)" }
-
-  const headingAnimate = {
-    opacity: 1,
-    y: 0,
-    filter: "blur(0px)",
-  }
-
   return (
     <main className="min-h-screen bg-transparent">
       <div
@@ -152,15 +135,37 @@ export default function MomentsPage() {
           sm:pt-28
         "
       >
-        {/* PAGE HEADING */}
+        {/* WEDDING HEADING */}
 
-        <header className="mb-12 text-center sm:mb-20">
+        <motion.header
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: {},
+            visible: {
+              transition: {
+                staggerChildren: 0.2,
+              },
+            },
+          }}
+          className="mb-12 text-center sm:mb-20"
+        >
           <motion.p
-            initial={headingInitial}
-            animate={headingAnimate}
+            variants={{
+              hidden: {
+                opacity: 0,
+                y: 10,
+                filter: "blur(4px)",
+              },
+              visible: {
+                opacity: 1,
+                y: 0,
+                filter: "blur(0px)",
+              },
+            }}
             transition={{
-              ...headingTransition,
-              delay: prefersReducedMotion ? 0 : 0.1,
+              duration: 1.1,
+              ease: luxuryEase,
             }}
             className="
               font-body
@@ -175,28 +180,34 @@ export default function MomentsPage() {
             The Wedding of
           </motion.p>
 
-          <motion.h1
-            initial={headingInitial}
-            animate={headingAnimate}
-            transition={{
-              ...headingTransition,
-              delay: prefersReducedMotion ? 0 : 0.3,
-            }}
+          <h1
             className="
               mt-7
               flex
-              w-full
               flex-col
               items-center
-              justify-center
-              overflow-visible
               text-center
               text-[var(--color-espresso)]
             "
           >
-            <span
+            <motion.span
+              variants={{
+                hidden: {
+                  opacity: 0,
+                  y: 14,
+                  filter: "blur(5px)",
+                },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  filter: "blur(0px)",
+                },
+              }}
+              transition={{
+                duration: 1.3,
+                ease: luxuryEase,
+              }}
               className="
-                inline-block
                 px-[0.12em]
                 font-display
                 text-[clamp(4.5rem,16vw,9rem)]
@@ -205,22 +216,51 @@ export default function MomentsPage() {
               "
             >
               Manuel
-            </span>
+            </motion.span>
 
-            <span
+            <motion.span
+              aria-hidden="true"
+              variants={{
+                hidden: {
+                  opacity: 0,
+                  y: 8,
+                },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                },
+              }}
+              transition={{
+                duration: 1,
+                ease: luxuryEase,
+              }}
               className="
                 font-display
                 text-[clamp(2rem,7vw,3.8rem)]
                 leading-none
               "
-              aria-hidden="true"
             >
               &amp;
-            </span>
+            </motion.span>
 
-            <span
+            <motion.span
+              variants={{
+                hidden: {
+                  opacity: 0,
+                  y: 14,
+                  filter: "blur(5px)",
+                },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  filter: "blur(0px)",
+                },
+              }}
+              transition={{
+                duration: 1.3,
+                ease: luxuryEase,
+              }}
               className="
-                inline-block
                 px-[0.12em]
                 font-display
                 text-[clamp(4.5rem,16vw,9rem)]
@@ -229,15 +269,16 @@ export default function MomentsPage() {
               "
             >
               Sharon
-            </span>
-          </motion.h1>
+            </motion.span>
+          </h1>
 
           <motion.div
-            initial={prefersReducedMotion ? false : { opacity: 0, scaleX: 0.5 }}
+            initial={{ opacity: 0, scaleX: 0.5 }}
             animate={{ opacity: 1, scaleX: 1 }}
             transition={{
-              ...headingTransition,
-              delay: prefersReducedMotion ? 0 : 0.75,
+              duration: 1,
+              delay: 1,
+              ease: luxuryEase,
             }}
             className="
               mx-auto
@@ -250,12 +291,23 @@ export default function MomentsPage() {
             "
           />
 
+          {/* MEMORIES TITLE */}
+
           <motion.p
-            initial={headingInitial}
-            animate={headingAnimate}
+            initial={{
+              opacity: 0,
+              y: 12,
+              filter: "blur(4px)",
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              filter: "blur(0px)",
+            }}
             transition={{
-              ...headingTransition,
-              delay: prefersReducedMotion ? 0 : 0.95,
+              duration: 1.2,
+              delay: 1.2,
+              ease: luxuryEase,
             }}
             className="
               mt-7
@@ -271,57 +323,79 @@ export default function MomentsPage() {
           >
             Memories
           </motion.p>
-        </header>
+        </motion.header>
 
-        {/* MASONRY GALLERY — PRIVEN'S ORIGINAL STRUCTURE */}
+        {/* PINTEREST-STYLE MASONRY GALLERY */}
 
-        <ScrollReveal once>
-          <section
-            aria-label="Pre-wedding photoshoot gallery"
-            className="
-              columns-2
-              md:columns-3
-              gap-3
-              space-y-3
-              [contain:layout_paint]
-            "
-          >
-            {memories.map((memory, index) => (
-              <motion.button
-                key={memory.src}
-                type="button"
-                aria-label={`View pre-wedding photo ${index + 1} of ${memories.length}`}
-                className="
-                  block
-                  break-inside-avoid
-                  overflow-hidden
-                  rounded-2xl
-                  w-full
-                  shadow-sm
-                  hover:shadow-lg
-                  transition-shadow
-                  duration-300
-                "
-                style={{ height: memory.height }}
-                whileHover={prefersReducedMotion ? undefined : { scale: 1.02 }}
-                transition={{
-                  duration: 0.2,
-                  ease: easeSilk,
-                }}
-                onClick={() => setActiveIndex(index)}
-              >
-                <img
-                  src={memory.src}
-                  alt={memory.alt}
-                  className="block w-full h-full object-cover rounded-2xl"
-                  loading="lazy"
-                  decoding="async"
-                  sizes="(max-width: 768px) 50vw, 33vw"
-                />
-              </motion.button>
-            ))}
-          </section>
-        </ScrollReveal>
+        <section
+          aria-label="Pre-wedding photoshoot gallery"
+          className="
+            columns-2
+            gap-3
+            sm:gap-5
+            lg:columns-3
+            lg:gap-6
+          "
+        >
+          {memories.map((memory, index) => (
+            <motion.button
+              key={memory.src}
+              type="button"
+              aria-label={`View photo ${index + 1} of ${memories.length}`}
+              onClick={() => setActiveIndex(index)}
+              initial={{
+                opacity: 0,
+                y: 22,
+                filter: "blur(5px)",
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+                filter: "blur(0px)",
+              }}
+              viewport={{
+                once: true,
+                amount: 0.08,
+              }}
+              transition={{
+                duration: 1.1,
+                delay: (index % 3) * 0.12,
+                ease: luxuryEase,
+              }}
+              whileHover={{
+                scale: 1.015,
+              }}
+              className="
+                mb-3
+                block
+                w-full
+                break-inside-avoid
+                overflow-hidden
+                rounded-2xl
+                shadow-sm
+                transition-shadow
+                duration-500
+                hover:shadow-lg
+                focus-visible:outline
+                focus-visible:outline-2
+                focus-visible:outline-offset-4
+                focus-visible:outline-[var(--color-caramel)]
+                sm:mb-5
+                lg:mb-6
+                motion-reduce:transform-none
+              "
+            >
+              <img
+                src={memory.src}
+                alt={memory.alt}
+                loading={index < 2 ? "eager" : "lazy"}
+                decoding="async"
+                className="block h-auto w-full"
+                sizes="(max-width: 1023px) 50vw, 33vw"
+              />
+            </motion.button>
+          ))}
+        </section>
       </div>
 
       {/* LIGHTBOX */}
@@ -334,7 +408,7 @@ export default function MomentsPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{
-              duration: prefersReducedMotion ? 0 : 0.3,
+              duration: 0.35,
               ease: easeSilk,
             }}
             onClick={closeLightbox}
@@ -347,16 +421,16 @@ export default function MomentsPage() {
               justify-center
               bg-[var(--color-background)]/95
               p-4
-              pt-[calc(env(safe-area-inset-top)+4.5rem)]
-              pb-[calc(env(safe-area-inset-bottom)+1rem)]
+              pt-[calc(env(safe-area-inset-top)+5rem)]
+              pb-[calc(env(safe-area-inset-bottom)+2rem)]
               backdrop-blur-sm
-              sm:p-6
+              sm:p-8
             "
             role="dialog"
             aria-modal="true"
             aria-label="Pre-wedding photo viewer"
           >
-            {/* DOWNLOAD — LEFT SIDE */}
+            {/* DOWNLOAD: LEFT SIDE */}
 
             <a
               href={memories[activeIndex].src}
@@ -366,12 +440,20 @@ export default function MomentsPage() {
               onClick={(event) => event.stopPropagation()}
               aria-label="Download photo"
               title="Download photo"
-              className={`${controlClass} absolute left-5 top-[calc(env(safe-area-inset-top)+1rem)] z-20 sm:left-8 sm:top-8`}
+              className={`
+                ${controlClass}
+                absolute
+                left-5
+                top-[calc(env(safe-area-inset-top)+1rem)]
+                z-20
+                sm:left-8
+                sm:top-8
+              `}
             >
               <ArrowDownToLine size={18} strokeWidth={1.6} />
             </a>
 
-            {/* CLOSE — RIGHT SIDE */}
+            {/* CLOSE: RIGHT SIDE */}
 
             <button
               type="button"
@@ -381,7 +463,15 @@ export default function MomentsPage() {
               }}
               aria-label="Close photo viewer"
               title="Close"
-              className={`${controlClass} absolute right-5 top-[calc(env(safe-area-inset-top)+1rem)] z-20 sm:right-8 sm:top-8`}
+              className={`
+                ${controlClass}
+                absolute
+                right-5
+                top-[calc(env(safe-area-inset-top)+1rem)]
+                z-20
+                sm:right-8
+                sm:top-8
+              `}
             >
               <X size={18} strokeWidth={1.6} />
             </button>
@@ -413,7 +503,7 @@ export default function MomentsPage() {
                 bg-[var(--color-background)]/40
                 text-[var(--color-espresso)]
                 backdrop-blur-sm
-                transition-all
+                transition-colors
                 duration-300
                 hover:border-[var(--color-caramel)]
                 hover:bg-[var(--color-caramel)]
@@ -421,7 +511,6 @@ export default function MomentsPage() {
                 sm:left-5
                 sm:h-11
                 sm:w-11
-                motion-reduce:transition-none
               "
             >
               <ChevronLeft size={21} strokeWidth={1.5} />
@@ -434,32 +523,37 @@ export default function MomentsPage() {
                 key={memories[activeIndex].src}
                 src={memories[activeIndex].src}
                 alt={memories[activeIndex].alt}
-                initial={
-                  prefersReducedMotion
-                    ? { opacity: 1 }
-                    : { scale: 0.96, opacity: 0 }
-                }
-                animate={{ scale: 1, opacity: 1 }}
-                exit={
-                  prefersReducedMotion
-                    ? { opacity: 0 }
-                    : { scale: 0.96, opacity: 0 }
-                }
+                initial={{
+                  scale: 0.97,
+                  opacity: 0,
+                }}
+                animate={{
+                  scale: 1,
+                  opacity: 1,
+                }}
+                exit={{
+                  scale: 0.97,
+                  opacity: 0,
+                }}
                 transition={{
-                  duration: prefersReducedMotion ? 0 : 0.4,
+                  duration: 0.45,
                   ease: easeSilk,
                 }}
                 onClick={(event) => event.stopPropagation()}
                 className="
-                  max-h-full
+                  block
+                  max-h-[calc(85svh-3rem)]
                   max-w-full
                   select-none
                   rounded-2xl
                   object-contain
                   shadow-sm
+                  sm:max-h-[85vh]
                   sm:max-w-[calc(100vw-12rem)]
                 "
-                style={{ willChange: "transform, opacity" }}
+                style={{
+                  willChange: "transform, opacity",
+                }}
                 draggable={false}
               />
             </AnimatePresence>
@@ -491,7 +585,7 @@ export default function MomentsPage() {
                 bg-[var(--color-background)]/40
                 text-[var(--color-espresso)]
                 backdrop-blur-sm
-                transition-all
+                transition-colors
                 duration-300
                 hover:border-[var(--color-caramel)]
                 hover:bg-[var(--color-caramel)]
@@ -499,7 +593,6 @@ export default function MomentsPage() {
                 sm:right-5
                 sm:h-11
                 sm:w-11
-                motion-reduce:transition-none
               "
             >
               <ChevronRight size={21} strokeWidth={1.5} />
