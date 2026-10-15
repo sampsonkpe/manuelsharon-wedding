@@ -15,6 +15,7 @@ import PageTransition from "./components/motion/PageTransition"
 import ScrollToTop from "./components/navigation/ScrollToTop"
 import BackgroundMonogram from "./components/layout/BackgroundMonogram"
 import ProgrammePage from "./pages/wedding-day/ProgrammePage"
+import MomentsPage from "./pages/wedding-day/MomentsPage"
 
 function EventHome() {
   return (
@@ -143,12 +144,7 @@ function AnimatedRoutes() {
 
           <Route
             path="/moments"
-            element={
-              <Navigate
-                to="/"
-                replace
-              />
-            }
+            element={<MomentsPage />}
           />
 
           <Route
