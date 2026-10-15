@@ -30,8 +30,7 @@ type MenuSection = {
 }
 
 const menuSections: MenuSection[] = [
-  {
-    title: "Starters",
+  { title: "Starters",
     icon: UtensilsCrossed,
     items: ["Mini pizza", "Kosua ne meko", "Skewed fruits"],
   },
