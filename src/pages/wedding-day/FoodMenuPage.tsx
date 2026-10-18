@@ -21,6 +21,7 @@ import {
   luxuryEase,
   staggerSmall,
 } from "../../components/motion/motion"
+import FallingPetals from "../../components/wedding-day/FallingPetals"
 
 type MenuSection = {
   title: string
@@ -144,6 +145,7 @@ export default function FoodMenuPage() {
 
   return (
     <main className="min-h-screen bg-transparent">
+      <FallingPetals />
       <div
         className="
           relative
