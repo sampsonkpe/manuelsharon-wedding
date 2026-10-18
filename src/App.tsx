@@ -17,6 +17,7 @@ import BackgroundMonogram from "./components/layout/BackgroundMonogram"
 import ProgrammePage from "./pages/wedding-day/ProgrammePage"
 import MomentsPage from "./pages/wedding-day/MomentsPage"
 import FoodMenuPage from "./pages/wedding-day/FoodMenuPage"
+import GiftsPage from "./pages/wedding-day/GiftsPage"
 
 function EventHome() {
   return (
@@ -155,12 +156,7 @@ function AnimatedRoutes() {
 
           <Route
             path="/gifts"
-            element={
-              <Navigate
-                to="/"
-                replace
-              />
-            }
+            element={<GiftsPage />}
           />
 
           <Route
