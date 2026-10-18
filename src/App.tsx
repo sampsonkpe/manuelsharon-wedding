@@ -18,6 +18,7 @@ import ProgrammePage from "./pages/wedding-day/ProgrammePage"
 import MomentsPage from "./pages/wedding-day/MomentsPage"
 import FoodMenuPage from "./pages/wedding-day/FoodMenuPage"
 import GiftsPage from "./pages/wedding-day/GiftsPage"
+import AppreciationPage from "./pages/wedding-day/AppreciationPage"
 
 function EventHome() {
   return (
@@ -160,23 +161,8 @@ function AnimatedRoutes() {
           />
 
           <Route
-            path="/seating"
-            element={
-              <Navigate
-                to="/"
-                replace
-              />
-            }
-          />
-
-          <Route
             path="/appreciation"
-            element={
-              <Navigate
-                to="/"
-                replace
-              />
-            }
+            element={<AppreciationPage />}
           />
 
           {/* =================================================
