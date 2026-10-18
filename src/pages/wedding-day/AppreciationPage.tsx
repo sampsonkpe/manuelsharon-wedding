@@ -359,6 +359,7 @@ export default function AppreciationPage() {
                 className="
                     font-editorial
                     text-xl
+                    text-center
                     leading-[1.85]
                     text-[var(--color-muted)]
                     sm:text-2xl
