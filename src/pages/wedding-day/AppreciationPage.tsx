@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion"
 
 import {
@@ -239,56 +238,6 @@ export default function AppreciationPage() {
           </motion.p>
         </motion.header>
 
-        {/* COUPLE'S PHOTOGRAPH */}
-
-        <motion.figure
-          initial={cinematicInitial}
-          whileInView={cinematicAnimate}
-          viewport={pageViewport}
-          transition={{
-            ...cinematicTransition,
-            delay: 0.1,
-          }}
-          className="
-            mx-auto
-            mt-10
-            w-full
-            max-w-3xl
-            sm:mt-14
-          "
-        >
-          <div
-            className="
-              overflow-hidden
-              rounded-2xl
-              border
-              border-[var(--color-border)]
-              p-2
-              sm:p-3
-            "
-          >
-            <motion.img
-              initial={{ scale: 1.035 }}
-              whileInView={{ scale: 1 }}
-              viewport={pageViewport}
-              transition={{
-                duration: 1.6,
-                ease: luxuryEase,
-              }}
-              src="/images/memories-01.webp"
-              alt="A photograph of Manuel and Sharon"
-              loading="lazy"
-              className="
-                aspect-[4/5]
-                w-full
-                rounded-xl
-                object-cover
-                sm:aspect-[5/4]
-              "
-            />
-          </div>
-        </motion.figure>
-
         {/* APPRECIATION LETTER */}
 
         <section
@@ -350,25 +299,25 @@ export default function AppreciationPage() {
 
           {/* LETTER BODY */}
 
-            <div className="mt-10 space-y-7 sm:mt-12 sm:space-y-9">
+          <div className="mt-10 space-y-7 text-center sm:mt-12 sm:space-y-9">
             {appreciationParagraphs.map((paragraph) => (
-                <ScrollReveal
+              <ScrollReveal
                 key={paragraph}
                 once={false}
                 delay={0.08}
                 className="
-                    font-editorial
-                    text-xl
-                    text-center
-                    leading-[1.85]
-                    text-[var(--color-muted)]
-                    sm:text-2xl
+                  mx-auto
+                  font-editorial
+                  text-xl
+                  leading-[1.85]
+                  text-[var(--color-muted)]
+                  sm:text-2xl
                 "
-                >
+              >
                 {paragraph}
-                </ScrollReveal>
+              </ScrollReveal>
             ))}
-            </div>
+          </div>
 
           {/* SIGN-OFF */}
 

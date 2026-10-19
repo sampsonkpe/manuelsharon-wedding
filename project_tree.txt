@@ -1,0 +1,97 @@
+.
+├── eslint.config.js
+├── index.html
+├── package-lock.json
+├── package.json
+├── project_tree.txt
+├── public
+│   ├── favicon.svg
+│   ├── images
+│   │   ├── memories-01.webp
+│   │   ├── memories-02.webp
+│   │   ├── memories-03.webp
+│   │   ├── memories-04.webp
+│   │   ├── memories-05.webp
+│   │   ├── memories-06.webp
+│   │   ├── memories-07.webp
+│   │   └── memories-08.webp
+│   ├── manuel-sharon-wedding.ics
+│   ├── og-image.png
+│   └── petals
+│       ├── petal-01.png
+│       ├── petal-02.png
+│       ├── petal-03.png
+│       ├── petal-04.png
+│       ├── petal-05.png
+│       ├── petal-06.png
+│       ├── petal-07.png
+│       ├── petal-08.png
+│       ├── petal-09.png
+│       ├── petal-10.png
+│       ├── petal-11.png
+│       ├── petal-12.png
+│       ├── petal-13.png
+│       ├── petal-14.png
+│       ├── petal-15.png
+│       ├── petal-16.png
+│       ├── petal-17.png
+│       └── petal-18.png
+├── README.md
+├── src
+│   ├── App.tsx
+│   ├── assets
+│   │   ├── couple
+│   │   │   ├── background.png
+│   │   │   ├── closing.png
+│   │   │   └── hero.png
+│   │   ├── gallery
+│   │   ├── invitation
+│   │   │   └── envelope.mp4
+│   │   └── video
+│   ├── components
+│   │   ├── invitation
+│   │   │   ├── InvitationDetails.tsx
+│   │   │   ├── InvitationHero.tsx
+│   │   │   ├── InvitationMessage.tsx
+│   │   │   ├── InvitationPalette.tsx
+│   │   │   └── InvitationRSVP.tsx
+│   │   ├── layout
+│   │   │   └── BackgroundMonogram.tsx
+│   │   ├── motion
+│   │   │   ├── motion.ts
+│   │   │   ├── PageTransition.tsx
+│   │   │   └── ScrollReveal.tsx
+│   │   ├── navigation
+│   │   │   └── ScrollToTop.tsx
+│   │   ├── ui
+│   │   │   └── SectionDivider.tsx
+│   │   └── wedding-day
+│   │       ├── FallingPetals.css
+│   │       └── FallingPetals.tsx
+│   ├── config
+│   │   └── event.ts
+│   ├── data
+│   │   └── wedding.ts
+│   ├── index.css
+│   ├── lib
+│   │   ├── rsvp.ts
+│   │   └── supabase.ts
+│   ├── main.tsx
+│   └── pages
+│       ├── ClosingPage.tsx
+│       ├── HomePage.tsx
+│       ├── SplashPage.tsx
+│       ├── TypeSpecimenPage.tsx
+│       └── wedding-day
+│           ├── AppreciationPage.tsx
+│           ├── FoodMenuPage.tsx
+│           ├── GiftsPage.tsx
+│           ├── MomentsPage.tsx
+│           └── ProgrammePage.tsx
+├── tsconfig.app.json
+├── tsconfig.json
+├── tsconfig.node.json
+├── vercel.json
+└── vite.config.ts
+
+22 directories, 73 files

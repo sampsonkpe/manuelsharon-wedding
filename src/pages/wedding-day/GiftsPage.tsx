@@ -239,7 +239,7 @@ export default function GiftsPage() {
               sm:text-xl
             "
           >
-            Your presence is the greatest gift. Should you wish to
+            Your presence is the greatest gift. However, should you wish to
             bless us further...
           </motion.p>
         </motion.header>
