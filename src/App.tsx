@@ -5,7 +5,7 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom"
-import { AnimatePresence } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { useState } from "react"
 
 import SplashPage from "./pages/SplashPage"
@@ -18,6 +18,8 @@ import ProgrammePage from "./pages/wedding-day/ProgrammePage"
 import FoodMenuPage from "./pages/wedding-day/FoodMenuPage"
 import GiftsPage from "./pages/wedding-day/GiftsPage"
 import AppreciationPage from "./pages/wedding-day/AppreciationPage"
+
+import { luxuryEase } from "./components/motion/motion"
 
 function EventHome() {
   return (
@@ -37,11 +39,14 @@ function AnimatedRoutes() {
    * REFRESH INTRO
    * ============================================================
    *
-   * When the browser is refreshed while already on /home,
-   * replay the invitation opening sequence over the HomePage.
+   * Replay the invitation opening when /home is loaded directly
+   * or refreshed.
    *
-   * This state is initialised only once when AnimatedRoutes
-   * mounts, so normal navigation to /home does not replay it.
+   * The HomePage mounts underneath the splash, but remains
+   * visually concealed until the introduction finishes.
+   *
+   * Once the splash completes, the HomePage is revealed with
+   * a slow, smooth opacity transition.
    */
 
   const [showRefreshIntro, setShowRefreshIntro] =
@@ -94,11 +99,30 @@ function AnimatedRoutes() {
             element={
               <PageTransition>
                 <div className="relative min-h-screen">
-                  <HomePage />
+                  {/* HOME CONTENT */}
+
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{
+                      opacity: showRefreshIntro ? 0 : 1,
+                    }}
+                    transition={{
+                      duration: 1.8,
+                      ease: luxuryEase,
+                    }}
+                    aria-hidden={showRefreshIntro}
+                    className="relative min-h-screen"
+                  >
+                    <HomePage />
+                  </motion.div>
+
+                  {/* REFRESH INTRO */}
 
                   {showRefreshIntro && (
                     <SplashPage
-                      onComplete={handleRefreshIntroComplete}
+                      onComplete={
+                        handleRefreshIntroComplete
+                      }
                     />
                   )}
                 </div>
@@ -141,9 +165,8 @@ function AnimatedRoutes() {
             element={<ProgrammePage />}
           />
 
-          {/* Memories route removed.
-              MomentsPage.tsx remains in the project.
-              Old /moments links now redirect to /home. */}
+          {/* Keep MomentsPage.tsx in the project.
+              Redirect previous /moments links to /home. */}
 
           <Route
             path="/moments"

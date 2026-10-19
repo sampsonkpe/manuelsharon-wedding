@@ -1,10 +1,21 @@
+.falling-petals {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 10;
+}
 
 .falling-petal {
+  position: absolute;
+  display: block;
   opacity: 0;
   animation-name: petal-fall;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   will-change: transform, opacity;
+  user-select: none;
+  pointer-events: none;
 }
 
 @keyframes petal-fall {

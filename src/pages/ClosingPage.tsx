@@ -1,12 +1,16 @@
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+
 import closingImage from "../assets/couple/closing.png"
+
 import {
   cinematicInitial,
   cinematicAnimate,
   cinematicTransition,
 } from "../components/motion/motion"
+
+import FallingPetals from "../components/wedding-day/FallingPetals"
 
 const RSVP_SUBMITTED_KEY =
   "themanforshay-rsvp-submitted"
@@ -46,15 +50,9 @@ export default function ClosingPage() {
       return
     }
 
-    /*
-     * Let the opening scripture breathe before
-     * transitioning into the photograph.
-     */
-
-    const imageTimer =
-      window.setTimeout(() => {
-        setShowImage(true)
-      }, 5000)
+    const imageTimer = window.setTimeout(() => {
+      setShowImage(true)
+    }, 5000)
 
     return () => {
       window.clearTimeout(imageTimer)
@@ -65,9 +63,6 @@ export default function ClosingPage() {
    * ============================================================
    * FINAL MESSAGE
    * ============================================================
-   *
-   * The image remains stationary while the final
-   * message reveals into its reserved space.
    */
 
   useEffect(() => {
@@ -87,9 +82,6 @@ export default function ClosingPage() {
    * ============================================================
    * BACK BUTTON
    * ============================================================
-   *
-   * The button appears after the final message has
-   * had time to breathe.
    */
 
   useEffect(() => {
@@ -106,10 +98,30 @@ export default function ClosingPage() {
   }, [showFinalText])
 
   return (
-    <main className="relative min-h-[100svh] overflow-hidden bg-transparent">
+    <main
+      className="
+        relative
+        isolate
+        min-h-[100svh]
+        overflow-hidden
+        bg-transparent
+      "
+    >
+      {/* =====================================================
+          FALLING PETALS
+          Above the background, behind all page content.
+          ===================================================== */}
+
+      <FallingPetals className="absolute inset-0 z-10" />
+
+      {/* =====================================================
+          PAGE CONTENT
+          ===================================================== */}
 
       <div
         className="
+          relative
+          z-20
           flex
           min-h-[100svh]
           w-full
@@ -120,7 +132,6 @@ export default function ClosingPage() {
           sm:py-14
         "
       >
-
         <div className="w-full max-w-[760px]">
 
           {/* =================================================
@@ -141,7 +152,7 @@ export default function ClosingPage() {
                 fixed
                 left-1/2
                 top-1/2
-                z-20
+                z-30
                 w-[min(90vw,620px)]
                 -translate-x-1/2
                 -translate-y-1/2
@@ -191,7 +202,6 @@ export default function ClosingPage() {
               sm:grid-rows-[auto_125px_75px]
             "
           >
-
             {/* =================================================
                 CLOSING IMAGE
                 ================================================= */}
@@ -206,6 +216,7 @@ export default function ClosingPage() {
               transition={cinematicTransition}
               className="
                 relative
+                z-20
                 h-[58svh]
                 min-h-[420px]
                 max-h-[620px]
@@ -241,6 +252,8 @@ export default function ClosingPage() {
               }
               transition={cinematicTransition}
               className="
+                relative
+                z-20
                 mx-auto
                 mt-7
                 max-w-[620px]
@@ -277,6 +290,8 @@ export default function ClosingPage() {
                 duration: 1.3,
               }}
               className="
+                relative
+                z-20
                 flex
                 items-start
                 justify-center
@@ -284,9 +299,7 @@ export default function ClosingPage() {
             >
               <button
                 type="button"
-                onClick={() =>
-                  navigate("/home")
-                }
+                onClick={() => navigate("/home")}
                 className="
                   invitation-button
                   whitespace-nowrap
@@ -295,7 +308,6 @@ export default function ClosingPage() {
                 Back to Invitation
               </button>
             </motion.div>
-
           </div>
         </div>
       </div>

@@ -10,20 +10,29 @@
  * - cinematic
  * - fluid
  *
- * Motion is deliberately slower than a conventional website.
  * The invitation should feel like a physical piece of
  * stationery unfolding rather than an interface animating.
+ *
+ * Motion should never feel rushed. Transitions have room
+ * to settle, with carefully differentiated entrance and
+ * exit timing.
  */
 
 /* ============================================================
    EASING
    ============================================================ */
 
+/** Smooth, luxurious deceleration for entrances and reveals. */
 export const luxuryEase = [0.22, 1, 0.36, 1] as const
 
+/** Gradual acceleration for elements leaving the screen. */
 export const luxuryEaseIn = [0.4, 0, 1, 1] as const
 
+/** Gentle deceleration for subtle UI interactions. */
 export const luxuryEaseOut = [0, 0, 0.2, 1] as const
+
+/** Balanced easing for cinematic page exits. */
+export const cinematicExitEase = [0.65, 0, 0.35, 1] as const
 
 /* ============================================================
    DURATIONS
@@ -37,9 +46,32 @@ export const durationImage = 1.7
 
 export const durationCinematic = 2.4
 
-export const durationPage = 1.2
+/** Default page animation duration. */
+export const durationPage = 1.6
 
 export const durationSlow = 2.8
+
+/* ============================================================
+   PAGE TRANSITION TIMING
+   ============================================================ */
+
+/**
+ * Incoming pages take their time becoming visible.
+ * The movement is deliberately restrained.
+ */
+export const pageEnterTransition = {
+  duration: 1.55,
+  ease: luxuryEase,
+}
+
+/**
+ * Outgoing pages settle away a little sooner so the
+ * overall navigation feels fluid rather than sluggish.
+ */
+export const pageExitTransition = {
+  duration: 0.9,
+  ease: cinematicExitEase,
+}
 
 /* ============================================================
    STAGGER
@@ -160,25 +192,45 @@ export const cinematicTransition = {
    PAGE TRANSITION
    ============================================================ */
 
+/**
+ * Incoming page:
+ * A subtle upward arrival, with a restrained sense of depth.
+ *
+ * Avoid large movements. The effect should be felt rather
+ * than noticed.
+ */
 export const pageInitial = {
   opacity: 0,
-  filter: "blur(4px)",
+  y: 14,
+  scale: 0.995,
+  filter: "blur(2px)",
 }
 
+/** Resting page state. */
 export const pageAnimate = {
   opacity: 1,
+  y: 0,
+  scale: 1,
   filter: "blur(0px)",
 }
 
+/**
+ * Outgoing page:
+ * A quiet upward drift and soft fade.
+ */
 export const pageExit = {
   opacity: 0,
-  filter: "blur(4px)",
+  y: -8,
+  scale: 0.998,
+  filter: "blur(1.5px)",
 }
 
-export const pageTransition = {
-  duration: durationPage,
-  ease: luxuryEase,
-}
+/**
+ * Kept as a shared export for compatibility with existing code.
+ * PageTransition.tsx uses the separate entrance and exit
+ * timing values above for more precise control.
+ */
+export const pageTransition = pageEnterTransition
 
 /* ============================================================
    BUTTON INTERACTION

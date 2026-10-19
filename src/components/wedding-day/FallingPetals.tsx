@@ -1,20 +1,24 @@
-
 import "./FallingPetals.css"
 
-const petals = [
-  { left: "8%", delay: "0s", duration: "12s", size: 36 },
-  { left: "24%", delay: "-5s", duration: "15s", size: 30 },
-  { left: "42%", delay: "-8s", duration: "13s", size: 38 },
-  { left: "61%", delay: "-3s", duration: "16s", size: 32 },
-  { left: "79%", delay: "-10s", duration: "14s", size: 36 },
-  { left: "94%", delay: "-6s", duration: "17s", size: 30 },
-]
+interface FallingPetalsProps {
+  className?: string
+}
 
-export default function FallingPetals() {
+const petals = Array.from({ length: 18 }, (_, index) => ({
+  left: `${4 + ((index * 37) % 92)}%`,
+  top: `${(index * 29) % 100}%`,
+  delay: `${-((index * 7) % 24)}s`,
+  duration: `${18 + ((index * 3) % 12)}s`,
+  size: 25 + ((index * 7) % 13),
+}))
+
+export default function FallingPetals({
+  className = "",
+}: FallingPetalsProps) {
   return (
     <div
       aria-hidden="true"
-      className="falling-petals pointer-events-none fixed inset-0 z-30 overflow-hidden"
+      className={`falling-petals ${className}`.trim()}
     >
       {petals.map((petal, index) => (
         <img
@@ -22,9 +26,10 @@ export default function FallingPetals() {
           src={`/petals/petal-${String(index + 1).padStart(2, "0")}.png`}
           alt=""
           draggable={false}
-          className="falling-petal absolute top-0 select-none object-contain"
+          className="falling-petal object-contain"
           style={{
             left: petal.left,
+            top: petal.top,
             width: petal.size * 1.2,
             height: petal.size * 1.5,
             animationDelay: petal.delay,

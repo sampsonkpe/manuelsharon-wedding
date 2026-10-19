@@ -223,7 +223,7 @@ export default function ProgrammePage() {
 
   return (
     <main className="min-h-screen bg-transparent">
-      <FallingPetals />
+      <FallingPetals className="absolute inset-0" />
 
       <div
         className="
