@@ -6,6 +6,8 @@ import InvitationRsvp from "../components/invitation/InvitationRSVP"
 import SectionDivider from "../components/ui/SectionDivider"
 import FallingPetals from "../components/wedding-day/FallingPetals"
 
+import { WEDDING_PAGES_UNLOCKED } from "../config/siteConfig"
+
 interface HomePageProps {
   onHeroReady?: () => void
 }
@@ -34,9 +36,12 @@ export default function HomePage({
 
         <InvitationPalette />
 
-        <SectionDivider />
-
-        <InvitationRsvp />
+        {!WEDDING_PAGES_UNLOCKED && (
+          <>
+            <SectionDivider />
+            <InvitationRsvp />
+          </>
+        )}
       </div>
     </main>
   )

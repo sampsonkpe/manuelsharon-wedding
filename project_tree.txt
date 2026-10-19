@@ -62,6 +62,7 @@
 │   │   │   ├── PageTransition.tsx
 │   │   │   └── ScrollReveal.tsx
 │   │   ├── navigation
+│   │   │   ├── PageNav.tsx
 │   │   │   └── ScrollToTop.tsx
 │   │   ├── ui
 │   │   │   └── SectionDivider.tsx
@@ -69,7 +70,8 @@
 │   │       ├── FallingPetals.css
 │   │       └── FallingPetals.tsx
 │   ├── config
-│   │   └── event.ts
+│   │   ├── event.ts
+│   │   └── siteConfig.ts
 │   ├── data
 │   │   └── wedding.ts
 │   ├── index.css
@@ -94,4 +96,4 @@
 ├── vercel.json
 └── vite.config.ts
 
-22 directories, 73 files
+22 directories, 75 files

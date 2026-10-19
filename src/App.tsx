@@ -5,16 +5,9 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom"
-import {
-  AnimatePresence,
-  motion,
-} from "framer-motion"
-import {
-  useCallback,
-  useState,
-} from "react"
+import { AnimatePresence } from "framer-motion"
+import { useCallback } from "react"
 
-import SplashPage from "./pages/SplashPage"
 import HomePage from "./pages/HomePage"
 import ClosingPage from "./pages/ClosingPage"
 import ProgrammePage from "./pages/wedding-day/ProgrammePage"
@@ -26,6 +19,8 @@ import PageTransition from "./components/motion/PageTransition"
 import PageNav from "./components/navigation/PageNav"
 import ScrollToTop from "./components/navigation/ScrollToTop"
 import BackgroundMonogram from "./components/layout/BackgroundMonogram"
+
+import { WEDDING_PAGES_UNLOCKED } from "./config/siteConfig"
 
 function EventHome() {
   return (
@@ -40,20 +35,6 @@ function EventHome() {
 function AnimatedRoutes() {
   const location = useLocation()
 
-  const [showRefreshIntro, setShowRefreshIntro] =
-    useState(() => location.pathname === "/home")
-
-  const [homeHeroReady, setHomeHeroReady] =
-    useState(false)
-
-  const handleRefreshIntroComplete = useCallback(() => {
-    setShowRefreshIntro(false)
-  }, [])
-
-  const handleHomeHeroReady = useCallback(() => {
-    setHomeHeroReady(true)
-  }, [])
-
   const handleExitComplete = useCallback(() => {
     window.scrollTo({
       top: 0,
@@ -62,17 +43,16 @@ function AnimatedRoutes() {
     })
   }, [])
 
-  const isHome = location.pathname === "/home"
+  const isWeddingDayPage = [
+    "/programme",
+    "/menu",
+    "/gifts",
+    "/appreciation",
+  ].includes(location.pathname)
 
   const showNavigation =
-    [
-      "/home",
-      "/programme",
-      "/menu",
-      "/gifts",
-      "/appreciation",
-    ].includes(location.pathname) &&
-    (!isHome || (!showRefreshIntro && homeHeroReady))
+    WEDDING_PAGES_UNLOCKED &&
+    (location.pathname === "/" || isWeddingDayPage)
 
   return (
     <>
@@ -89,45 +69,20 @@ function AnimatedRoutes() {
           location={location}
           key={location.pathname}
         >
+          {/* QR code landing page */}
           <Route
             path="/"
             element={
               <PageTransition>
-                <SplashPage />
+                <HomePage />
               </PageTransition>
             }
           />
 
+          {/* Keep the old homepage URL working */}
           <Route
             path="/home"
-            element={
-              <PageTransition>
-                <div className="relative min-h-screen">
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{
-                      opacity: showRefreshIntro ? 0 : 1,
-                    }}
-                    transition={{
-                      duration: 1.8,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                    aria-hidden={showRefreshIntro}
-                    className="relative min-h-screen"
-                  >
-                    <HomePage
-                      onHeroReady={handleHomeHeroReady}
-                    />
-                  </motion.div>
-
-                  {showRefreshIntro && (
-                    <SplashPage
-                      onComplete={handleRefreshIntroComplete}
-                    />
-                  )}
-                </div>
-              </PageTransition>
-            }
+            element={<Navigate to="/" replace />}
           />
 
           <Route
@@ -148,45 +103,62 @@ function AnimatedRoutes() {
             }
           />
 
+          {/* Wedding-day pages: protected by the shared setting */}
           <Route
             path="/programme"
             element={
-              <PageTransition>
-                <ProgrammePage />
-              </PageTransition>
+              WEDDING_PAGES_UNLOCKED ? (
+                <PageTransition>
+                  <ProgrammePage />
+                </PageTransition>
+              ) : (
+                <Navigate to="/" replace />
+              )
             }
-          />
-
-          <Route
-            path="/moments"
-            element={<Navigate to="/home" replace />}
           />
 
           <Route
             path="/menu"
             element={
-              <PageTransition>
-                <FoodMenuPage />
-              </PageTransition>
+              WEDDING_PAGES_UNLOCKED ? (
+                <PageTransition>
+                  <FoodMenuPage />
+                </PageTransition>
+              ) : (
+                <Navigate to="/" replace />
+              )
             }
           />
 
           <Route
             path="/gifts"
             element={
-              <PageTransition>
-                <GiftsPage />
-              </PageTransition>
+              WEDDING_PAGES_UNLOCKED ? (
+                <PageTransition>
+                  <GiftsPage />
+                </PageTransition>
+              ) : (
+                <Navigate to="/" replace />
+              )
             }
           />
 
           <Route
             path="/appreciation"
             element={
-              <PageTransition>
-                <AppreciationPage />
-              </PageTransition>
+              WEDDING_PAGES_UNLOCKED ? (
+                <PageTransition>
+                  <AppreciationPage />
+                </PageTransition>
+              ) : (
+                <Navigate to="/" replace />
+              )
             }
+          />
+
+          <Route
+            path="/moments"
+            element={<Navigate to="/" replace />}
           />
 
           <Route

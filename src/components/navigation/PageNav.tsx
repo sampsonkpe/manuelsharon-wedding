@@ -3,9 +3,9 @@ import { Link, useLocation } from "react-router-dom"
 import { motion } from "framer-motion"
 
 import { luxuryEase } from "../motion/motion"
+import { WEDDING_PAGES_UNLOCKED } from "../../config/siteConfig"
 
-const navLinks = [
-  { to: "/home", label: "Home" },
+const weddingDayLinks = [
   { to: "/programme", label: "Programme" },
   { to: "/gifts", label: "Gifts" },
   { to: "/menu", label: "Menu" },
@@ -15,6 +15,11 @@ const navLinks = [
 export default function PageNav() {
   const location = useLocation()
   const activeLinkRef = useRef<HTMLAnchorElement>(null)
+
+  const navLinks = [
+    { to: "/", label: "Home" },
+    ...(WEDDING_PAGES_UNLOCKED ? weddingDayLinks : []),
+  ]
 
   useEffect(() => {
     activeLinkRef.current?.scrollIntoView({
@@ -76,7 +81,8 @@ export default function PageNav() {
         >
           {navLinks.map((link) => {
             const isActive =
-              location.pathname === link.to
+              location.pathname === link.to ||
+              (link.to === "/" && location.pathname === "/home")
 
             return (
               <Link

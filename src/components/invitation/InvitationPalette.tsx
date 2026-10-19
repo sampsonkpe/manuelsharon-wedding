@@ -25,19 +25,23 @@ const palette = [
 ]
 
 const scrollViewport = {
-  once: false,
-  amount: 0.35,
-  margin: "-8% 0px -8% 0px",
+  once: true,
+  amount: 0.2,
+  margin: "0px 0px -5% 0px",
 }
 
 export default function InvitationPalette() {
   return (
-    <section className="px-[var(--page-padding)]">
+    <section
+      className="
+        px-[var(--page-padding)]
+        pb-16
+        sm:pb-20
+        md:pb-24
+      "
+    >
       <div className="mx-auto max-w-[720px] text-center">
-
-        {/* =================================================
-            INTRODUCTION
-            ================================================= */}
+        {/* INTRODUCTION */}
 
         <motion.div
           initial={revealInitial}
@@ -84,9 +88,7 @@ export default function InvitationPalette() {
           </motion.p>
         </motion.div>
 
-        {/* =================================================
-            COLOURS
-            ================================================= */}
+        {/* COLOURS */}
 
         <div
           className="
