@@ -1,4 +1,7 @@
-import { motion, useReducedMotion } from "framer-motion"
+import {
+  motion,
+  useReducedMotion,
+} from "framer-motion"
 import type { ReactNode } from "react"
 
 import {
@@ -18,42 +21,42 @@ export default function PageTransition({
 }: PageTransitionProps) {
   const shouldReduceMotion = useReducedMotion()
 
-  const initial = shouldReduceMotion
-    ? { opacity: 0 }
-    : pageInitial
-
-  const animate = shouldReduceMotion
-    ? { opacity: 1 }
-    : pageAnimate
-
-  const exit = shouldReduceMotion
-    ? { opacity: 0 }
-    : pageExit
+  const variants = shouldReduceMotion
+    ? {
+        initial: { opacity: 0 },
+        animate: {
+          opacity: 1,
+          transition: {
+            duration: 0.25,
+            ease: "easeOut" as const,
+          },
+        },
+        exit: {
+          opacity: 0,
+          transition: {
+            duration: 0.2,
+            ease: "easeIn" as const,
+          },
+        },
+      }
+    : {
+        initial: pageInitial,
+        animate: {
+          ...pageAnimate,
+          transition: pageEnterTransition,
+        },
+        exit: {
+          ...pageExit,
+          transition: pageExitTransition,
+        },
+      }
 
   return (
     <motion.div
-      initial={initial}
-      animate={animate}
-      exit={exit}
-      transition={
-        shouldReduceMotion
-          ? {
-              duration: 0.2,
-              ease: "easeOut",
-            }
-          : pageEnterTransition
-      }
-      variants={{
-        exit: {
-          ...exit,
-          transition: shouldReduceMotion
-            ? {
-                duration: 0.2,
-                ease: "easeOut",
-              }
-            : pageExitTransition,
-        },
-      }}
+      variants={variants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
       className="min-h-screen"
     >
       {children}

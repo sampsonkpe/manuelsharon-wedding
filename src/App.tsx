@@ -5,21 +5,27 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom"
-import { AnimatePresence, motion } from "framer-motion"
-import { useState } from "react"
+import {
+  AnimatePresence,
+  motion,
+} from "framer-motion"
+import {
+  useCallback,
+  useState,
+} from "react"
 
 import SplashPage from "./pages/SplashPage"
 import HomePage from "./pages/HomePage"
 import ClosingPage from "./pages/ClosingPage"
-import PageTransition from "./components/motion/PageTransition"
-import ScrollToTop from "./components/navigation/ScrollToTop"
-import BackgroundMonogram from "./components/layout/BackgroundMonogram"
 import ProgrammePage from "./pages/wedding-day/ProgrammePage"
 import FoodMenuPage from "./pages/wedding-day/FoodMenuPage"
 import GiftsPage from "./pages/wedding-day/GiftsPage"
 import AppreciationPage from "./pages/wedding-day/AppreciationPage"
 
-import { luxuryEase } from "./components/motion/motion"
+import PageTransition from "./components/motion/PageTransition"
+import PageNav from "./components/navigation/PageNav"
+import ScrollToTop from "./components/navigation/ScrollToTop"
+import BackgroundMonogram from "./components/layout/BackgroundMonogram"
 
 function EventHome() {
   return (
@@ -34,39 +40,45 @@ function EventHome() {
 function AnimatedRoutes() {
   const location = useLocation()
 
-  /*
-   * ============================================================
-   * REFRESH INTRO
-   * ============================================================
-   *
-   * Replay the invitation opening when /home is loaded directly
-   * or refreshed.
-   *
-   * The HomePage mounts underneath the splash, but remains
-   * visually concealed until the introduction finishes.
-   *
-   * Once the splash completes, the HomePage is revealed with
-   * a slow, smooth opacity transition.
-   */
-
   const [showRefreshIntro, setShowRefreshIntro] =
     useState(() => location.pathname === "/home")
 
-  const handleRefreshIntroComplete = () => {
-    setShowRefreshIntro(false)
-  }
+  const [homeHeroReady, setHomeHeroReady] =
+    useState(false)
 
-  const handleExitComplete = () => {
+  const handleRefreshIntroComplete = useCallback(() => {
+    setShowRefreshIntro(false)
+  }, [])
+
+  const handleHomeHeroReady = useCallback(() => {
+    setHomeHeroReady(true)
+  }, [])
+
+  const handleExitComplete = useCallback(() => {
     window.scrollTo({
       top: 0,
       left: 0,
       behavior: "auto",
     })
-  }
+  }, [])
+
+  const isHome = location.pathname === "/home"
+
+  const showNavigation =
+    [
+      "/home",
+      "/programme",
+      "/menu",
+      "/gifts",
+      "/appreciation",
+    ].includes(location.pathname) &&
+    (!isHome || (!showRefreshIntro && homeHeroReady))
 
   return (
     <>
       <ScrollToTop />
+
+      {showNavigation && <PageNav />}
 
       <AnimatePresence
         mode="wait"
@@ -77,10 +89,6 @@ function AnimatedRoutes() {
           location={location}
           key={location.pathname}
         >
-          {/* =================================================
-              SPLASH
-              ================================================= */}
-
           <Route
             path="/"
             element={
@@ -90,17 +98,11 @@ function AnimatedRoutes() {
             }
           />
 
-          {/* =================================================
-              HOME
-              ================================================= */}
-
           <Route
             path="/home"
             element={
               <PageTransition>
                 <div className="relative min-h-screen">
-                  {/* HOME CONTENT */}
-
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{
@@ -108,31 +110,25 @@ function AnimatedRoutes() {
                     }}
                     transition={{
                       duration: 1.8,
-                      ease: luxuryEase,
+                      ease: [0.22, 1, 0.36, 1],
                     }}
                     aria-hidden={showRefreshIntro}
                     className="relative min-h-screen"
                   >
-                    <HomePage />
+                    <HomePage
+                      onHeroReady={handleHomeHeroReady}
+                    />
                   </motion.div>
-
-                  {/* REFRESH INTRO */}
 
                   {showRefreshIntro && (
                     <SplashPage
-                      onComplete={
-                        handleRefreshIntroComplete
-                      }
+                      onComplete={handleRefreshIntroComplete}
                     />
                   )}
                 </div>
               </PageTransition>
             }
           />
-
-          {/* =================================================
-              EVENT
-              ================================================= */}
 
           <Route
             path="/event"
@@ -143,10 +139,6 @@ function AnimatedRoutes() {
             }
           />
 
-          {/* =================================================
-              CLOSING
-              ================================================= */}
-
           <Route
             path="/closing"
             element={
@@ -156,55 +148,50 @@ function AnimatedRoutes() {
             }
           />
 
-          {/* =================================================
-              WEDDING-DAY ROUTES
-              ================================================= */}
-
           <Route
             path="/programme"
-            element={<ProgrammePage />}
+            element={
+              <PageTransition>
+                <ProgrammePage />
+              </PageTransition>
+            }
           />
-
-          {/* Keep MomentsPage.tsx in the project.
-              Redirect previous /moments links to /home. */}
 
           <Route
             path="/moments"
-            element={
-              <Navigate
-                to="/home"
-                replace
-              />
-            }
+            element={<Navigate to="/home" replace />}
           />
 
           <Route
             path="/menu"
-            element={<FoodMenuPage />}
+            element={
+              <PageTransition>
+                <FoodMenuPage />
+              </PageTransition>
+            }
           />
 
           <Route
             path="/gifts"
-            element={<GiftsPage />}
+            element={
+              <PageTransition>
+                <GiftsPage />
+              </PageTransition>
+            }
           />
 
           <Route
             path="/appreciation"
-            element={<AppreciationPage />}
+            element={
+              <PageTransition>
+                <AppreciationPage />
+              </PageTransition>
+            }
           />
-
-          {/* =================================================
-              FALLBACK
-              ================================================= */}
 
           <Route
             path="*"
-            element={
-              <Navigate
-                to="/"
-                replace
-              />
-            }
+            element={<Navigate to="/" replace />}
           />
         </Routes>
       </AnimatePresence>

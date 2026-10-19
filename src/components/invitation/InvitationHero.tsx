@@ -9,7 +9,13 @@ import {
   luxuryEase,
 } from "../motion/motion"
 
-export default function InvitationHero() {
+interface InvitationHeroProps {
+  onHeroReady?: () => void
+}
+
+export default function InvitationHero({
+  onHeroReady,
+}: InvitationHeroProps) {
   return (
     <section
       className="
@@ -20,10 +26,7 @@ export default function InvitationHero() {
       "
     >
       <div className="relative mx-auto max-w-[1100px]">
-
-        {/* =================================================
-            SCROLL TO EXPLORE
-            ================================================= */}
+        {/* SCROLL TO EXPLORE */}
 
         <motion.div
           className="
@@ -88,9 +91,7 @@ export default function InvitationHero() {
           />
         </motion.div>
 
-        {/* =================================================
-            HERO IMAGE
-            ================================================= */}
+        {/* HERO IMAGE */}
 
         <motion.div
           initial={{
@@ -102,6 +103,9 @@ export default function InvitationHero() {
             y: 0,
           }}
           transition={imageRevealTransition}
+          onAnimationComplete={() => {
+            onHeroReady?.()
+          }}
         >
           <div
             className="

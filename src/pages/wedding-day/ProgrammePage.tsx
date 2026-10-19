@@ -397,9 +397,9 @@ export default function ProgrammePage() {
 
           <p
             className="
-              font-body
               mt-8
-              text-md
+              font-body
+              text-sm
               font-medium
               uppercase
               tracking-[0.24em]
