@@ -7,8 +7,8 @@ import { luxuryEase } from "../motion/motion"
 const navLinks = [
   { to: "/home", label: "Home" },
   { to: "/programme", label: "Programme" },
-  { to: "/menu", label: "Menu" },
   { to: "/gifts", label: "Gifts" },
+  { to: "/menu", label: "Menu" },
   { to: "/appreciation", label: "Appreciation" },
 ]
 
