@@ -15,7 +15,6 @@ import PageTransition from "./components/motion/PageTransition"
 import ScrollToTop from "./components/navigation/ScrollToTop"
 import BackgroundMonogram from "./components/layout/BackgroundMonogram"
 import ProgrammePage from "./pages/wedding-day/ProgrammePage"
-import MomentsPage from "./pages/wedding-day/MomentsPage"
 import FoodMenuPage from "./pages/wedding-day/FoodMenuPage"
 import GiftsPage from "./pages/wedding-day/GiftsPage"
 import AppreciationPage from "./pages/wedding-day/AppreciationPage"
@@ -73,7 +72,6 @@ function AnimatedRoutes() {
           location={location}
           key={location.pathname}
         >
-
           {/* =================================================
               SPLASH
               ================================================= */}
@@ -100,9 +98,7 @@ function AnimatedRoutes() {
 
                   {showRefreshIntro && (
                     <SplashPage
-                      onComplete={
-                        handleRefreshIntroComplete
-                      }
+                      onComplete={handleRefreshIntroComplete}
                     />
                   )}
                 </div>
@@ -137,7 +133,7 @@ function AnimatedRoutes() {
           />
 
           {/* =================================================
-              FUTURE WEDDING-DAY ROUTES
+              WEDDING-DAY ROUTES
               ================================================= */}
 
           <Route
@@ -145,9 +141,18 @@ function AnimatedRoutes() {
             element={<ProgrammePage />}
           />
 
+          {/* Memories route removed.
+              MomentsPage.tsx remains in the project.
+              Old /moments links now redirect to /home. */}
+
           <Route
             path="/moments"
-            element={<MomentsPage />}
+            element={
+              <Navigate
+                to="/home"
+                replace
+              />
+            }
           />
 
           <Route
@@ -178,7 +183,6 @@ function AnimatedRoutes() {
               />
             }
           />
-
         </Routes>
       </AnimatePresence>
     </>
