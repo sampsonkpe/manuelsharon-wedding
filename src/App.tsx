@@ -8,6 +8,7 @@ import {
 import { AnimatePresence } from "framer-motion"
 import { useCallback } from "react"
 
+import SplashPage from "./pages/SplashPage"
 import HomePage from "./pages/HomePage"
 import ClosingPage from "./pages/ClosingPage"
 import ProgrammePage from "./pages/wedding-day/ProgrammePage"
@@ -51,8 +52,7 @@ function AnimatedRoutes() {
   ].includes(location.pathname)
 
   const showNavigation =
-    WEDDING_PAGES_UNLOCKED &&
-    (location.pathname === "/" || isWeddingDayPage)
+    WEDDING_PAGES_UNLOCKED && isWeddingDayPage
 
   return (
     <>
@@ -69,20 +69,24 @@ function AnimatedRoutes() {
           location={location}
           key={location.pathname}
         >
-          {/* QR code landing page */}
+          {/* QR code always opens the envelope splash */}
           <Route
             path="/"
+            element={
+              <PageTransition>
+                <SplashPage />
+              </PageTransition>
+            }
+          />
+
+          {/* Homepage after the envelope is opened */}
+          <Route
+            path="/home"
             element={
               <PageTransition>
                 <HomePage />
               </PageTransition>
             }
-          />
-
-          {/* Keep the old homepage URL working */}
-          <Route
-            path="/home"
-            element={<Navigate to="/" replace />}
           />
 
           <Route
@@ -103,7 +107,7 @@ function AnimatedRoutes() {
             }
           />
 
-          {/* Wedding-day pages: protected by the shared setting */}
+          {/* Protected wedding-day pages */}
           <Route
             path="/programme"
             element={
@@ -158,7 +162,7 @@ function AnimatedRoutes() {
 
           <Route
             path="/moments"
-            element={<Navigate to="/" replace />}
+            element={<Navigate to="/home" replace />}
           />
 
           <Route
