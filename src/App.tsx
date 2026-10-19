@@ -52,7 +52,12 @@ function AnimatedRoutes() {
   ].includes(location.pathname)
 
   const showNavigation =
-    WEDDING_PAGES_UNLOCKED && isWeddingDayPage
+  WEDDING_PAGES_UNLOCKED &&
+  (
+    location.pathname === "/" ||
+    location.pathname === "/home" ||
+    isWeddingDayPage
+  )
 
   return (
     <>
