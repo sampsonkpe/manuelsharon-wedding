@@ -2,7 +2,7 @@ import InvitationHero from "../components/invitation/InvitationHero"
 import InvitationMessage from "../components/invitation/InvitationMessage"
 import InvitationDetails from "../components/invitation/InvitationDetails"
 import InvitationPalette from "../components/invitation/InvitationPalette"
-import InvitationRsvp from "../components/invitation/InvitationRSVP"
+/* import InvitationRsvp from "../components/invitation/InvitationRSVP" */
 import SectionDivider from "../components/ui/SectionDivider"
 import FallingPetals from "../components/wedding-day/FallingPetals"
 
@@ -39,7 +39,7 @@ export default function HomePage({
         {!WEDDING_PAGES_UNLOCKED && (
           <>
             <SectionDivider />
-            <InvitationRsvp />
+            {/* <InvitationRsvp /> */}
           </>
         )}
       </div>
