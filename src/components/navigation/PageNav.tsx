@@ -17,7 +17,7 @@ export default function PageNav() {
   const activeLinkRef = useRef<HTMLAnchorElement>(null)
 
   const navLinks = [
-    { to: "/", label: "Home" },
+    { to: "/home", label: "Home" },
     ...(WEDDING_PAGES_UNLOCKED ? weddingDayLinks : []),
   ]
 
@@ -80,9 +80,7 @@ export default function PageNav() {
           "
         >
           {navLinks.map((link) => {
-            const isActive =
-              location.pathname === link.to ||
-              (link.to === "/" && location.pathname === "/home")
+            const isActive = location.pathname === link.to
 
             return (
               <Link
